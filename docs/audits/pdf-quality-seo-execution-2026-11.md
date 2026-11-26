@@ -104,28 +104,9 @@ File names and passwords are excluded from the history payload. The engine's
 
 ## C. Tool acceptance
 
-Acceptance refers to the complete requirements of this execution. The previous audit
-had individual smoke results, including successful file creation on several routes.
-
-| Tool             | Status  | Main gap                                                                                                                 |
-| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Merge PDF        | NOT_RUN | Both same-named form values and attachments verified. Full browser, accessibility and device acceptance remains open.    |
-| Split PDF        | NOT_RUN | ZIP contains correctly ordered PDF parts with form values in both desktop browser engines. Full acceptance remains open. |
-| Compress PDF     | NOT_RUN | Form, title and attachment fixture and accurate copy verified. Broader reader and resource acceptance remains open.      |
-| PDF to Image     | NOT_RUN | PNG archive and individual download both verified. Full acceptance remains open.                                         |
-| Image to PDF     | NOT_RUN | Two-image PDF and preview lifetime verified. Full acceptance remains open.                                               |
-| Decrypt PDF      | NOT_RUN | Full acceptance matrix beyond the tested password, text, form and page-geometry cases                                    |
-| Encrypt PDF      | NOT_RUN | AES-256 and PDF.js password round-trip verified in both engines. Additional PDF reader coverage remains open.            |
-| Add Watermark    | NOT_RUN | Mixed Persian and Latin placement and font retry verified. Full acceptance remains open.                                 |
-| Rotate Pages     | NOT_RUN | Relative rotation and shared range parsing verified. Full acceptance remains open.                                       |
-| Reorder Pages    | NOT_RUN | Structural fixture passes. Full device, range and accessibility acceptance remains open.                                 |
-| Delete Pages     | NOT_RUN | Retained page form and document attachment verified. Full acceptance remains open.                                       |
-| Extract Pages    | NOT_RUN | Selected-page form preserved and source attachment excluded in tested fixture.                                           |
-| Add Page Numbers | NOT_RUN | Visible position and orientation on cropped/rotated pages and refusal of a signature field verified in both browsers.    |
-| Extract Text     | NOT_RUN | Two-language line breaks, page markers, TXT and no-text recovery verified in both browsers.                              |
-| PDF to Text      | NOT_RUN | Two-language TXT without page markers and no-text recovery verified in both browsers.                                    |
-| Word to PDF      | FAIL    | In-browser conversion remains unavailable. The route now offers desktop export instructions.                             |
-| PDF to Word      | NOT_RUN | Editable Persian and Latin text, empty output rejection and cancellation verified. Complex layout remains out of scope.  |
+The acceptance matrix records [historical fixture evidence by criterion](pdf-acceptance-matrix.md)
+and lists the checks still required for the final release candidate. The sections
+below retain the original test receipts and their limitations.
 
 ## D. Search work
 
