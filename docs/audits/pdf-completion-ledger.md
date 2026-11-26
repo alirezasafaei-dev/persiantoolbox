@@ -9,21 +9,21 @@
 
 ## Work queue
 
-| Item                                | Priority | Status      | Dependencies                                                     | Acceptance and latest SHA or evidence                                                                                                 | Next action                                                                                                               |
-| ----------------------------------- | -------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Local DOCX to PDF                   | P0       | BLOCKED     | Persistent isolated Rust/WASM runner or approved licensed engine | Pinned OpenDoc build produced no artifact. Existing guide cannot convert.                                                             | Run the mixed Persian DOCX fixture on a verified local engine under the current CSP.                                      |
-| Output structure and safe rejection | P0       | IN_PROGRESS | QPDF and PDF.js fixtures                                         | `243585f3` resolves cross-document link fallback; `77f8901f` adds signature refusal to both cryptographic transforms.                 | Complete per-operation preserve and reject evidence for remaining feature classes.                                        |
-| Large-file processing               | P1       | IN_PROGRESS | Matched repeatable browser workload                              | Isolated QPDF A/B now demonstrates removal of the source clone. Earlier browser samples did not establish lower total Split peak.     | Verify browser and mobile peak under a matched ZIP workload.                                                              |
-| PDF.js standard assets              | P1       | PASS        | Pinned PDF.js dependency                                         | `4a056228` passed 42 Chromium/Firefox tests, five WebKit probes and 186 copied-asset comparisons.                                     | Include PDF.js, QPDF and application assets in final standalone verification.                                             |
-| Split search intent and SSR         | P1       | PASS        | Finalized Search Console data                                    | `cb3b633e` passed focused Chromium/Firefox and unit checks. Same URL and canonical, visible H1 and FAQ without JavaScript.            | Measure matched post-release 28-day windows when available.                                                               |
-| Other SEO/GEO opportunities         | P1       | PASS        | Direct Search Console query/page data                            | `7df615a2` addresses the remaining ten pairs on five pages. Chromium/Firefox confirmed no-JavaScript guidance.                        | Verify current hosted gates and measure matched periods once released.                                                    |
-| GA4 and event semantics             | P1       | IN_PROGRESS | Read-only Analytics access and consent                           | Browser report confirmed PDF page engagement; both funnel queries returned no rows. `08ea957e` implements consent-gated Split events. | Obtain organic landing/device report and validate events after release.                                                   |
-| Isolated preview and package        | P1       | IN_PROGRESS | Exact SHA standalone build, HTTPS loopback                       | Standalone and loopback HTTPS work locally. GitHub Staging has a secret and port conflict; WSL Docker daemon access was denied.       | Verify final build asset inventory and HTTP delivery. Identify an authorized independent hosted environment if available. |
-| Existing shared Staging workflow    | P1       | BLOCKED     | Owner-approved isolated deployment target                        | Existing service uses the targeted port; a Staging configuration secret is absent.                                                    | Use a separate owner-provisioned preview or reconcile Staging separately under explicit approval.                         |
-| Word guide as converter acceptance  | P0       | FAIL        | Local DOCX converter                                             | Guide produces no PDF bytes and cannot pass conversion acceptance.                                                                    | Keep open under the DOCX engine item.                                                                                     |
-| Physical device coverage            | P1       | BLOCKED     | Authorized physical device                                       | Prior browser emulation and WebKit cover scoped cases. No physical device was attached in the recorded run.                           | Use a provisioned device if made available. Keep emulation evidence separate.                                             |
-| Final 17-tool acceptance and gates  | P0       | IN_PROGRESS | Implementation and immutable candidate                           | `05cd2406` creates the per-tool historical matrix. Hosted Home/CTA and Split navigation failures were observed at `77f8901f`.         | Run final gates and complete outstanding criterion receipts.                                                              |
-| Release and rollback handoff        | P0       | IN_PROGRESS | Final SHA, reviews and gates                                     | Executable sequence recorded below against the manual workflow and production policy.                                                 | Attach the exact reviewed release and verified rollback SHA after release clearance.                                      |
+| Item                                | Priority | Status      | Dependencies                                                    | Acceptance and latest SHA or evidence                                                                                                 | Next action                                                                                                               |
+| ----------------------------------- | -------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Local DOCX to PDF                   | P0       | IN_PROGRESS | Verified OpenDoc source, isolated WASM runner and layout probes | The source patch at upstream `91775489` passes the native and three-browser PDF fixture. The app still serves the guide.              | Evaluate layout fidelity and resource limits, then integrate a reproducible same-origin worker if those gates pass.       |
+| Output structure and safe rejection | P0       | IN_PROGRESS | QPDF and PDF.js fixtures                                        | `243585f3` resolves cross-document link fallback; `77f8901f` adds signature refusal to both cryptographic transforms.                 | Complete per-operation preserve and reject evidence for remaining feature classes.                                        |
+| Large-file processing               | P1       | IN_PROGRESS | Matched repeatable browser workload                             | Isolated QPDF A/B now demonstrates removal of the source clone. Earlier browser samples did not establish lower total Split peak.     | Verify browser and mobile peak under a matched ZIP workload.                                                              |
+| PDF.js standard assets              | P1       | PASS        | Pinned PDF.js dependency                                        | `4a056228` passed 42 Chromium/Firefox tests, five WebKit probes and 186 copied-asset comparisons.                                     | Include PDF.js, QPDF and application assets in final standalone verification.                                             |
+| Split search intent and SSR         | P1       | PASS        | Finalized Search Console data                                   | `cb3b633e` passed focused Chromium/Firefox and unit checks. Same URL and canonical, visible H1 and FAQ without JavaScript.            | Measure matched post-release 28-day windows when available.                                                               |
+| Other SEO/GEO opportunities         | P1       | PASS        | Direct Search Console query/page data                           | `7df615a2` addresses the remaining ten pairs on five pages. Chromium/Firefox confirmed no-JavaScript guidance.                        | Verify current hosted gates and measure matched periods once released.                                                    |
+| GA4 and event semantics             | P1       | IN_PROGRESS | Read-only Analytics access and consent                          | Browser report confirmed PDF page engagement; both funnel queries returned no rows. `08ea957e` implements consent-gated Split events. | Obtain organic landing/device report and validate events after release.                                                   |
+| Isolated preview and package        | P1       | IN_PROGRESS | Exact SHA standalone build, HTTPS loopback                      | Standalone and loopback HTTPS work locally. GitHub Staging has a secret and port conflict; WSL Docker daemon access was denied.       | Verify final build asset inventory and HTTP delivery. Identify an authorized independent hosted environment if available. |
+| Existing shared Staging workflow    | P1       | BLOCKED     | Owner-approved isolated deployment target                       | Existing service uses the targeted port; a Staging configuration secret is absent.                                                    | Use a separate owner-provisioned preview or reconcile Staging separately under explicit approval.                         |
+| Word guide as converter acceptance  | P0       | FAIL        | Local DOCX converter                                            | Guide produces no PDF bytes and cannot pass conversion acceptance.                                                                    | Keep open under the DOCX engine item.                                                                                     |
+| Physical device coverage            | P1       | BLOCKED     | Authorized physical device                                      | Prior browser emulation and WebKit cover scoped cases. No physical device was attached in the recorded run.                           | Use a provisioned device if made available. Keep emulation evidence separate.                                             |
+| Final 17-tool acceptance and gates  | P0       | IN_PROGRESS | Implementation and immutable candidate                          | `05cd2406` creates the per-tool historical matrix. Hosted Home/CTA and Split navigation failures were observed at `77f8901f`.         | Run final gates and complete outstanding criterion receipts.                                                              |
+| Release and rollback handoff        | P0       | IN_PROGRESS | Final SHA, reviews and gates                                    | Executable sequence recorded below against the manual workflow and production policy.                                                 | Attach the exact reviewed release and verified rollback SHA after release clearance.                                      |
 
 Use `DEFERRED` for nonblocking backlog work and `N/A` only with a
 technical reason. Resume by checking the worktree, PR head, and open
@@ -116,6 +116,39 @@ checks, the existing indexability check, and a real GIF-to-PDF
 download in both engines. Candidate-wide browser gates follow.
 
 ## Word to PDF checkpoint
+
+The isolation runner now builds native Rust and WASM without changing
+shared settings. The upstream source at `91775489` reproduces the footer
+geometry defect in a native layout regression. The short mixed-script
+line has glyph-run origins from 997,444 to 1,000,001 twips against a test
+measure of 9,360 twips. In the published alpha's PDF, text matrices put
+the footer at 49,925 to 50,072 points on a 595.3-point-wide page. The
+Latin control stays within the page. The fielded layout was carrying
+directional start alignment from its wide measurement line into the
+final run origins. The application still serves the Word guide.
+
+The [experimental source patch](fixtures/opendoc-fielded-rtl.patch) rebases
+each shaped text group to its measured visual origin. The pinned source
+build reproduced the published alpha's failing case. With the patch,
+all seven native field-flow tests, all ten native header/footer tests,
+and all three `check-opendoc-footer.mjs` PDF cases passed. Build with
+Rust 1.96 using `cargo build --locked -p opendoc-viewer --release --target
+wasm32-unknown-unknown --features wasm,core-fonts,pdf` and emit web glue
+with `wasm-bindgen 0.2.129`, matching the lockfile. The local generated
+WASM SHA-256 was
+`2eb727b31b802cd0db79ff7c18d9cdd2265a90dfcbe9bbd2d25bc5554cba8353`.
+
+Chromium with Pixel 7 emulation, Firefox, and WebKit each emitted a
+46,701-byte PDF from the six-page mixed-script fixture in an isolated
+same-origin worker. PDF inspection found the header and the Persian
+footer with the correct page number on all six pages, numeric cells for
+42 ordered rows, the embedded image, and text after the explicit page
+break. Some table text continues on the following page. The browser
+probe observed zero non-GET or cross-origin page requests and zero
+reported CSP violations. The page policy did not grant WASM execution,
+which was limited to the worker response. This remains an isolated
+engine result. Integration, independent layout fidelity, malformed input
+handling and device resource limits remain open.
 
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
