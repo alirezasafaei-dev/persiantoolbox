@@ -60,9 +60,10 @@ test('page numbering preserves an attachment while aligning with the visible cro
   expect(attachmentEntries.size()).toBe(2);
   expect(attachmentEntries.lookup(0, PDFHexString).decodeText()).toBe('numbering-notes.bin');
   const fileSpec = attachmentEntries.lookup(1, PDFDict);
-  const embeddedFile = fileSpec
-    .lookup(PDFName.of('EF'), PDFDict)
-    .lookup(PDFName.of('F'), PDFRawStream);
+  const embeddedFile = fileSpec.lookup(PDFName.of('EF'), PDFDict).lookup(PDFName.of('F'));
+  if (!(embeddedFile instanceof PDFRawStream)) {
+    throw new Error('The attachment stream was not preserved');
+  }
   expect(decodePDFRawStream(embeddedFile).decode()).toEqual(attachmentBytes);
   const loading = getDocument({ data: Uint8Array.from(bytes), isEvalSupported: false });
   try {
