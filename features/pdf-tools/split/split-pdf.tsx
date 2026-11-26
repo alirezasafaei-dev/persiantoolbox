@@ -9,6 +9,7 @@ import { loadJsZip } from '@/features/pdf-tools/lazy-deps';
 import { toEnglishDigits } from '@/shared/utils/numbers';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
+import { trackSplitPdfOutcome } from '@/lib/analytics/trackSplitPdfOutcome';
 
 export default function SplitPdfPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -115,11 +116,8 @@ export default function SplitPdfPage() {
     splitButton.current = event.currentTarget;
     setProgress(0);
     setBusy(true);
+    let started = false;
     try {
-      const buffer = await file.arrayBuffer();
-      if (splitOperation.current !== operation) {
-        return;
-      }
       const value = toEnglishDigits(pagesInput.trim());
       const pagesPerPart = Number(value);
       if (
@@ -129,6 +127,12 @@ export default function SplitPdfPage() {
         Math.ceil(totalPages / pagesPerPart) > 100
       ) {
         throw new Error('تعداد صفحات هر بخش باید برای ساخت ۲ تا ۱۰۰ فایل کافی باشد.');
+      }
+      started = true;
+      trackSplitPdfOutcome('tool_start');
+      const buffer = await file.arrayBuffer();
+      if (splitOperation.current !== operation) {
+        return;
       }
       const parts = await getWorker().split(buffer, pagesPerPart, (completed) => {
         if (splitOperation.current === operation) {
@@ -150,11 +154,15 @@ export default function SplitPdfPage() {
 
       if (splitOperation.current === operation) {
         setDownloadUrl(URL.createObjectURL(blob));
+        trackSplitPdfOutcome('tool_complete');
       }
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
       if (splitOperation.current === operation) {
         setError(message);
+        if (started) {
+          trackSplitPdfOutcome('tool_error');
+        }
       }
     } finally {
       if (splitOperation.current === operation) {
@@ -292,8 +300,12 @@ export default function SplitPdfPage() {
                 type="button"
                 variant="secondary"
                 onClick={() => {
+                  if (!splitOperation.current) {
+                    return;
+                  }
                   splitOperation.current = null;
                   workerRef.current?.cancel();
+                  trackSplitPdfOutcome('tool_cancel');
                   restoreSplitFocus.current = true;
                   setBusy(false);
                 }}

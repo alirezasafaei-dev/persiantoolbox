@@ -1,6 +1,7 @@
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
+import { trackSplitPdfOutcome } from '@/lib/analytics/trackSplitPdfOutcome';
 import { writeAnalyticsConsent } from '@/shared/consent/analyticsConsent';
 
 let pathname = '/tools';
@@ -39,6 +40,41 @@ describe('GA4 basic consent privacy', () => {
     act(() => setConsent(false));
     expect(window.gtag).toBeUndefined();
     expect(screen.queryByTestId('ga-loader')).toBeNull();
+  });
+  it('records only fixed Split PDF labels with analytics consent and no document metadata', () => {
+    pathname = '/pdf-tools/split/split-pdf';
+    window.history.replaceState({}, '', `${pathname}?private=fixture#private`);
+    try {
+      render(<GoogleAnalytics nonce="test" />);
+      trackSplitPdfOutcome('tool_start');
+      expect(window.dataLayer).toBeUndefined();
+      act(() => setConsent(true));
+      trackSplitPdfOutcome('tool_start');
+      trackSplitPdfOutcome('tool_complete');
+      trackSplitPdfOutcome('tool_error');
+      trackSplitPdfOutcome('tool_cancel');
+      const outcomes = window.dataLayer
+        ?.map((value) => Array.from(value as ArrayLike<unknown>))
+        .filter((row) => row[0] === 'event' && row[1] !== 'page_view');
+      expect(outcomes).toEqual(
+        ['tool_start', 'tool_complete', 'tool_error', 'tool_cancel'].map((event) => [
+          'event',
+          event,
+          {
+            send_to: 'G-TEST123',
+            tool_id: 'split-pdf',
+            page_location: `${window.location.origin}${pathname}`,
+          },
+        ]),
+      );
+      act(() => setConsent(false));
+      trackSplitPdfOutcome('tool_complete');
+      expect(window.dataLayer?.some((value) => (value as ArrayLike<unknown>)[0] === 'event')).toBe(
+        false,
+      );
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
   });
   it('loads only after analytics consent with nonce and denies advertising', () => {
     render(<GoogleAnalytics nonce="test" />);

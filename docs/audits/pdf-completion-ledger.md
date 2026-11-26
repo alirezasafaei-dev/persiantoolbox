@@ -53,3 +53,20 @@ evidence before running the next authorized task.
 - Next structural task: compare the operation-level reject and preserve
   assertions with the 17-tool evidence matrix and target any remaining
   silent data loss.
+
+## GA4 PDF evidence
+
+- Read the existing GA4 property in Chrome. The Pages and screens report
+  showed PDF page activity for October 29 through November 25, 2026.
+  These are page views and engagement time across channels.
+- The Events report returned no rows for `tool_start` or
+  `tool_complete` in the same window. Repository inspection confirmed
+  Split PDF had no GA4 lifecycle events. Historical completion and
+  abandonment rates are unavailable.
+- Split PDF now queues start after input validation, completion when the
+  ZIP is ready, error on failed processing, and cancel on an explicit
+  cancel. Events require the existing GA4 analytics consent and use a
+  fixed tool ID and public path. Unit tests cover all four commands,
+  refusal and revocation. Production collection is awaiting release.
+- Organic landing pages and device-level engagement still need a valid
+  report. Event counts alone do not establish user-level funnel rates.
