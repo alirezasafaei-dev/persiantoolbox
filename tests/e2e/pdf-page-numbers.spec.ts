@@ -1,9 +1,20 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { decodePDFRawStream, degrees, PDFDict, PDFDocument, PDFName, PDFRawStream } from 'pdf-lib';
+import {
+  decodePDFRawStream,
+  degrees,
+  PDFArray,
+  PDFDict,
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  PDFRawStream,
+} from 'pdf-lib';
 import { getDocument, OPS, Util } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-test('page numbers align with the visible crop and rotation', async ({ page }) => {
+test('page numbering preserves an attachment while aligning with the visible crop and rotation', async ({
+  page,
+}) => {
   const source = await PDFDocument.create();
   source.setTitle('Page numbering fixture');
   const rotated = source.addPage([400, 300]);
@@ -13,6 +24,10 @@ test('page numbers align with the visible crop and rotation', async ({ page }) =
   const xfaXml = '<xfa><data>Numbering fixture</data></xfa>';
   const xfa = source.context.register(source.context.flateStream(xfaXml));
   source.catalog.set(PDFName.of('AcroForm'), source.context.obj({ Fields: [], XFA: xfa }));
+  const attachmentBytes = new Uint8Array([0, 9, 7, 65, 255]);
+  await source.attach(attachmentBytes, 'numbering-notes.bin', {
+    mimeType: 'application/octet-stream',
+  });
   await page.goto('/pdf-tools/edit/add-page-numbers');
   const input = page.getByLabel('انتخاب فایل PDF');
   const fixture = {
@@ -39,6 +54,16 @@ test('page numbers align with the visible crop and rotation', async ({ page }) =
   expect(document.getTitle()).toBe('Page numbering fixture');
   expect(document.getPage(0).getRotation().angle).toBe(90);
   expect(document.getPage(0).getCropBox()).toEqual({ x: 65, y: 55, width: 220, height: 150 });
+  const names = document.catalog.lookup(PDFName.of('Names'), PDFDict);
+  const embeddedFiles = names.lookup(PDFName.of('EmbeddedFiles'), PDFDict);
+  const attachmentEntries = embeddedFiles.lookup(PDFName.of('Names'), PDFArray);
+  expect(attachmentEntries.size()).toBe(2);
+  expect(attachmentEntries.lookup(0, PDFHexString).decodeText()).toBe('numbering-notes.bin');
+  const fileSpec = attachmentEntries.lookup(1, PDFDict);
+  const embeddedFile = fileSpec
+    .lookup(PDFName.of('EF'), PDFDict)
+    .lookup(PDFName.of('F'), PDFRawStream);
+  expect(decodePDFRawStream(embeddedFile).decode()).toEqual(attachmentBytes);
   const loading = getDocument({ data: Uint8Array.from(bytes), isEvalSupported: false });
   try {
     const pdf = await loading.promise;

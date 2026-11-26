@@ -53,6 +53,8 @@ remaining per-tool acceptance criteria.
 | Decrypt PDF  | Cancel and recover            | PASS at `822fa2d6` in Chromium, Firefox and WebKit. The retry opened without a password.                                                                                                                                                                                                                                                                    |
 | Word to PDF  | Local conversion feasibility  | FAIL for OpenDoc `0.1.0-alpha.1`. The generated PDF contains the mixed Persian footer at x ≈ 50,000 pt on a 595.3 pt page when a PAGE field follows the text. The Latin control is within the page. The current app still presents the Word guide.                                                                                                          |
 
+The Add Page Numbers regression preserved the attachment filename and all five synthetic bytes in the actual download. Chromium and Firefox passed on isolated standalone HTTP. WebKit passed over isolated HTTPS after the HTTP run failed to load application assets. The tested application code is unchanged from `822fa2d6`.
+
 ### Standalone candidate `385d534b`
 
 - **No-JavaScript rendering** · PASS in Chromium and Firefox for one visible

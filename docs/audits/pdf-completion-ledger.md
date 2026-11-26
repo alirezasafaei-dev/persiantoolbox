@@ -150,6 +150,30 @@ which was limited to the worker response. This remains an isolated
 engine result. Integration, independent layout fidelity, malformed input
 handling and device resource limits remain open.
 
+### Pagination comparison against Word
+
+A local Word 16.0.20228.20110 export served as the reference for the
+synthetic mixed-script document. The default-spacing fixture placed all
+42 table rows on page one and its explicit break on page two in Word.
+OpenDoc with the footer fix and Vazirmatn produced six pages with the
+automatic-width table and three with the fixed-width control. The
+fixed-width table used about 17.7 points per row in OpenDoc and 12 points
+in Word. With exact 12-point spacing authored in the fixture, both
+engines put the entire fixed-width table on page one. With Arial 11 points
+declared in a separate fixed-width control and the same installed face
+registered locally in both engines, both used two pages and the first
+and last row baselines were about 702 and 163 points. Arial was a local
+comparison control and is not bundled with the project.
+
+Using Noto Naskh Arabic or Noto Sans Arabic as fallback covered the
+fixture's characters but did not match the reference pagination. An
+isolated trial that normalized Arabic fallback line height and adjusted
+table width measurement matched the reference's page allocation for the
+fixed-width table. The automatic-width fixture still emitted three
+pages. It preserved all 42 rows but wrapped some short cell text. The
+trial is not part of the app or a general font metrics policy. Diagnose
+the measured and available cell widths before selecting a layout fix.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
