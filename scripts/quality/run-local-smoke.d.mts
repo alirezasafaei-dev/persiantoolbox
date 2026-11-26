@@ -7,4 +7,9 @@ export type StandaloneRuntime = {
 
 export function resolveReleaseSha(rootDir?: string): string;
 export function prepareStandaloneRuntime(rootDir?: string): StandaloneRuntime;
+export function verifySmokeAsset(
+  asset: { path: string; contentType: string },
+  response: Response,
+  expected: Buffer,
+): Promise<void>;
 export function runLocalSmoke(rootDir?: string): Promise<void>;
