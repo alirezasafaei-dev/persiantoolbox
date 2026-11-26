@@ -26,6 +26,56 @@ async function downloadPageWidths(link: Locator) {
   return document.getPages().map((page) => page.getWidth());
 }
 
+test('compression cancels a pending file read and ignores its late failure after retry', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    let held = false;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (this.name === 'cancel-retry.pdf' && !held) {
+        held = true;
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-compression-read', () => resolve(), { once: true });
+          document.documentElement.setAttribute('data-compression-read-pending', 'true');
+        });
+        throw new Error('Late failure from a canceled file read');
+      }
+      return read.call(this);
+    };
+  });
+  await page.goto('/pdf-tools/compress/compress-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await expect(consent).toBeHidden();
+  const main = page.getByRole('main');
+  const submit = main.getByRole('button', { name: 'فشرده سازی PDF', exact: true });
+  const input = main.getByLabel('انتخاب فایل PDF');
+  const fixture = await pdfFile('cancel-retry.pdf', [210, 320]);
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(submit).toBeEnabled({ timeout: 1000 });
+  }).toPass({ timeout: 10_000 });
+  await submit.click();
+  await expect(page.locator('html')).toHaveAttribute('data-compression-read-pending', 'true');
+  await main.getByRole('button', { name: 'لغو پردازش', exact: true }).click();
+  await expect(submit).toBeEnabled();
+  await expect(main.locator('a[download]')).toHaveCount(0);
+
+  await submit.click();
+  const link = main.getByRole('link', { name: 'دانلود', exact: true });
+  await expect(link).toBeVisible();
+  expect(await downloadPageWidths(link)).toEqual([210, 320]);
+  const retryUrl = await link.getAttribute('href');
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('release-compression-read'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  });
+  await expect(main.getByRole('alert')).toHaveCount(0);
+  await expect(link).toHaveAttribute('href', retryUrl ?? '');
+});
+
 test('compression refuses a PDF without pages and accepts a valid replacement', async ({
   page,
 }) => {

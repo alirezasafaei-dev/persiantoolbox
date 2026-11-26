@@ -176,6 +176,18 @@ Private memory sums the Chromium processes observed during the profile,
 with 40 to 48 samples per run. These measurements cover this attachment-heavy
 fixture. Large ZIP payloads and physical-device memory remain unverified.
 
+## Compression cancellation
+
+The Chromium regression held the selected file read and reproduced the
+busy state persisting after Cancel. Each batch now owns a worker client.
+Cancel detaches and terminates that client and restores the controls
+immediately. A late rejection cannot alter the next batch, and finished
+batches also release their worker.
+
+The Node 20 build passed. The compression suite passed all 14 Chromium
+and Firefox cases, and the cancellation regression passed in WebKit.
+The retry produced a readable two-page PDF in the expected order.
+
 ## Tagged PDF output follow-up
 
 The Chromium baseline downloaded a PDF from each operation, and both

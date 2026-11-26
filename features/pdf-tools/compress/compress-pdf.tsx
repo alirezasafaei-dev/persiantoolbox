@@ -30,7 +30,6 @@ export default function CompressPdfPage() {
   const workerRef = useRef<PdfWorkerClient | null>(null);
   const downloadUrls = useRef(new Map<string, string>());
   const nextFileId = useRef(0);
-  const cancelled = useRef(false);
 
   useEffect(() => {
     const urls = downloadUrls.current;
@@ -42,13 +41,6 @@ export default function CompressPdfPage() {
       urls.clear();
     };
   }, []);
-
-  const getWorker = () => {
-    if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
-    }
-    return workerRef.current;
-  };
 
   const releaseDownload = (id: string) => {
     const url = downloadUrls.current.get(id);
@@ -122,6 +114,9 @@ export default function CompressPdfPage() {
   };
 
   const onCompress = async () => {
+    if (workerRef.current) {
+      return;
+    }
     setError(null);
     setProgress(0);
     if (files.length === 0) {
@@ -129,11 +124,11 @@ export default function CompressPdfPage() {
       return;
     }
 
-    cancelled.current = false;
+    const worker = createPdfWorkerClient();
+    workerRef.current = worker;
     setBusy(true);
 
     try {
-      const worker = getWorker();
       const total = files.length;
 
       for (let i = 0; i < total; i++) {
@@ -142,7 +137,7 @@ export default function CompressPdfPage() {
           continue;
         }
         const buffer = await item.file.arrayBuffer();
-        if (cancelled.current || workerRef.current !== worker) {
+        if (workerRef.current !== worker) {
           return;
         }
         const result = await worker.request({ type: 'compress', file: buffer }, (value) => {
@@ -150,7 +145,7 @@ export default function CompressPdfPage() {
           setProgress(Math.round(fileProgress * 100));
         });
 
-        if (cancelled.current || workerRef.current !== worker) {
+        if (workerRef.current !== worker) {
           return;
         }
         const blob = new Blob([result.buffer], { type: 'application/pdf' });
@@ -176,9 +171,15 @@ export default function CompressPdfPage() {
       });
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (workerRef.current === worker) {
+        setError(message);
+      }
     } finally {
-      setBusy(false);
+      if (workerRef.current === worker) {
+        workerRef.current = null;
+        worker.terminate();
+        setBusy(false);
+      }
     }
   };
 
@@ -331,8 +332,10 @@ export default function CompressPdfPage() {
                 type="button"
                 variant="secondary"
                 onClick={() => {
-                  cancelled.current = true;
-                  workerRef.current?.cancel();
+                  const worker = workerRef.current;
+                  workerRef.current = null;
+                  worker?.terminate();
+                  setBusy(false);
                   setError('پردازش PDF لغو شد.');
                 }}
               >
