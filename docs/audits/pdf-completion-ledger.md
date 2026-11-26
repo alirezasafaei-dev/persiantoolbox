@@ -133,6 +133,32 @@ Rust 1.96, the WASM target and wasm-pack 0.13.1. Build the pinned source
 there and test the generated PDF against the mixed RTL fixture before
 choosing an engine.
 
+The official npm package `@casualoffice/opendoc-viewer@0.1.0-alpha.1`
+became an independent evaluation path. Its tarball matched registry
+SHA-512 and contained Apache-2.0 notices and an 11,173,494-byte WASM
+module. The package did not include the optional font directory. The
+engine reported missing Persian glyphs with core fonts. Registering
+local Vazirmatn as the Arabic-script fallback cleared that diagnostic.
+
+A local-only Worker prototype emitted identical six-page PDFs in
+Chromium with Pixel 7 emulation, Firefox and WebKit. The page CSP used
+same-origin scripts and workers. WASM permission was confined to the
+worker response. The browser probes observed zero non-GET or
+third-party requests and no reported CSP violations. The parsed PDF
+contained the header, a PNG, the last table row and content after the
+explicit page break. This verifies selected output properties, not
+layout parity or physical-device memory.
+
+The mixed Persian document lost its footer. A separate minimal
+two-page DOCX reproduced the loss with a Persian run followed by a
+Latin marker and a PAGE field. The source footer XML held both the
+marker and the field. The PDF contained neither on both pages. The
+Latin-only control retained the footer and page numbers, with and
+without the local fallback font. Core fonts and explicit Vazirmatn
+registration also failed on the mixed footer. This release does not
+meet the Word-to-PDF acceptance bar. Re-evaluate a fixed engine against
+both fixtures before integrating it.
+
 ## Split PDF resource profile
 
 The QPDF runtime used to collect the complete MEMFS directory after
