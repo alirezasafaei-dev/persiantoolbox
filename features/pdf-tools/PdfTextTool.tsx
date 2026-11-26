@@ -6,7 +6,7 @@ import type { PDFDocumentLoadingTask } from 'pdfjs-dist';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { useToast } from '@/shared/ui/toast-context';
-import { loadPdfJs, setupPdfWorker } from './lazy-deps';
+import { loadPdfJs, pdfJsDocumentOptions, setupPdfWorker } from './lazy-deps';
 
 const MAX_FILE_BYTES = 50 * 1024 * 1024;
 const MAX_PAGES = 500;
@@ -104,7 +104,7 @@ export default function PdfTextTool({ mode }: Props) {
         setupPdfWorker(),
       ]);
       signal.throwIfAborted();
-      loading = getDocument({ data, isEvalSupported: false, stopAtErrors: true });
+      loading = getDocument({ data, ...pdfJsDocumentOptions });
       const pdf = await loading.promise;
       signal.throwIfAborted();
       if (pdf.numPages > MAX_PAGES) {

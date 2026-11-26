@@ -1,5 +1,5 @@
-import { copyFileSync, existsSync } from 'node:fs';
+import { copyFileSync, cpSync } from 'node:fs';
 
-const source = 'node_modules/pdfjs-dist/build/pdf.worker.min.mjs';
-const target = 'public/pdf.worker.min.mjs';
-if (existsSync(source)) copyFileSync(source, target);
+const source = 'node_modules/pdfjs-dist';
+copyFileSync(`${source}/build/pdf.worker.min.mjs`, 'public/pdf.worker.min.mjs');
+cpSync(`${source}/cmaps`, 'public/pdfjs/cmaps', { recursive: true });

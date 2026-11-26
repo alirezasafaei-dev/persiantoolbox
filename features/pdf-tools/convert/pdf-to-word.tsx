@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'reac
 import Link from 'next/link';
 import type { PDFDocumentLoadingTask } from 'pdfjs-dist';
 import { Card, Button } from '@/components/ui';
-import { loadPdfJs, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
+import { loadPdfJs, pdfJsDocumentOptions, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
 
 type State = 'idle' | 'ready' | 'processing' | 'done';
 
@@ -103,8 +103,7 @@ export default function PdfToWordPage() {
       signal.throwIfAborted();
       task = pdfjsLib.getDocument({
         data: arrayBuffer,
-        isEvalSupported: false,
-        stopAtErrors: true,
+        ...pdfJsDocumentOptions,
       });
       const pdf = await task.promise;
       signal.throwIfAborted();

@@ -3,11 +3,11 @@ import { expect, test, type Page } from '@playwright/test';
 import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument } from 'pdf-lib';
 
-async function chooseFixture(page: Page, path: string, source: PDFDocument) {
+async function chooseFixture(page: Page, path: string, source: PDFDocument | Uint8Array) {
   const fixture = {
     name: 'text-fixture.PDF',
     mimeType: 'application/pdf',
-    buffer: Buffer.from(await source.save()),
+    buffer: Buffer.from(source instanceof Uint8Array ? source : await source.save()),
   };
   await page.goto(path);
   const consent = page.getByRole('dialog', { name: 'cookie consent' });
@@ -72,5 +72,21 @@ for (const tool of [
     await expect(page.getByText('دانلود TXT', { exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: 'فایل جدید', exact: true }).click();
     await expect(page.getByLabel('انتخاب فایل', { exact: true })).toBeVisible();
+  });
+
+  test(`${tool.action} preserves text that uses a predefined Japanese CMap`, async ({ page }) => {
+    // Synthetic ReportLab sample with Helvetica and HeiseiMin-W3 (UniJIS-UCS2-H).
+    const source = await readFile('tests/e2e/fixtures/predefined-japanese-cmap.pdf');
+    await chooseFixture(page, tool.path, source);
+    await page.getByRole('button', { name: tool.action, exact: true }).click();
+    const link = page.locator(`a[download="${tool.output}"]`);
+    await expect(link).toBeVisible();
+    await link.evaluate((element) =>
+      element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+    );
+    const [download] = await Promise.all([page.waitForEvent('download'), link.click()]);
+    const output = await readFile(await download.path(), 'utf8');
+    expect(output).toContain('Latin reference');
+    expect(output).toContain('日本語のテスト');
   });
 }

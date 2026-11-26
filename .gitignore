@@ -68,6 +68,7 @@ packages/telegram-bot/pnpm-lock.yaml
 packages/telegram-bot/cf-worker/node_modules
 packages/telegram-bot/cf-worker/.wrangler
 public/pdf.worker.min.mjs
+public/pdfjs/cmaps/
 tmp/
 
 # Internal / agent-only artifacts (not for public distribution)

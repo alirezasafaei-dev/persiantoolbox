@@ -6,7 +6,12 @@ import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
-import { loadJsZip, loadPdfJs, setupPdfWorker } from '@/features/pdf-tools/lazy-deps';
+import {
+  loadJsZip,
+  loadPdfJs,
+  pdfJsDocumentOptions,
+  setupPdfWorker,
+} from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import { formatBytesFa } from '@/shared/utils/format';
@@ -54,7 +59,7 @@ async function withPdf<T>(
   const { getDocument } = await loadPdfJs();
   const data = await file.arrayBuffer();
   signal.throwIfAborted();
-  const loading = getDocument({ data, isEvalSupported: false, stopAtErrors: true });
+  const loading = getDocument({ data, ...pdfJsDocumentOptions });
   let destruction: Promise<void> | undefined;
   const cleanup = () => (destruction ??= loading.destroy().catch(() => {}));
   signal.addEventListener('abort', cleanup, { once: true });

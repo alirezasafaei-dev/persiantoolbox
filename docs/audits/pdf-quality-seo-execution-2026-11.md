@@ -1017,6 +1017,17 @@ link before the worker was terminated (exit 1). The Node 20 build and
 14 focused Chromium and Firefox split checks passed (exit 0). The
 change has not been measured against the prior desktop memory sample.
 
+### Text extraction with predefined CMaps
+
+Both TXT tools silently omitted the Japanese line of a synthetic mixed
+Latin/Japanese PDF that used a predefined CMap. The two standalone
+Chromium baseline cases failed on the downloaded TXT contents (exit 1).
+The build now copies PDF.js CMaps and their license from the installed
+dependency. PDF.js requests the maps from the same origin when needed.
+The Node 20 build and all 40 Chromium/Firefox text, Word and image
+conversion cases passed (exit 0), including both downloaded TXT variants.
+The fixture verifies Japanese text extraction with this specific map.
+
 ## I. Verdict
 
 `PARTIALLY_COMPLETE_WITH_BLOCKERS`. Candidate testing and release
