@@ -101,7 +101,7 @@ before its no-JavaScript assertions. The trace already showed the H1
 in the document. The test now waits for DOM readiness and retains its
 content and canonical assertions. That run also failed the home-page
 popular-tools viewport assertion after the anchor updated the URL.
-The home-page failure remains open.
+The home-page failure did not recur in the hosted suite on `5abb00b9`.
 
 The predecessor `5abb00b9` passed all 16 GitHub checks. A Chromium
 probe on that exact standalone SHA showed that all 19 sitemap URLs
@@ -154,9 +154,27 @@ matched in all ten runs (`--static-id`; combined SHA-256
 | Whole directory      |           605 ms |       219.7 MiB |        222.8 MiB |                 671,491,660 bytes |
 | Requested outputs    |           284 ms |        93.0 MiB |         96.1 MiB |                           0 bytes |
 
-These figures isolate QPDF extraction and exclude ZIP assembly,
-browser workers, and device memory limits. Browser peak and mobile
-throughput remain NOT_RUN for this change.
+These figures isolate QPDF extraction and exclude ZIP assembly and
+browser workers.
+
+The standalone browser A/B on `385d534b` compared five fresh Chromium
+runs per mode in alternating order on the same Windows host. Both modes
+used Pixel 7 emulation (412 × 839 CSS pixels), the same synthetic input
+and ZIP workflow. The baseline changed only the served loopback worker
+call to collect the whole directory. The candidate used its regular
+output-only request. The 40-page input weighed 33,574,583 bytes and
+included a large document attachment. Each run downloaded a 29,758-byte
+ZIP. ZIP CRC checks passed and all 20 PDFs parsed with two pages and the
+expected first-page widths.
+
+| Split browser profile | Median selection to ZIP ready | Median sampled peak private memory | Maximum sampled peak | Median rise over idle |
+| --------------------- | ----------------------------: | ---------------------------------: | -------------------: | --------------------: |
+| Whole directory       |                      3,962 ms |                          651.3 MiB |            708.6 MiB |             539.7 MiB |
+| Requested outputs     |                      3,442 ms |                          574.5 MiB |            579.1 MiB |             437.4 MiB |
+
+Private memory sums the Chromium processes observed during the profile,
+with 40 to 48 samples per run. These measurements cover this attachment-heavy
+fixture. Large ZIP payloads and physical-device memory remain unverified.
 
 ## Release and rollback handoff
 

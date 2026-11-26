@@ -3,7 +3,8 @@
 PASS applies to the cited fixture and build. NOT_RUN means there is no
 identified receipt for that criterion. The [execution report](pdf-quality-seo-execution-2026-11.md)
 contains the command results and limitations. The [completion ledger](pdf-completion-ledger.md)
-tracks the current candidate. Final SHA acceptance remains NOT_RUN for all 17 tools.
+tracks the current candidate. The candidate-wide checks below do not close the
+remaining per-tool acceptance criteria.
 
 | Tool             | Downloaded output and structural evidence                                            | Invalid input and recovery                                                 | Cancellation and resource check                                             | Observed privacy                                                               |
 | ---------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -39,5 +40,35 @@ tracks the current candidate. Final SHA acceptance remains NOT_RUN for all 17 to
   provisioned device. Full interactive accessibility is NOT_RUN.
 - **SEO** · PASS for HTTP, H1, self-canonical, unique title and description,
   parseable JSON-LD and index directives on all 17 routes at `0a0c9718`.
-  Split no-JavaScript content passed at `cb3b633e`. Candidate-wide
-  no-JavaScript crawl verification is NOT_RUN.
+  Split no-JavaScript content passed at `cb3b633e`. See the later
+  standalone receipt for candidate-wide no-JavaScript coverage.
+
+### Standalone candidate `385d534b`
+
+- **No-JavaScript rendering** · PASS in Chromium and Firefox for one visible
+  main heading, HTTP 200 and the expected canonical on all 17 tools, the
+  hub and the uses guide. The five refreshed tool pages also exposed their
+  specific guidance and links. The Word page passed as a guide only.
+- **Mobile emulation** · PASS at 320 CSS pixels for RTL, dark preference,
+  one visible heading and no horizontal document overflow across the hub
+  and 17 tools. Tab reached the picker on all 16 interactive pages.
+  The Word guide has no picker, so its picker check is N/A.
+- **Accessibility** · PASS for zero serious or critical axe findings in
+  `main` on the same 18 paths in light and dark at 390 CSS pixels.
+  Interactive accessibility and physical-device checks remain open.
+- **WebKit** · The two-worker standalone suite returned 97 PASS, 2 FAIL
+  and 2 Chromium-only N/A. Image ZIP readiness and Rotate's subsequent
+  output link timed out. Both cases passed five times each in isolation
+  with one worker. The earlier two-worker failures remain unresolved.
+
+### Structure fixture coverage
+
+| Structure                                                        | Verified behavior on tested fixtures                                                                                                                     | Open acceptance                                                                |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| AcroForm                                                         | Merge preserves both colliding field values; Split and Extract preserve selected widgets; Delete and Reorder preserve retained form data                 | Other operations and representative form variants                              |
+| Attachments and metadata                                         | Merge and Reorder retain tested attachments; Delete retains the document attachment; Extract excludes it; Reorder and Compress verify title preservation | Embedded file variants and document metadata across all transforms             |
+| Outline and bookmarks                                            | Delete removes the discarded destination and retains a nested bookmark; Extract drops the source outline                                                 | Other operations and outline hierarchy variants                                |
+| Named destinations, internal and external links, chained actions | Delete and Extract resolve retained page links, retain the URI action and remove discarded chained targets; Split retains tested links within a part     | Navigation combinations beyond the fixtures                                    |
+| CropBox and rotation                                             | Poppler comparisons cover sampled output pages; numbering and watermark verify placement on cropped and rotated pages                                    | Additional geometry and reader variants                                        |
+| Encryption and signature                                         | AES-256 and RC4 round-trip or decryption fixtures; encryption and decryption reject tested signature markers                                             | Genuine signed input interoperability and broader encrypted-input routing      |
+| Tagged PDF and XFA                                               | Reorder retains the tested tag tree and its page references; the tested QPDF page-set paths safely refuse tag and XFA fixtures                           | Tag validity after drawing new content, and XFA preservation in other rewrites |
