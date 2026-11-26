@@ -59,21 +59,63 @@ export default function MarketApiDocsPage() {
 
         <section className="space-y-4">
           <h2 className="text-2xl font-black text-(--text-primary)">درخواست سریع</h2>
-          <div className="grid gap-4 lg:grid-cols-3">
+          <p className="max-w-3xl text-sm leading-7 text-(--text-secondary)">
+            نمونه‌های JavaScript و Python در وضعیت <code dir="ltr">stale</code> فقط هشدار و زمان
+            دریافت قبلی را نشان می‌دهند. در پاسخ <code dir="ltr">503</code>، پیام تلاش مجدد را
+            ببینید و پیش از درخواست دوباره به اندازهٔ زمان اعلام‌شده صبر کنید.
+          </p>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {[
-              { title: 'cURL', code: 'curl https://persiantoolbox.ir/api/market' },
+              { title: 'cURL', code: 'curl --include https://persiantoolbox.ir/api/market' },
               {
                 title: 'JavaScript',
-                code: `const response = await fetch('https://persiantoolbox.ir/api/market');\nconst market = await response.json();`,
+                code: `const response = await fetch('https://persiantoolbox.ir/api/market');
+
+if (response.status === 503) {
+  const seconds = response.headers.get('Retry-After') ?? '30';
+  console.warn('Market unavailable. Retry after ' + seconds + ' s.');
+} else {
+  if (!response.ok) throw new Error('HTTP ' + response.status);
+
+  const { ok, data } = await response.json();
+  if (ok !== true || !data) throw new Error('Invalid market response');
+
+  if (data.freshness === 'stale') {
+    console.warn('stale since last retrieval at ' + new Date(data.timestamp).toISOString());
+  } else {
+    console.log(data.freshness, data);
+  }
+}`,
               },
               {
                 title: 'Python',
-                code: `import requests\nmarket = requests.get('https://persiantoolbox.ir/api/market', timeout=10).json()`,
+                code: `from datetime import datetime, timezone
+import requests
+
+response = requests.get('https://persiantoolbox.ir/api/market', timeout=10)
+
+if response.status_code == 503:
+    seconds = response.headers.get('Retry-After', '30')
+    print(f'Market unavailable. Retry after {seconds} s.')
+else:
+    response.raise_for_status()
+    market = response.json()
+    data = market.get('data')
+    if market.get('ok') is not True or not data:
+        raise ValueError('Invalid market response')
+
+    if data['freshness'] == 'stale':
+        timestamp = datetime.fromtimestamp(data['timestamp'] / 1000, timezone.utc)
+        print(f'stale since last retrieval at {timestamp.isoformat()}')
+    else:
+        print(data['freshness'], data)`,
               },
             ].map((sample) => (
               <div
                 key={sample.title}
-                className="rounded-lg border border-(--border-light) bg-(--surface-1) p-5"
+                className={`min-w-0 rounded-lg border border-(--border-light) bg-(--surface-1) p-5 ${
+                  sample.title === 'cURL' ? 'lg:col-span-2' : ''
+                }`}
               >
                 <h3 className="mb-3 font-bold text-(--text-primary)">{sample.title}</h3>
                 <pre
