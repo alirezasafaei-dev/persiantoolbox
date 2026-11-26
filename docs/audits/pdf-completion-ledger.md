@@ -174,6 +174,27 @@ pages. It preserved all 42 rows but wrapped some short cell text. The
 trial is not part of the app or a general font metrics policy. Diagnose
 the measured and available cell widths before selecting a layout fix.
 
+The WASM trace identified a line-break boundary. It reported integer
+edges of 742 and 2,966 twips for text requiring 742.1777 and 2,966.0254
+twips. The measured-width experiment uses the ceiling of the shaped
+edge for intrinsic measurement and accounts for resolved cell margins,
+spacing and borders. It uses physical left alignment for measurement
+while leaving bidirectional shaping in place. Together with the trial
+Arabic fallback line height, both table fixtures now preserve all 42
+ordered rows on the first page and the explicit break on the second,
+matching local Word exports. See the opt-in regression
+[`check-opendoc-pagination.mjs`](../../scripts/quality/check-opendoc-pagination.mjs).
+The earlier footer-only build fails the automatic-width case with six
+pages. All three footer regression cases passed on the measured build.
+
+Chromium with Pixel 7 emulation, Firefox and WebKit each also exported
+the two-page automatic-width document with its image and numbered
+Persian footers. The isolated worker produced 42,387 bytes with no
+reported missing glyphs, CSP violations or outbound page requests. This
+does not establish exact coordinates or wider document compatibility.
+The Persian fallback metric remains experimental and the application
+does not yet include the engine.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
