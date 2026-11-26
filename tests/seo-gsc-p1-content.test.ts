@@ -48,3 +48,43 @@ describe('GSC P1 SEO and GEO content contracts', () => {
     expect(tool.content?.faq?.some((item) => item.question.includes('استخراج صفحات'))).toBe(true);
   });
 });
+
+describe('PDF opportunity content links', () => {
+  it.each([
+    {
+      path: '/pdf-tools/edit/add-page-numbers',
+      relatedPath: '/pdf-tools/watermark/add-watermark',
+    },
+    {
+      path: '/pdf-tools/extract/extract-pages',
+      relatedPath: '/pdf-tools/split/split-pdf',
+    },
+    {
+      path: '/pdf-tools/edit/rotate-pages',
+      relatedPath: '/pdf-tools/edit/reorder-pages',
+      intent: 'چرخاندن صفحات PDF',
+    },
+    {
+      path: '/pdf-tools/edit/reorder-pages',
+      relatedPath: '/pdf-tools/edit/delete-pages',
+      intent: 'مرتب‌سازی صفحات PDF',
+    },
+    {
+      path: '/pdf-tools/merge/merge-pdf',
+      relatedPath: '/pdf-tools/edit/reorder-pages',
+      intent: 'ادغام PDF',
+    },
+  ] as const)(
+    'keeps $path intent-specific and links contextually to $relatedPath',
+    (opportunity) => {
+      const { path, relatedPath } = opportunity;
+      const tool = getToolWithMetadataOverride(path);
+      expect(tool.title).toContain('intent' in opportunity ? opportunity.intent : 'PDF');
+      expect(tool.description.length).toBeGreaterThan(40);
+      expect(tool.content?.intro).toBeTruthy();
+      expect(tool.content?.links).toEqual(
+        expect.arrayContaining([expect.objectContaining({ href: relatedPath })]),
+      );
+    },
+  );
+});

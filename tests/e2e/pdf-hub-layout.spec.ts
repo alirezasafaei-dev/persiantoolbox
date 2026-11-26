@@ -104,7 +104,9 @@ test('split PDF renders its purpose and example without JavaScript', async ({ br
   try {
     const page = await context.newPage();
     const route = '/pdf-tools/split/split-pdf';
-    const response = await page.goto(new URL(route, test.info().project.use.baseURL).href);
+    const response = await page.goto(new URL(route, test.info().project.use.baseURL).href, {
+      waitUntil: 'domcontentloaded',
+    });
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(/تقسیم فایل PDF آنلاین به چند بخش/);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(

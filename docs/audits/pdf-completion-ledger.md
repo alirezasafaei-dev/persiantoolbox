@@ -70,3 +70,35 @@ evidence before running the next authorized task.
   refusal and revocation. Production collection is awaiting release.
 - Organic landing pages and device-level engagement still need a valid
   report. Event counts alone do not establish user-level funnel rates.
+
+## Search Console implementation
+
+The ten opportunity pairs outside Split mapped to these five URLs.
+Changes address the intent on the existing canonical URLs.
+
+| Tool             | Pairs | Candidate change                                                                                   |
+| ---------------- | ----: | -------------------------------------------------------------------------------------------------- |
+| Rotate           |     4 | Title and description for selected-page rotation, scan example, and link to reorder                |
+| Reorder          |     2 | Title and description for page order, keyboard guidance, and links to delete and extract           |
+| Add Page Numbers |     2 | In-page numbering guidance for placement and ranges, with a link to watermark                      |
+| Merge            |     1 | Ordered merge title and description, with links to the workflow for adjusting the result           |
+| Extract Pages    |     1 | Selected-page PDF title and description, with a contextual link to the separate ZIP split workflow |
+
+Keep the canonical identities and compare matched finalized 28-day
+periods after release. No ranking or CTR outcome is established. The
+single visible overlapping query between Split and Merge still does
+not establish cannibalization.
+
+The first browser run found all five new guidance sections hidden
+without JavaScript in both engines. Moving the five pages and their OG
+routes into the existing PDF hub layout fixed the shared loading
+fallback. The Node 20 build and 16 focused Chromium/Firefox E2E cases
+passed, including the five no-JavaScript checks in each engine, the
+17-tool indexability check, Split recovery and downloaded ZIP order.
+
+GitHub's run on `77f8901f` timed out during Split's navigation,
+before its no-JavaScript assertions. The trace already showed the H1
+in the document. The test now waits for DOM readiness and retains its
+content and canonical assertions. That run also failed the home-page
+popular-tools viewport assertion after the anchor updated the URL.
+The home-page failure remains open.

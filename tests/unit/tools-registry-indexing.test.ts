@@ -14,8 +14,8 @@ describe('tools registry indexing policy', () => {
   });
 
   it('keeps the add page numbers sitemap route implemented', () => {
-    expect(
-      existsSync(resolve(process.cwd(), 'app/(tools)/pdf-tools/edit/add-page-numbers/page.tsx')),
-    ).toBe(true);
+    expect(existsSync(resolve(process.cwd(), 'app/pdf-tools/edit/add-page-numbers/page.tsx'))).toBe(
+      true,
+    );
   });
 });

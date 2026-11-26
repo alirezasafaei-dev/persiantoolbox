@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-const DynamicReorderPagesPage = dynamic(
-  () => import('@/features/pdf-tools/edit/reorder-pages').then((m) => m.default),
+const DynamicExtractPagesPage = dynamic(
+  () => import('@/features/pdf-tools/extract/extract-pages').then((m) => m.default),
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
@@ -14,9 +14,9 @@ import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
-const tool = getToolByPathOrThrow('/pdf-tools/edit/reorder-pages');
+const tool = getToolWithMetadataOverride('/pdf-tools/extract/extract-pages');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -25,35 +25,38 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function ReorderPagesRoute() {
+export default function ExtractPagesRoute() {
   return (
     <ToolPageShell tool={tool}>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
           { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
-          { name: 'مرتب‌سازی صفحات' },
+          { name: 'استخراج صفحات' },
         ]}
       />
       <Script
-        id="reorder-pages-howto"
+        id="extract-pages-howto"
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'نحوه مرتب‌سازی صفحات PDF',
-            description: 'تغییر ترتیب صفحات فایل PDF',
+            name: 'نحوه استخراج صفحات از PDF',
+            description: 'استخراج صفحات خاص از فایل PDF',
             step: [
               { name: 'فایل PDF را انتخاب کنید', text: 'فایل PDF مورد نظر را انتخاب کنید' },
-              { name: 'صفحات را مرتب کنید', text: 'ترتیب صفحات را با drag و drop تغییر دهید' },
-              { name: 'ذخیره کنید', text: 'فایل PDF مرتب شده را دانلود کنید' },
+              {
+                name: 'صفحات مورد نظر را انتخاب کنید',
+                text: 'شماره صفحاتی که می‌خواهید استخراج شوند را وارد کنید',
+              },
+              { name: 'استخراج و دانلود کنید', text: 'فایل PDF حاوی صفحات انتخابی را دانلود کنید' },
             ],
           }),
         }}
       />
-      <DynamicReorderPagesPage />
+      <DynamicExtractPagesPage />
     </ToolPageShell>
   );
 }

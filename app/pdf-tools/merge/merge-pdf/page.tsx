@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-const DynamicExtractPagesPage = dynamic(
-  () => import('@/features/pdf-tools/extract/extract-pages').then((m) => m.default),
+const DynamicMergePdfPage = dynamic(
+  () => import('@/features/pdf-tools/merge/merge-pdf').then((m) => m.default),
   {
     loading: () => (
       <div className="flex flex-col gap-6 animate-pulse">
@@ -14,9 +14,9 @@ import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
-const tool = getToolByPathOrThrow('/pdf-tools/extract/extract-pages');
+const tool = getToolWithMetadataOverride('/pdf-tools/merge/merge-pdf');
 
 export const metadata = buildMetadata({
   title: tool.title,
@@ -25,38 +25,44 @@ export const metadata = buildMetadata({
   path: tool.path,
 });
 
-export default function ExtractPagesRoute() {
+export default function MergePdfRoute() {
   return (
     <ToolPageShell tool={tool}>
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
           { name: 'ابزارهای PDF', url: `${siteUrl}/pdf-tools` },
-          { name: 'استخراج صفحات' },
+          { name: 'ادغام PDF' },
         ]}
       />
       <Script
-        id="extract-pages-howto"
+        id="merge-pdf-howto"
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'HowTo',
-            name: 'نحوه استخراج صفحات از PDF',
-            description: 'استخراج صفحات خاص از فایل PDF',
+            name: 'نحوه ادغام فایل‌های PDF',
+            description: 'ادغام چند فایل PDF در یک فایل واحد با پردازش محلی',
             step: [
-              { name: 'فایل PDF را انتخاب کنید', text: 'فایل PDF مورد نظر را انتخاب کنید' },
               {
-                name: 'صفحات مورد نظر را انتخاب کنید',
-                text: 'شماره صفحاتی که می‌خواهید استخراج شوند را وارد کنید',
+                name: 'فایل‌ها را انتخاب کنید',
+                text: 'فایل‌های PDF مورد نظر را انتخاب یا drag کنید',
               },
-              { name: 'استخراج و دانلود کنید', text: 'فایل PDF حاوی صفحات انتخابی را دانلود کنید' },
+              {
+                name: 'ترتیب صفحات را تنظیم کنید',
+                text: 'ترتیب فایل‌ها را با drag و drop تنظیم کنید',
+              },
+              {
+                name: 'ادغام و دانلود کنید',
+                text: 'روی دکمه ادغام کلیک کنید و فایل نهایی را دانلود کنید',
+              },
             ],
           }),
         }}
       />
-      <DynamicExtractPagesPage />
+      <DynamicMergePdfPage />
     </ToolPageShell>
   );
 }

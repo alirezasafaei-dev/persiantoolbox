@@ -105,3 +105,42 @@ test('PDF guides link to the actual tools and describe the available outputs', a
     );
   }
 });
+
+test.describe('PDF search guidance without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const [path, heading, relatedPath] of [
+    ['/pdf-tools/merge/merge-pdf', 'ادغام PDF با ترتیب دلخواه', '/pdf-tools/edit/reorder-pages'],
+    [
+      '/pdf-tools/edit/rotate-pages',
+      'چرخاندن صفحه‌های انتخابی PDF',
+      '/pdf-tools/edit/reorder-pages',
+    ],
+    [
+      '/pdf-tools/edit/reorder-pages',
+      'تغییر ترتیب صفحه‌های یک PDF',
+      '/pdf-tools/edit/delete-pages',
+    ],
+    [
+      '/pdf-tools/extract/extract-pages',
+      'استخراج صفحه‌های لازم از PDF',
+      '/pdf-tools/split/split-pdf',
+    ],
+    [
+      '/pdf-tools/edit/add-page-numbers',
+      'افزودن شماره صفحه در جای درست',
+      '/pdf-tools/watermark/add-watermark',
+    ],
+  ] as const) {
+    test(`renders task guidance and related links for ${path}`, async ({ page }) => {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      const main = page.getByRole('main');
+      await expect(main.getByRole('heading', { name: heading, exact: true })).toBeVisible();
+      await expect(
+        main
+          .getByRole('navigation', { name: 'ابزارهای مرتبط' })
+          .locator(`a[href="${relatedPath}"]`),
+      ).toBeVisible();
+    });
+  }
+});
