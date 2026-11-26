@@ -1,15 +1,4 @@
-import dynamic from 'next/dynamic';
-const DynamicEncryptPdfPage = dynamic(
-  () => import('@/features/pdf-tools/security/encrypt-pdf').then((m) => m.default),
-  {
-    loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
+import EncryptPdfPage from '@/features/pdf-tools/security/encrypt-pdf';
 import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
@@ -53,7 +42,7 @@ export default function EncryptPdfRoute() {
           }),
         }}
       />
-      <DynamicEncryptPdfPage />
+      <EncryptPdfPage />
     </ToolPageShell>
   );
 }

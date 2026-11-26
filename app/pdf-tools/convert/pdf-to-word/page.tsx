@@ -1,21 +1,9 @@
-import dynamic from 'next/dynamic';
+import PdfToWord from '@/features/pdf-tools/convert/pdf-to-word';
 import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-
-const PdfToWord = dynamic(
-  () => import('@/features/pdf-tools/convert/pdf-to-word').then((m) => m.default),
-  {
-    loading: () => (
-      <div className="space-y-4">
-        <div className="h-64 animate-pulse rounded-lg bg-(--surface-2)" />
-        <div className="h-10 w-48 animate-pulse rounded-md bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-word');
 

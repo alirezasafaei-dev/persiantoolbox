@@ -1,21 +1,9 @@
-import dynamic from 'next/dynamic';
+import PdfToTextPage from '@/features/pdf-tools/convert/pdf-to-text';
 import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
-
-const DynamicPdfToTextPage = dynamic(
-  () => import('@/features/pdf-tools/convert/pdf-to-text').then((m) => m.default),
-  {
-    loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
 
 const tool = getToolByPathOrThrow('/pdf-tools/convert/pdf-to-text');
 
@@ -65,7 +53,7 @@ export default function PdfToTextRoute() {
           }),
         }}
       />
-      <DynamicPdfToTextPage />
+      <PdfToTextPage />
     </ToolPageShell>
   );
 }

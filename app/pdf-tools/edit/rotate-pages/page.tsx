@@ -1,15 +1,4 @@
-import dynamic from 'next/dynamic';
-const DynamicRotatePagesPage = dynamic(
-  () => import('@/features/pdf-tools/edit/rotate-pages').then((m) => m.default),
-  {
-    loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
+import RotatePagesPage from '@/features/pdf-tools/edit/rotate-pages';
 import Script from 'next/script';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
@@ -56,7 +45,7 @@ export default function RotatePagesRoute() {
           }),
         }}
       />
-      <DynamicRotatePagesPage />
+      <RotatePagesPage />
     </ToolPageShell>
   );
 }

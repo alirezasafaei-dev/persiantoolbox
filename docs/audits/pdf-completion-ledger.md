@@ -103,6 +103,18 @@ content and canonical assertions. That run also failed the home-page
 popular-tools viewport assertion after the anchor updated the URL.
 The home-page failure remains open.
 
+The predecessor `5abb00b9` passed all 16 GitHub checks. A Chromium
+probe on that exact standalone SHA showed that all 19 sitemap URLs
+returned HTTP 200 and the expected canonical, but that only Split,
+the hub, and the uses guide exposed a visible H1 without JavaScript.
+The remaining PDF routes now use the PDF layout outside the shared
+loading fallback, and tool entry components render immediately.
+Their processing libraries still load on demand. The Node 20 build
+and 52 focused Chromium and Firefox cases passed, covering visible
+headings and canonicals for all 19 routes, the five earlier guidance
+checks, the existing indexability check, and a real GIF-to-PDF
+download in both engines. Candidate-wide browser gates follow.
+
 ## Word to PDF checkpoint
 
 The official Rust 1.96 release and installer passed checksum checks. A

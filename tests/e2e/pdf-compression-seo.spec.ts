@@ -144,3 +144,25 @@ test.describe('PDF search guidance without JavaScript', () => {
     });
   }
 });
+
+test.describe('PDF route headings without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  const toolPaths = getToolsByCategory('pdf-tools')
+    .filter((tool) => tool.kind === 'tool' && tool.indexable)
+    .map((tool) => tool.path);
+
+  for (const path of ['/pdf-tools', '/pdf-tools/uses', ...toolPaths]) {
+    test(`renders the primary content for ${path}`, async ({ page }) => {
+      const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      const heading = page.getByRole('main').getByRole('heading', { level: 1 });
+      await expect(heading).toHaveCount(1);
+      await expect(heading).toBeVisible();
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        `https://persiantoolbox.ir${path}`,
+      );
+    });
+  }
+});

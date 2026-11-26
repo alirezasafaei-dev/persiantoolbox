@@ -1,15 +1,4 @@
-import dynamic from 'next/dynamic';
-const DynamicCompressPdfPage = dynamic(
-  () => import('@/features/pdf-tools/compress/compress-pdf').then((m) => m.default),
-  {
-    loading: () => (
-      <div className="flex flex-col gap-6 animate-pulse">
-        <div className="h-8 w-48 rounded-lg bg-(--surface-2)" />
-        <div className="h-64 rounded-lg bg-(--surface-2)" />
-      </div>
-    ),
-  },
-);
+import CompressPdfPage from '@/features/pdf-tools/compress/compress-pdf';
 import ToolPageShell from '@/components/ui/ToolPageShell';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import { buildMetadata, siteUrl } from '@/lib/seo';
@@ -34,7 +23,7 @@ export default function CompressPdfRoute() {
           { name: 'فشرده‌سازی PDF' },
         ]}
       />
-      <DynamicCompressPdfPage />
+      <CompressPdfPage />
     </ToolPageShell>
   );
 }
