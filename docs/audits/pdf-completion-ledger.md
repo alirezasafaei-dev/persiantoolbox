@@ -9,21 +9,21 @@
 
 ## Work queue
 
-| Item                                | Priority | Status      | Dependencies                               | Acceptance and latest SHA or evidence                                                                                                                                                                                   | Next action                                                                                                               |
-| ----------------------------------- | -------- | ----------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Local DOCX to PDF                   | P0       | IN_PROGRESS | Licensed browser engine under existing CSP | Word guide remains a guide. Earlier LibreOffice builds failed CSP before producing output. Require mixed Persian/Latin, RTL, tables, images, header/footer and page breaks in the actual PDF.                           | Inspect pinned OpenDoc and Office WASM Viewer. Run a local fixture if a viable distribution is available.                 |
-| Output structure and safe rejection | P0       | IN_PROGRESS | QPDF and PDF.js fixtures                   | `243585f3` resolved cross-document link fallback. Require operation-level coverage of forms, attachments, metadata, destinations, outlines, chained actions, page geometry, encryption, signatures, tagged PDF and XFA. | Probe remaining data-loss paths and add targeted downloaded-output regressions.                                           |
-| Large-file processing               | P1       | PENDING     | Matched repeatable browser workload        | `e6ade6f9` releases split worker before ZIP. Individual 839.4 and 843.6 MiB observations do not establish a reduction.                                                                                                  | Isolate QPDF and ZIP allocations, then benchmark matched runs before changing the pipeline.                               |
-| PDF.js standard assets              | P1       | PASS        | Pinned PDF.js dependency                   | `4a056228` passed 42 Chromium/Firefox tests, five WebKit probes and 186 copied-asset comparisons.                                                                                                                       | Include PDF.js, QPDF and application assets in final standalone verification.                                             |
-| Split search intent and SSR         | P1       | PASS        | Finalized Search Console data              | `cb3b633e` passed focused Chromium/Firefox and unit checks. Same URL and canonical, visible H1 and FAQ without JavaScript.                                                                                              | Measure matched post-release 28-day windows when available.                                                               |
-| Other SEO/GEO opportunities         | P1       | PENDING     | Direct Search Console query/page data      | `b1d43d5b` records 20 opportunities. Split accounts for ten. Overlap is insufficient to establish cannibalization.                                                                                                      | Apply intent-specific changes to rotate, reorder, numbering, merge and extract; verify crawlable HTML and links.          |
-| GA4 and event semantics             | P1       | IN_PROGRESS | Read-only Analytics access; consent        | Admin API returned 403 `SERVICE_DISABLED`. No valid funnel or field metrics obtained.                                                                                                                                   | Try the authorized Analytics browser session or another read-only official path. Inspect instrumentation independently.   |
-| Isolated preview and package        | P1       | IN_PROGRESS | Exact SHA standalone build, HTTPS loopback | Standalone and loopback HTTPS work locally. GitHub Staging has a secret and port conflict; WSL Docker daemon access was denied.                                                                                         | Verify final build asset inventory and HTTP delivery. Identify an authorized independent hosted environment if available. |
-| Existing shared Staging workflow    | P1       | BLOCKED     | Owner-approved isolated deployment target  | Existing service uses the targeted port; a Staging configuration secret is absent.                                                                                                                                      | Use a separate owner-provisioned preview or reconcile Staging separately under explicit approval.                         |
-| Word guide as converter acceptance  | P0       | FAIL        | Local DOCX converter                       | Guide produces no PDF bytes and cannot pass conversion acceptance.                                                                                                                                                      | Keep open under the DOCX engine item.                                                                                     |
-| Physical device coverage            | P1       | BLOCKED     | Authorized physical device                 | Prior browser emulation and WebKit cover scoped cases. No physical device was attached in the recorded run.                                                                                                             | Use a provisioned device if made available. Keep emulation evidence separate.                                             |
-| Final 17-tool acceptance and gates  | P0       | PENDING     | Implementation and immutable candidate     | The execution report holds partial earlier tool evidence.                                                                                                                                                               | Fill the per-tool matrix against exact receipts; run mandatory quality, browser, asset, security and licensing gates.     |
-| Release and rollback handoff        | P0       | PENDING     | Final SHA, reviews and gates               | [Deploy safety](../ops/PRODUCTION_DEPLOY_SAFETY.md) and [live verification](../ops/POST_DEPLOY_LIVE_VERIFICATION_POLICY.md) govern the release.                                                                         | Prepare candidate and rollback evidence. Keep changes off live infrastructure under the current hold.                     |
+| Item                                | Priority | Status      | Dependencies                                                     | Acceptance and latest SHA or evidence                                                                                                 | Next action                                                                                                               |
+| ----------------------------------- | -------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Local DOCX to PDF                   | P0       | BLOCKED     | Persistent isolated Rust/WASM runner or approved licensed engine | Pinned OpenDoc build produced no artifact. Existing guide cannot convert.                                                             | Run the mixed Persian DOCX fixture on a verified local engine under the current CSP.                                      |
+| Output structure and safe rejection | P0       | IN_PROGRESS | QPDF and PDF.js fixtures                                         | `243585f3` resolves cross-document link fallback; `77f8901f` adds signature refusal to both cryptographic transforms.                 | Complete per-operation preserve and reject evidence for remaining feature classes.                                        |
+| Large-file processing               | P1       | IN_PROGRESS | Matched repeatable browser workload                              | Isolated QPDF A/B now demonstrates removal of the source clone. Earlier browser samples did not establish lower total Split peak.     | Verify browser and mobile peak under a matched ZIP workload.                                                              |
+| PDF.js standard assets              | P1       | PASS        | Pinned PDF.js dependency                                         | `4a056228` passed 42 Chromium/Firefox tests, five WebKit probes and 186 copied-asset comparisons.                                     | Include PDF.js, QPDF and application assets in final standalone verification.                                             |
+| Split search intent and SSR         | P1       | PASS        | Finalized Search Console data                                    | `cb3b633e` passed focused Chromium/Firefox and unit checks. Same URL and canonical, visible H1 and FAQ without JavaScript.            | Measure matched post-release 28-day windows when available.                                                               |
+| Other SEO/GEO opportunities         | P1       | PASS        | Direct Search Console query/page data                            | `7df615a2` addresses the remaining ten pairs on five pages. Chromium/Firefox confirmed no-JavaScript guidance.                        | Verify current hosted gates and measure matched periods once released.                                                    |
+| GA4 and event semantics             | P1       | IN_PROGRESS | Read-only Analytics access and consent                           | Browser report confirmed PDF page engagement; both funnel queries returned no rows. `08ea957e` implements consent-gated Split events. | Obtain organic landing/device report and validate events after release.                                                   |
+| Isolated preview and package        | P1       | IN_PROGRESS | Exact SHA standalone build, HTTPS loopback                       | Standalone and loopback HTTPS work locally. GitHub Staging has a secret and port conflict; WSL Docker daemon access was denied.       | Verify final build asset inventory and HTTP delivery. Identify an authorized independent hosted environment if available. |
+| Existing shared Staging workflow    | P1       | BLOCKED     | Owner-approved isolated deployment target                        | Existing service uses the targeted port; a Staging configuration secret is absent.                                                    | Use a separate owner-provisioned preview or reconcile Staging separately under explicit approval.                         |
+| Word guide as converter acceptance  | P0       | FAIL        | Local DOCX converter                                             | Guide produces no PDF bytes and cannot pass conversion acceptance.                                                                    | Keep open under the DOCX engine item.                                                                                     |
+| Physical device coverage            | P1       | BLOCKED     | Authorized physical device                                       | Prior browser emulation and WebKit cover scoped cases. No physical device was attached in the recorded run.                           | Use a provisioned device if made available. Keep emulation evidence separate.                                             |
+| Final 17-tool acceptance and gates  | P0       | IN_PROGRESS | Implementation and immutable candidate                           | `05cd2406` creates the per-tool historical matrix. Hosted Home/CTA and Split navigation failures were observed at `77f8901f`.         | Run final gates and complete outstanding criterion receipts.                                                              |
+| Release and rollback handoff        | P0       | IN_PROGRESS | Final SHA, reviews and gates                                     | Executable sequence recorded below against the manual workflow and production policy.                                                 | Attach the exact reviewed release and verified rollback SHA after release clearance.                                      |
 
 Use `DEFERRED` for nonblocking backlog work and `N/A` only with a
 technical reason. Resume by checking the worktree, PR head, and open
@@ -102,3 +102,68 @@ in the document. The test now waits for DOM readiness and retains its
 content and canonical assertions. That run also failed the home-page
 popular-tools viewport assertion after the anchor updated the URL.
 The home-page failure remains open.
+
+## Word to PDF checkpoint
+
+The official Rust 1.96 release and installer passed checksum checks. A
+temporary WSL toolchain installed the WASM target, but the pinned
+`wasm-pack 0.13.1 --locked` build exceeded the available execution
+window. The detached attempt lost its temporary directory and left no
+verifiable artifact. Windows and the Windows-mounted WSL attempt failed
+with component rename and directory conflicts. No OpenDoc WASM bundle
+or DOCX conversion result exists.
+
+Nutrient documents local browser conversion and self-hosted assets. Its
+license and CSP requirements need evaluation before integration.
+Current Word-to-PDF conversion acceptance is FAIL. The smallest
+repeatable OpenDoc unblock is an isolated persistent runner with
+Rust 1.96, the WASM target and wasm-pack 0.13.1. Build the pinned source
+there and test the generated PDF against the mixed RTL fixture before
+choosing an engine.
+
+## Split PDF resource profile
+
+The QPDF runtime used to collect the complete MEMFS directory after
+every part, including the original `input.pdf`. Split now requests
+only `output.pdf`. The regression uses the actual WASM engine and
+checks identical output bytes, excluded source bytes, and the
+original exit behavior when the requested output is absent.
+
+An isolated Node 24.19.0 Windows profile compared both collection modes
+of the same runtime. The deterministic 33,574,583-byte PDF had 40 pages
+and a 32 MiB attachment generated from an AES-CTR byte stream. Each fresh
+process extracted twenty two-page parts with QPDF and retained the
+outputs. The five runs per mode alternated order. The part bytes
+matched in all ten runs (`--static-id`; combined SHA-256
+`ab18d5ad055f336db9a4495cd60b4d13dfa5bce9365a3daae85275ac4270b0df`).
+
+| QPDF file collection | Median wall time | Median peak RSS | Maximum peak RSS | Input bytes returned cumulatively |
+| -------------------- | ---------------: | --------------: | ---------------: | --------------------------------: |
+| Whole directory      |           605 ms |       219.7 MiB |        222.8 MiB |                 671,491,660 bytes |
+| Requested outputs    |           284 ms |        93.0 MiB |         96.1 MiB |                           0 bytes |
+
+These figures isolate QPDF extraction and exclude ZIP assembly,
+browser workers, and device memory limits. Browser peak and mobile
+throughput remain NOT_RUN for this change.
+
+## Release and rollback handoff
+
+1. Obtain owner clearance for the release hold and any release-blocking
+   product decision. Record the reviewed candidate and rerun mandatory
+   gates on the exact resulting main SHA after review and integration.
+2. Read public health and the full version SHA, record the verified
+   rollback target, and use the [manual production workflow](../../.github/workflows/deploy-production.yml)
+   under the [production safety policy](../ops/PRODUCTION_DEPLOY_SAFETY.md).
+   The workflow resolves the confirmed main ref to a full SHA. Leave
+   migrations and recovery flags disabled for a routine release.
+3. Verify the immutable inactive slot before switching traffic. Validate
+   database backup, health, SHA, standalone manifest, CSS and JavaScript,
+   PDF.js Worker, CMaps, standard fonts and QPDF WASM. Exercise PDF tools
+   with synthetic downloads and preserve the previous slot.
+4. Verify public health, SHA, routes and assets twice with the required
+   stabilization interval. Run the independent browser verification and
+   record its evidence under the [live verification policy](../ops/POST_DEPLOY_LIVE_VERIFICATION_POLICY.md).
+5. On post-switch deployment failure, use the workflow's automatic
+   restoration and verify the previous SHA and assets publicly. If
+   manual intervention is needed, obtain the required authorization and
+   use the canonical rollback script in the production safety policy.

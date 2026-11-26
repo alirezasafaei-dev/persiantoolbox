@@ -77,6 +77,8 @@ async function split(id, input, pagesPerPart) {
     const result = await run(
       ['--empty', '--pages', 'input.pdf', first + '-' + last, '--', 'output.pdf'],
       { 'input.pdf': prepared.bytes },
+      undefined,
+      { outputFiles: ['output.pdf'] },
     );
     const part = result.files['output.pdf'];
     if (result.exitCode !== 0 || !part) {

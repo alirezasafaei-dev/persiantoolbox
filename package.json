@@ -359,7 +359,8 @@
     },
     "patchedDependencies": {
       "gray-matter@4.0.3": "patches/gray-matter@4.0.3.patch",
-      "@imgly/background-removal@1.7.0": "patches/@imgly__background-removal@1.7.0.patch"
+      "@imgly/background-removal@1.7.0": "patches/@imgly__background-removal@1.7.0.patch",
+      "@arshad-shah/qpdf-wasm@0.1.0": "patches/@arshad-shah__qpdf-wasm@0.1.0.patch"
     }
   }
 }
