@@ -159,6 +159,27 @@ registration also failed on the mixed footer. This release does not
 meet the Word-to-PDF acceptance bar. Re-evaluate a fixed engine against
 both fixtures before integrating it.
 
+The published bundle identifies upstream source revision
+`9177548903e1546f64061b914598a840e1cfa042`. For the minimal two-page
+fixture, Poppler at 96 DPI rendered the Latin footer on the first
+page. The mixed footer was visibly absent. A full-page pixel scan
+found the same header and body bands in both PDFs with no additional
+painted band in the mixed case. OpenDoc's own page PNG renderer also
+showed empty footer bands on both mixed pages, while both Latin pages
+contained visible footer text. The failure therefore occurs before
+PDF text extraction and also affects the engine's raster output.
+Explicit RTL paragraph and run settings did not recover the footer.
+
+The field interaction is narrower than a general Persian-footer failure.
+Persian-only and mixed Persian/Latin footer paragraphs without a
+`PAGE` field appeared at all three tested footer distances (720,
+1,200 and 1,800 twips). Adding the field after the Persian text in the
+same paragraph removed the whole paragraph at each distance. Putting
+the field first or on a separate paragraph retained the content in
+this fixture. These variants isolate a reproducible upstream
+layout case. Rewriting users' documents to move their fields would
+change their layouts and does not satisfy conversion acceptance.
+
 ## Split PDF resource profile
 
 The QPDF runtime used to collect the complete MEMFS directory after
@@ -244,6 +265,12 @@ serial or twelve two-worker focused executions. The full-suite
 timeouts remain recorded because their cause was not established.
 
 ## Release and rollback handoff
+
+The application code at `822fa2d6` passed all 16 hosted checks, as did the
+documentation checkpoint `8f71adbf`. The local standalone Chromium
+and Firefox suite at `8f71adbf` completed with 204 passes and two
+Chromium-only skips. Release gates remain open for a final candidate
+that meets the Word-to-PDF requirements.
 
 1. Obtain owner clearance for the release hold and any release-blocking
    product decision. Record the reviewed candidate and rerun mandatory
