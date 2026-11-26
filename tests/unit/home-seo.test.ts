@@ -39,17 +39,27 @@ describe('homepage SEO helpers', () => {
       '/tools/check-penalty',
       '/tools/invoice-generator',
       '/validation-tools/national-id',
-      '/pdf-tools/edit/add-page-numbers',
       '/validation-tools/postal-code',
     ];
     for (const route of changedRoutes) {
       expect(getToolByPathOrThrow(route).lastModified).toBe('2026-09-13');
     }
-    const split = getToolByPathOrThrow('/pdf-tools/split/split-pdf');
-    expect(split.lastModified).toBe('2026-11-26');
-    expect(sitemap().find((entry) => entry.url.endsWith(split.path))?.lastModified).toBe(
-      split.lastModified,
-    );
+    const pdfRoutes = [
+      '/pdf-tools/split/split-pdf',
+      '/pdf-tools/merge/merge-pdf',
+      '/pdf-tools/edit/rotate-pages',
+      '/pdf-tools/edit/reorder-pages',
+      '/pdf-tools/edit/add-page-numbers',
+      '/pdf-tools/extract/extract-pages',
+    ];
+    const sitemapEntries = sitemap();
+    for (const route of pdfRoutes) {
+      expect(getToolByPathOrThrow(route).lastModified).toBe('2026-11-26');
+      expect(
+        sitemapEntries.find((entry) => entry.url === `https://persiantoolbox.ir${route}`)
+          ?.lastModified,
+      ).toBe('2026-11-26');
+    }
     expect(
       sitemap().find((entry) => entry.url === 'https://persiantoolbox.ir/')?.lastModified,
     ).toBe('2026-09-13');
