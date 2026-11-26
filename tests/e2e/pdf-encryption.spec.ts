@@ -4,6 +4,25 @@ import { expect, test } from '@playwright/test';
 import { PDFDict, PDFDocument, PDFName, PDFNumber } from 'pdf-lib';
 import { getDocument, PasswordResponses } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
+test('encryption refuses a PDF with a digital signature marker', async ({ page }) => {
+  const pdf = await PDFDocument.create();
+  pdf.addPage().node.set(PDFName.of('Fixture'), pdf.context.obj({ ByteRange: [0, 10, 20, 30] }));
+  await page.goto('/pdf-tools/security/encrypt-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  await page.getByLabel('انتخاب فایل PDF').setInputFiles({
+    name: 'signature-marker.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await pdf.save()),
+  });
+  const downloads: string[] = [];
+  page.on('download', (file) => downloads.push(file.suggestedFilename()));
+  await page.getByRole('main').locator('input[type="password"]').first().fill('fixture-user-42');
+  await page.getByRole('button', { name: 'پردازش و دانلود', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: 'امضای دیجیتال' })).toBeVisible();
+  expect(downloads).toEqual([]);
+});
+
 test('encryption recovers from a malformed PDF and produces readable AES-256', async ({ page }) => {
   const original = await PDFDocument.create();
   original.setTitle('Encryption fixture');

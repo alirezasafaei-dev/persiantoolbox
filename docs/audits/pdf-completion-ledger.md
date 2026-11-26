@@ -40,7 +40,16 @@ evidence before running the next authorized task.
   describe partial logical RTL extraction and missing PDF bookmarks
   and links. Office WASM Viewer `14598be2` has no release artifact and
   declares AGPL-3.0-or-later. Neither has passed the Persian fixture.
-- The pinned QPDF probe produced AES-256 and decrypted output from a
-  synthetic PDF carrying a signature byte-range marker. Prioritize
-  signature-safe encryption and then password-aware decryption before
-  further structural compatibility work.
+- The pinned QPDF repro produced AES-256 and decrypted output from a
+  synthetic PDF carrying a signature byte-range marker. Both operations
+  now reject that fixture before rewriting it. Decryption first validates
+  the password, then inspects the password-protected object graph.
+  Standalone build and smoke passed, and Chromium passed all ten tests in
+  the encryption and decryption specs. Those local runs covered the
+  signature patch and the standalone assertion declaration.
+- GitHub quality and build checks failed on `9fa45f4b` because the smoke
+  assertion lacked a TypeScript declaration. `02137f6c` adds it, and
+  local typecheck and build passed. Verify GitHub checks on the new head.
+- Next structural task: compare the operation-level reject and preserve
+  assertions with the 17-tool evidence matrix and target any remaining
+  silent data loss.

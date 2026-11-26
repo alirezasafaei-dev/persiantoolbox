@@ -156,6 +156,7 @@ self.onmessage = async ({
         self.postMessage({ id, type: 'error', message: 'یک PDF سالم و بدون رمز انتخاب کنید.' });
         return;
       }
+      await inspectPageGraph(input, { rejectSignatureMarkers: true });
       const result = await encrypt(input, { userPassword: password, ownerPassword });
       if (result.warnings.length > 0) {
         self.postMessage({ id, type: 'error', message: 'ساخت PDF رمزگذاری‌شده ناموفق بود.' });
@@ -191,6 +192,7 @@ self.onmessage = async ({
       return;
     }
 
+    await inspectPageGraph(input, { password, rejectSignatureMarkers: true });
     const result = await decrypt(input, password);
     if (result.warnings.length > 0) {
       self.postMessage({ error: 'PROCESSING' });
@@ -206,7 +208,12 @@ self.onmessage = async ({
       });
     } else {
       self.postMessage({
-        error: error?.code === 'WRONG_PASSWORD' ? 'WRONG_PASSWORD' : 'PROCESSING',
+        error:
+          error instanceof PdfRewriteError
+            ? 'SIGNED_DOCUMENT'
+            : error?.code === 'WRONG_PASSWORD'
+              ? 'WRONG_PASSWORD'
+              : 'PROCESSING',
       });
     }
   }

@@ -3,9 +3,39 @@ import { expect, test } from '@playwright/test';
 import { encrypt as encryptWithQpdf } from '@arshad-shah/qpdf-wasm';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
-import { degrees, PDFDocument } from 'pdf-lib';
+import { degrees, PDFDocument, PDFName } from 'pdf-lib';
 
 test.use({ serviceWorkers: 'block' });
+
+test('decryption refuses a protected PDF with a digital signature marker', async ({ page }) => {
+  const password = 'synthetic-reader-password';
+  const pdf = await PDFDocument.create();
+  pdf.addPage().node.set(PDFName.of('Fixture'), pdf.context.obj({ ByteRange: [0, 10, 20, 30] }));
+  const encrypted = await encryptWithQpdf(await pdf.save(), {
+    userPassword: password,
+    ownerPassword: 'synthetic-owner',
+  });
+  await page.goto('/pdf-tools/security/decrypt-pdf', { waitUntil: 'domcontentloaded' });
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const input = page.getByLabel('انتخاب فایل PDF');
+  const fixture = {
+    name: 'protected-marker.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(encrypted.bytes),
+  };
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await page.locator('#decrypt-pdf-password').fill(password);
+  const submit = page.getByRole('button', { name: 'حذف رمز', exact: true });
+  await submit.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'امضای دیجیتال' })).toBeVisible();
+  await expect(submit).toBeEnabled();
+  await expect(page.locator('a[download]')).toHaveCount(0);
+});
 
 for (const algorithm of ['RC4', 'AES-256'] as const) {
   test(`${algorithm} decryption rejects a wrong password and keeps structure after retry`, async ({

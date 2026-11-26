@@ -151,7 +151,7 @@ export default function EncryptPdfPage() {
         <h1 className="text-3xl font-bold text-(--text-primary) mb-2">رمزگذاری PDF</h1>
         <p className="text-lg text-(--text-secondary)">محافظت از فایل PDF با رمز عبور</p>
         <p className="mt-2 text-sm text-(--text-muted)">
-          بازنویسی فایل می‌تواند اعتبار امضای دیجیتال را از بین ببرد.
+          فایل دارای نشانگر امضای دیجیتال رمزگذاری نمی‌شود.
         </p>
       </div>
 

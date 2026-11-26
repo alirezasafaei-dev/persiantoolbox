@@ -42,6 +42,8 @@ function decryptInWorker(buffer: ArrayBuffer, password: string, signal: AbortSig
         fail('رمز عبور نادرست است. رمز را بررسی کنید و دوباره تلاش کنید.');
       } else if (data?.error === 'NOT_ENCRYPTED') {
         fail('این فایل PDF رمزگذاری نشده است.');
+      } else if (data?.error === 'SIGNED_DOCUMENT') {
+        fail('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
       } else {
         fail('حذف رمز انجام نشد. سلامت فایل و نوع رمزگذاری را بررسی کنید.');
       }
@@ -156,7 +158,7 @@ export default function DecryptPdfPage() {
             حذف رمز PDF در مرورگر، با رمز معتبر و اجازهٔ تغییر سند
           </p>
           <p className="mt-2 text-sm text-(--text-muted)">
-            بازنویسی PDF می‌تواند اعتبار امضای دیجیتال سند را از بین ببرد.
+            رمز فایل دارای نشانگر امضای دیجیتال حذف نمی‌شود.
           </p>
         </div>
 

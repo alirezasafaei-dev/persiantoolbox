@@ -30,10 +30,17 @@ function rejectSignedDocument(objects, catalog, resolve) {
 
 export async function inspectPageGraph(
   bytes,
-  { rejectSignatureMarkers = false, changesPageSet = false } = {},
+  { rejectSignatureMarkers = false, changesPageSet = false, password } = {},
 ) {
   const result = await run(
-    ['--json=2', '--json-stream-data=none', '--json-key=qpdf', '--json-key=pages', 'input.pdf'],
+    [
+      ...(password === undefined ? [] : [`--password=${password}`]),
+      '--json=2',
+      '--json-stream-data=none',
+      '--json-key=qpdf',
+      '--json-key=pages',
+      'input.pdf',
+    ],
     { 'input.pdf': bytes },
   );
   if (result.exitCode !== 0) {
