@@ -44,6 +44,17 @@ describe('sitemap lastModified integrity', () => {
     expect(String(blogIndex?.lastModified)).not.toBe('2099-12-31');
   });
 
+  it.each([
+    ['/text-tools/address-fa-to-en', '2026-11-13'],
+    ['/tools/invoice-generator', '2026-11-21'],
+    ['/career-tools/work-certificate', '2026-11-27'],
+    ['/writing-tools/formal-letter', '2026-11-13'],
+  ])('reports the verified substantive update date for %s', (path, lastModified) => {
+    const entry = sitemap().find(({ url }) => new URL(url).pathname === path);
+
+    expect(entry?.lastModified).toBe(lastModified);
+  });
+
   it('does not publish topic aliases that permanently redirect', () => {
     const urls = new Set(sitemap().map((entry) => entry.url));
     const redirectedAliases = [
