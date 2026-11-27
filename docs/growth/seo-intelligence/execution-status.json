@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-27T22:08:25.573Z",
+  "completed": [
+    "Direct GSC and GA4 extraction",
+    "Current production identity",
+    "Public SEO checkpoint"
+  ],
+  "inProgress": ["Technical and content candidates", "Release correlation and product acceptance"],
+  "blocked": [
+    {
+      "work": "PDF hosted release",
+      "reason": "PR #301 hold and staging configuration gap"
+    },
+    {
+      "work": "Revenue attribution",
+      "reason": "Funnel coverage and verified aggregate source missing"
+    }
+  ],
+  "pendingMeasurement": [
+    "Invoice matched window through 2026-12-05",
+    "Certificate observed recrawl 2026-11-27. Compare full settled days through 2026-12-04 for the earliest 7-day window.",
+    "Formal letter completion after instrumented events"
+  ],
+  "openPullRequests": [
+    {
+      "number": 301,
+      "draft": true,
+      "disposition": "held",
+      "note": "Current PDF candidate, independently gated."
+    },
+    {
+      "number": 292,
+      "draft": false,
+      "disposition": "recheck",
+      "note": "Localized monetary input patch overlaps the current invoice implementation. Compare exact diff before resuming."
+    },
+    {
+      "number": 291,
+      "draft": false,
+      "disposition": "stale",
+      "note": "Earlier growth handoff. Reconcile outstanding evidence against this checkpoint rather than merging stale status."
+    },
+    {
+      "number": 285,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #288."
+    },
+    {
+      "number": 284,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #288."
+    },
+    {
+      "number": 283,
+      "draft": false,
+      "disposition": "recheck",
+      "note": "Footer trust prefetch still needs comparison and a reproduced symptom."
+    },
+    {
+      "number": 282,
+      "draft": false,
+      "disposition": "recheck",
+      "note": "Export analytics overlaps the funnel work. Compare exact changes before implementing."
+    },
+    {
+      "number": 280,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #281."
+    },
+    {
+      "number": 279,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #281."
+    },
+    {
+      "number": 278,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #281."
+    },
+    {
+      "number": 277,
+      "draft": false,
+      "disposition": "superseded",
+      "note": "Integrated by PR #281."
+    },
+    {
+      "number": 258,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 249,
+      "draft": true,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 248,
+      "draft": true,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 247,
+      "draft": true,
+      "disposition": "recheck",
+      "note": "National ID localized input draft intersects the new intent audit. Confirm what current runtime supports."
+    },
+    {
+      "number": 246,
+      "draft": true,
+      "disposition": "recheck",
+      "note": "Date input draft may overlap the current date implementation."
+    },
+    {
+      "number": 240,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 217,
+      "draft": true,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 216,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 214,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 209,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 208,
+      "draft": false,
+      "disposition": "stale",
+      "note": "Earlier SEO evidence. Compare with the current baseline before resuming."
+    },
+    {
+      "number": 207,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 202,
+      "draft": true,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 199,
+      "draft": true,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 194,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 180,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 179,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 178,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 177,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 176,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 175,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 174,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    },
+    {
+      "number": 171,
+      "draft": false,
+      "disposition": "out_of_scope",
+      "note": null
+    }
+  ],
+  "mergedChanges": [298, 302, 303, 304, 305],
+  "deployedChanges": [298, 302, 303, 304, 305],
+  "latestVerifiedProductionSha": "897ae74b8ec401a0db0c88cbbe0e0c45820d66dd",
+  "nextActions": ["SEO-005", "SEO-001", "SEO-002", "SEO-003", "SEO-004"]
+}

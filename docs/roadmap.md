@@ -1,5 +1,8 @@
 # PersianToolbox Roadmap
 
+Current evidence, ranked opportunities, and release measurement are maintained in
+the [SEO intelligence handoff](growth/seo-intelligence/LATEST.md).
+
 **2026-11-21 verified continuation:** the [current handoff](HANDOFF.md) records
 the live release `d31c5b9c7f2e6746afbc31c56d95623d7b47bca1`, which includes
 invoice breadcrumb, decimal input and search copy corrections. Continue the

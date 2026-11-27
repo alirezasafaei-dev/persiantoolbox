@@ -1,0 +1,1380 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-27T22:08:25.573Z",
+  "property": "sc-domain:persiantoolbox.ir",
+  "searchType": "web",
+  "dataCutoff": "2026-11-25",
+  "currentPeriod": ["2026-10-29", "2026-11-25"],
+  "previousPeriod": ["2026-10-01", "2026-10-28"],
+  "siteMetrics": {
+    "previous": {
+      "clicks": 1314,
+      "impressions": 37823,
+      "ctr": 0.03474076620046004,
+      "position": 9.542527033815404
+    },
+    "current": {
+      "clicks": 2718,
+      "impressions": 117382,
+      "ctr": 0.023155168594844185,
+      "position": 7.950895367262443
+    },
+    "windows": {
+      "last7": {
+        "period": ["2026-11-19", "2026-11-25"],
+        "property": {
+          "clicks": 1050,
+          "impressions": 53565,
+          "ctr": 0.019602352282273874,
+          "position": 7.468216185942313
+        },
+        "slices": {
+          "property": 1,
+          "date": 7,
+          "page": 257,
+          "query": 1805,
+          "device": 3,
+          "country": 92,
+          "searchAppearance": 0,
+          "pageQuery": 1892,
+          "pageDevice": 238,
+          "queryDevice": 2589,
+          "pageDate": 1075
+        },
+        "errors": {}
+      },
+      "prior7": {
+        "period": ["2026-11-12", "2026-11-18"],
+        "property": {
+          "clicks": 756,
+          "impressions": 31856,
+          "ctr": 0.023731793068809643,
+          "position": 8.15030135610246
+        },
+        "slices": {
+          "property": 1,
+          "date": 7,
+          "page": 227,
+          "query": 1390,
+          "device": 3,
+          "country": 102,
+          "searchAppearance": 0,
+          "pageQuery": 1444,
+          "pageDevice": 212,
+          "queryDevice": 1952,
+          "pageDate": 924
+        },
+        "errors": {}
+      },
+      "last14": {
+        "period": ["2026-11-12", "2026-11-25"],
+        "property": {
+          "clicks": 1806,
+          "impressions": 85421,
+          "ctr": 0.021142342047037615,
+          "position": 7.722585781014036
+        },
+        "slices": {
+          "property": 1,
+          "date": 14,
+          "page": 282,
+          "query": 2136,
+          "device": 3,
+          "country": 118,
+          "searchAppearance": 0,
+          "pageQuery": 2258,
+          "pageDevice": 272,
+          "queryDevice": 3139,
+          "pageDate": 1999
+        },
+        "errors": {}
+      },
+      "prior14": {
+        "period": ["2026-10-29", "2026-11-11"],
+        "property": {
+          "clicks": 912,
+          "impressions": 31961,
+          "ctr": 0.028534776759175245,
+          "position": 8.561090078533212
+        },
+        "slices": {
+          "property": 1,
+          "date": 14,
+          "page": 247,
+          "query": 957,
+          "device": 3,
+          "country": 127,
+          "searchAppearance": 0,
+          "pageQuery": 1013,
+          "pageDevice": 206,
+          "queryDevice": 1300,
+          "pageDate": 1613
+        },
+        "errors": {}
+      },
+      "last28": {
+        "period": ["2026-10-29", "2026-11-25"],
+        "property": {
+          "clicks": 2718,
+          "impressions": 117382,
+          "ctr": 0.023155168594844185,
+          "position": 7.950895367262443
+        },
+        "slices": {
+          "property": 1,
+          "date": 28,
+          "page": 310,
+          "query": 2397,
+          "device": 3,
+          "country": 141,
+          "searchAppearance": 0,
+          "pageQuery": 2566,
+          "pageDevice": 307,
+          "queryDevice": 3509,
+          "pageDate": 3612
+        },
+        "errors": {}
+      },
+      "prior28": {
+        "period": ["2026-10-01", "2026-10-28"],
+        "property": {
+          "clicks": 1314,
+          "impressions": 37823,
+          "ctr": 0.03474076620046004,
+          "position": 9.542527033815404
+        },
+        "slices": {
+          "property": 1,
+          "date": 28,
+          "page": 284,
+          "query": 1464,
+          "device": 3,
+          "country": 141,
+          "searchAppearance": 0,
+          "pageQuery": 1563,
+          "pageDevice": 249,
+          "queryDevice": 1901,
+          "pageDate": 2627
+        },
+        "errors": {}
+      },
+      "last90": {
+        "period": ["2026-08-28", "2026-11-25"],
+        "property": {
+          "clicks": 5062,
+          "impressions": 167513,
+          "ctr": 0.03021855020207387,
+          "position": 8.665476709270326
+        },
+        "slices": {
+          "property": 1,
+          "date": 90,
+          "page": 410,
+          "query": 3220,
+          "device": 3,
+          "country": 164,
+          "searchAppearance": 0,
+          "pageQuery": 3520,
+          "pageDevice": 411,
+          "queryDevice": 4499,
+          "pageDate": 8713
+        },
+        "errors": {}
+      },
+      "prior90": {
+        "period": ["2026-05-30", "2026-08-27"],
+        "property": {
+          "clicks": 1580,
+          "impressions": 18238,
+          "ctr": 0.08663230617392258,
+          "position": 14.003838140146947
+        },
+        "slices": {
+          "property": 1,
+          "date": 90,
+          "page": 368,
+          "query": 1014,
+          "device": 3,
+          "country": 96,
+          "searchAppearance": 0,
+          "pageQuery": 1115,
+          "pageDevice": 247,
+          "queryDevice": 1245,
+          "pageDate": 4072
+        },
+        "errors": {}
+      },
+      "last180": {
+        "period": ["2026-05-30", "2026-11-25"],
+        "property": {
+          "clicks": 6642,
+          "impressions": 185751,
+          "ctr": 0.03575754639275159,
+          "position": 9.189624820323981
+        },
+        "slices": {
+          "property": 1,
+          "date": 180,
+          "page": 500,
+          "query": 3694,
+          "device": 3,
+          "country": 164,
+          "searchAppearance": 0,
+          "pageQuery": 4099,
+          "pageDevice": 465,
+          "queryDevice": 5074,
+          "pageDate": 12785
+        },
+        "errors": {}
+      },
+      "last12months": {
+        "period": ["2025-11-25", "2026-11-25"],
+        "property": {
+          "clicks": 6667,
+          "impressions": 185936,
+          "ctr": 0.03585642371568712,
+          "position": 9.188419671284743
+        },
+        "slices": {
+          "property": 1,
+          "date": 283,
+          "page": 504,
+          "query": 3695,
+          "device": 3,
+          "country": 164,
+          "searchAppearance": 0,
+          "pageQuery": 4103,
+          "pageDevice": 466,
+          "queryDevice": 5075,
+          "pageDate": 12888
+        },
+        "errors": {}
+      },
+      "email1": {
+        "period": ["2026-10-19", "2026-11-15"],
+        "property": {
+          "clicks": 1837,
+          "impressions": 65620,
+          "ctr": 0.027994513867723256,
+          "position": 8.677720207253886
+        },
+        "slices": {
+          "property": 1,
+          "date": 28,
+          "page": 287,
+          "query": 1671,
+          "device": 3,
+          "country": 149,
+          "searchAppearance": 0,
+          "pageQuery": 1784,
+          "pageDevice": 262,
+          "queryDevice": 2316,
+          "pageDate": 3176
+        },
+        "errors": {}
+      },
+      "email2": {
+        "period": ["2026-10-28", "2026-11-24"],
+        "property": {
+          "clicks": 2619,
+          "impressions": 111792,
+          "ctr": 0.023427436668097896,
+          "position": 8.013292543294689
+        },
+        "slices": {
+          "property": 1,
+          "date": 28,
+          "page": 306,
+          "query": 2343,
+          "device": 3,
+          "country": 142,
+          "searchAppearance": 0,
+          "pageQuery": 2511,
+          "pageDevice": 302,
+          "queryDevice": 3401,
+          "pageDate": 3565
+        },
+        "errors": {}
+      },
+      "removed9": {
+        "period": ["2026-10-19", "2026-10-27"],
+        "property": {
+          "clicks": 515,
+          "impressions": 17389,
+          "ctr": 0.029616424176203346,
+          "position": 9.220369198918856
+        },
+        "slices": {
+          "property": 1,
+          "date": 9,
+          "page": 200,
+          "query": 837,
+          "device": 3,
+          "country": 111,
+          "searchAppearance": 0,
+          "pageQuery": 883,
+          "pageDevice": 175,
+          "queryDevice": 1127,
+          "pageDate": 945
+        },
+        "errors": {}
+      },
+      "added9": {
+        "period": ["2026-11-16", "2026-11-24"],
+        "property": {
+          "clicks": 1297,
+          "impressions": 63561,
+          "ctr": 0.020405594625635216,
+          "position": 7.657573040071742
+        },
+        "slices": {
+          "property": 1,
+          "date": 9,
+          "page": 266,
+          "query": 1920,
+          "device": 3,
+          "country": 101,
+          "searchAppearance": 0,
+          "pageQuery": 2020,
+          "pageDevice": 248,
+          "queryDevice": 2757,
+          "pageDate": 1334
+        },
+        "errors": {}
+      },
+      "email2Final": {
+        "period": ["2026-10-28", "2026-11-25"],
+        "property": {
+          "clicks": 2763,
+          "impressions": 120207,
+          "ctr": 0.0229853502707829,
+          "position": 7.972730373439151
+        },
+        "slices": {
+          "property": 1,
+          "date": 29,
+          "page": 311,
+          "query": 2415,
+          "device": 3,
+          "country": 142,
+          "searchAppearance": 0,
+          "pageQuery": 2584,
+          "pageDevice": 308,
+          "queryDevice": 3531,
+          "pageDate": 3719
+        },
+        "errors": {}
+      },
+      "addedFinal": {
+        "period": ["2026-11-16", "2026-11-25"],
+        "property": {
+          "clicks": 1441,
+          "impressions": 71976,
+          "ctr": 0.02002056240969212,
+          "position": 7.631418806268757
+        },
+        "slices": {
+          "property": 1,
+          "date": 10,
+          "page": 272,
+          "query": 2010,
+          "device": 3,
+          "country": 105,
+          "searchAppearance": 0,
+          "pageQuery": 2118,
+          "pageDevice": 258,
+          "queryDevice": 2915,
+          "pageDate": 1488
+        },
+        "errors": {}
+      }
+    }
+  },
+  "categoryMetrics": {
+    "Address Conversion": {
+      "previous": {
+        "clicks": 427,
+        "impressions": 1137,
+        "ctr": 0.3755496921723835,
+        "position": 2.7308707124010554
+      },
+      "current": {
+        "clicks": 460,
+        "impressions": 1320,
+        "ctr": 0.3484848484848485,
+        "position": 4.3121212121212125
+      },
+      "clickDelta": 33,
+      "impressionEffect": 66.24916047013673,
+      "ctrEffect": -33.24916047013672
+    },
+    "Work Certificate": {
+      "previous": {
+        "clicks": 165,
+        "impressions": 2492,
+        "ctr": 0.06621187800963081,
+        "position": 7.000802568218298
+      },
+      "current": {
+        "clicks": 190,
+        "impressions": 3909,
+        "ctr": 0.04860578152980302,
+        "position": 7.009721156305961
+      },
+      "clickDelta": 25,
+      "impressionEffect": 81.34831178368887,
+      "ctrEffect": -56.34831178368884
+    },
+    "Invoice Generator": {
+      "previous": {
+        "clicks": 66,
+        "impressions": 1318,
+        "ctr": 0.05007587253414264,
+        "position": 11.858877086494688
+      },
+      "current": {
+        "clicks": 130,
+        "impressions": 4253,
+        "ctr": 0.03056665882906184,
+        "position": 10.018810251587116
+      },
+      "clickDelta": 64,
+      "impressionEffect": 118.34291477550258,
+      "ctrEffect": -54.34291477550257
+    },
+    "Other Hosts": {
+      "previous": {
+        "clicks": 205,
+        "impressions": 8477,
+        "ctr": 0.02418308363807951,
+        "position": 10.26235696590775
+      },
+      "current": {
+        "clicks": 150,
+        "impressions": 18500,
+        "ctr": 0.008108108108108109,
+        "position": 8.930378378378379
+      },
+      "clickDelta": -55,
+      "impressionEffect": 161.82730743601928,
+      "ctrEffect": -216.82730743601925
+    },
+    "Homepage": {
+      "previous": {
+        "clicks": 48,
+        "impressions": 433,
+        "ctr": 0.11085450346420324,
+        "position": 6.053117782909931
+      },
+      "current": {
+        "clicks": 59,
+        "impressions": 675,
+        "ctr": 0.0874074074074074,
+        "position": 6.087407407407407
+      },
+      "clickDelta": 11,
+      "impressionEffect": 23.98969121546489,
+      "ctrEffect": -12.989691215464891
+    },
+    "Developer Tools": {
+      "previous": {
+        "clicks": 40,
+        "impressions": 1266,
+        "ctr": 0.0315955766192733,
+        "position": 16.791469194312793
+      },
+      "current": {
+        "clicks": 278,
+        "impressions": 1670,
+        "ctr": 0.1664670658682635,
+        "position": 6.768263473053892
+      },
+      "clickDelta": 238,
+      "impressionEffect": 40.00865378248243,
+      "ctrEffect": 197.99134621751756
+    },
+    "PDF Tools": {
+      "previous": {
+        "clicks": 72,
+        "impressions": 1695,
+        "ctr": 0.04247787610619469,
+        "position": 7.701474926253687
+      },
+      "current": {
+        "clicks": 197,
+        "impressions": 5717,
+        "ctr": 0.03445863214972888,
+        "position": 7.672380619205877
+      },
+      "clickDelta": 125,
+      "impressionEffect": 154.7193181026623,
+      "ctrEffect": -29.7193181026623
+    },
+    "Date and Calendar Tools": {
+      "previous": {
+        "clicks": 54,
+        "impressions": 12916,
+        "ctr": 0.004180860947661815,
+        "position": 8.681635181170641
+      },
+      "current": {
+        "clicks": 258,
+        "impressions": 45385,
+        "ctr": 0.005684697587308582,
+        "position": 7.372700231353972
+      },
+      "clickDelta": 204,
+      "impressionEffect": 160.16241003597693,
+      "ctrEffect": 43.837589964023074
+    },
+    "Other Tools": {
+      "previous": {
+        "clicks": 133,
+        "impressions": 5415,
+        "ctr": 0.02456140350877193,
+        "position": 10.252446906740536
+      },
+      "current": {
+        "clicks": 509,
+        "impressions": 19663,
+        "ctr": 0.025886182169557036,
+        "position": 7.781162589635356
+      },
+      "clickDelta": 376,
+      "impressionEffect": 359.38860037241557,
+      "ctrEffect": 16.611399627584444
+    },
+    "Formal Letter": {
+      "previous": {
+        "clicks": 26,
+        "impressions": 213,
+        "ctr": 0.12206572769953052,
+        "position": 5.633802816901408
+      },
+      "current": {
+        "clicks": 92,
+        "impressions": 537,
+        "ctr": 0.1713221601489758,
+        "position": 4.9031657355679705
+      },
+      "clickDelta": 66,
+      "impressionEffect": 47.52883783145803,
+      "ctrEffect": 18.471162168541984
+    },
+    "Financial Tools": {
+      "previous": {
+        "clicks": 23,
+        "impressions": 485,
+        "ctr": 0.04742268041237113,
+        "position": 11.579381443298969
+      },
+      "current": {
+        "clicks": 145,
+        "impressions": 8916,
+        "ctr": 0.016262898160610138,
+        "position": 8.629093764019737
+      },
+      "clickDelta": 122,
+      "impressionEffect": 268.4665564744025,
+      "ctrEffect": -146.46655647440255
+    },
+    "OCR": {
+      "previous": {
+        "clicks": 10,
+        "impressions": 468,
+        "ctr": 0.021367521367521368,
+        "position": 8.628205128205128
+      },
+      "current": {
+        "clicks": 40,
+        "impressions": 1392,
+        "ctr": 0.028735632183908046,
+        "position": 8.225574712643677
+      },
+      "clickDelta": 30,
+      "impressionEffect": 23.14765694076039,
+      "ctrEffect": 6.85234305923961
+    },
+    "Blog": {
+      "previous": {
+        "clicks": 48,
+        "impressions": 1798,
+        "ctr": 0.026696329254727477,
+        "position": 12.64516129032258
+      },
+      "current": {
+        "clicks": 196,
+        "impressions": 7109,
+        "ctr": 0.027570685047123365,
+        "position": 7.215923477282318
+      },
+      "clickDelta": 148,
+      "impressionEffect": 144.1060564785649,
+      "ctrEffect": 3.8939435214350904
+    },
+    "Image Tools": {
+      "previous": {
+        "clicks": 3,
+        "impressions": 70,
+        "ctr": 0.04285714285714286,
+        "position": 11.7
+      },
+      "current": {
+        "clicks": 14,
+        "impressions": 245,
+        "ctr": 0.05714285714285714,
+        "position": 19.824489795918367
+      },
+      "clickDelta": 11,
+      "impressionEffect": 8.75,
+      "ctrEffect": 2.2499999999999996
+    },
+    "Career Tools": {
+      "previous": {
+        "clicks": 1,
+        "impressions": 91,
+        "ctr": 0.01098901098901099,
+        "position": 45.032967032967036
+      },
+      "current": {
+        "clicks": 1,
+        "impressions": 180,
+        "ctr": 0.005555555555555556,
+        "position": 54.82222222222222
+      },
+      "clickDelta": 0,
+      "impressionEffect": 0.7362332112332113,
+      "ctrEffect": -0.7362332112332113
+    },
+    "AI Tools": {
+      "previous": {
+        "clicks": 0,
+        "impressions": 51,
+        "ctr": 0,
+        "position": 34.64705882352941
+      },
+      "current": {
+        "clicks": 6,
+        "impressions": 238,
+        "ctr": 0.025210084033613446,
+        "position": 26.705882352941178
+      },
+      "clickDelta": 6,
+      "impressionEffect": 2.357142857142857,
+      "ctrEffect": 3.642857142857143
+    }
+  },
+  "growthDecomposition": {
+    "clickDelta": 1404,
+    "impressionEffect": 2303.0713381898045,
+    "ctrEffect": -899.0713381898041,
+    "commonPageQueryRank": {
+      "setSize": 878,
+      "matchedPositionDelta": -1.4190711123198416
+    },
+    "email": {
+      "previous": {
+        "clicks": 1837,
+        "impressions": 65620,
+        "ctr": 0.027994513867723256,
+        "position": 8.677720207253886
+      },
+      "current": {
+        "clicks": 2619,
+        "impressions": 111792,
+        "ctr": 0.023427436668097896,
+        "position": 8.013292543294689
+      },
+      "effects": {
+        "clickDelta": 782,
+        "impressionEffect": 1187.1271500699672,
+        "ctrEffect": -405.12715006996723
+      }
+    },
+    "nineDay": {
+      "previous": {
+        "clicks": 515,
+        "impressions": 17389,
+        "ctr": 0.029616424176203346,
+        "position": 9.220369198918856
+      },
+      "current": {
+        "clicks": 1297,
+        "impressions": 63561,
+        "ctr": 0.020405594625635216,
+        "position": 7.657573040071742
+      },
+      "effects": {
+        "clickDelta": 782,
+        "impressionEffect": 1154.808326059245,
+        "ctrEffect": -372.808326059245
+      }
+    }
+  },
+  "topPageGainers": [
+    {
+      "path": "/developers/api/market",
+      "previous": {
+        "clicks": 38,
+        "impressions": 1229,
+        "ctr": 0.030919446704637917,
+        "position": 17.073230268510983
+      },
+      "current": {
+        "clicks": 271,
+        "impressions": 1516,
+        "ctr": 0.1787598944591029,
+        "position": 6.741424802110818
+      },
+      "delta": 233,
+      "impressionDelta": 287,
+      "positionDelta": -10.331805466400166
+    },
+    {
+      "path": "/validation-tools/national-id",
+      "previous": {
+        "clicks": 28,
+        "impressions": 1786,
+        "ctr": 0.015677491601343786,
+        "position": 7.73404255319149
+      },
+      "current": {
+        "clicks": 254,
+        "impressions": 10496,
+        "ctr": 0.02419969512195122,
+        "position": 6.588795731707317
+      },
+      "delta": 226,
+      "impressionDelta": 8710,
+      "positionDelta": -1.1452468214841725
+    },
+    {
+      "path": "/tools/check-penalty",
+      "previous": {
+        "clicks": 13,
+        "impressions": 325,
+        "ctr": 0.04,
+        "position": 12
+      },
+      "current": {
+        "clicks": 113,
+        "impressions": 8242,
+        "ctr": 0.013710264498908033,
+        "position": 8.694976947342877
+      },
+      "delta": 100,
+      "impressionDelta": 7917,
+      "positionDelta": -3.3050230526571234
+    },
+    {
+      "path": "/blog/2026-06-24-loan-1405-guide",
+      "previous": {
+        "clicks": 0,
+        "impressions": 36,
+        "ctr": 0,
+        "position": 7.611111111111111
+      },
+      "current": {
+        "clicks": 83,
+        "impressions": 1622,
+        "ctr": 0.051171393341553635,
+        "position": 6.191122071516646
+      },
+      "delta": 83,
+      "impressionDelta": 1586,
+      "positionDelta": -1.4199890395944648
+    },
+    {
+      "path": "/writing-tools/formal-letter",
+      "previous": {
+        "clicks": 26,
+        "impressions": 213,
+        "ctr": 0.12206572769953052,
+        "position": 5.633802816901408
+      },
+      "current": {
+        "clicks": 92,
+        "impressions": 537,
+        "ctr": 0.1713221601489758,
+        "position": 4.9031657355679705
+      },
+      "delta": 66,
+      "impressionDelta": 324,
+      "positionDelta": -0.7306370813334375
+    },
+    {
+      "path": "/tools/invoice-generator",
+      "previous": {
+        "clicks": 66,
+        "impressions": 1318,
+        "ctr": 0.05007587253414264,
+        "position": 11.858877086494688
+      },
+      "current": {
+        "clicks": 130,
+        "impressions": 4253,
+        "ctr": 0.03056665882906184,
+        "position": 10.018810251587116
+      },
+      "delta": 64,
+      "impressionDelta": 2935,
+      "positionDelta": -1.8400668349075726
+    },
+    {
+      "path": "/date-tools/weekday-finder",
+      "previous": {
+        "clicks": 29,
+        "impressions": 321,
+        "ctr": 0.09034267912772585,
+        "position": 5.91588785046729
+      },
+      "current": {
+        "clicks": 84,
+        "impressions": 980,
+        "ctr": 0.08571428571428572,
+        "position": 6.127551020408164
+      },
+      "delta": 55,
+      "impressionDelta": 659,
+      "positionDelta": 0.21166316994087353
+    },
+    {
+      "path": "/pdf-tools/split/split-pdf",
+      "previous": {
+        "clicks": 19,
+        "impressions": 639,
+        "ctr": 0.0297339593114241,
+        "position": 8.62754303599374
+      },
+      "current": {
+        "clicks": 73,
+        "impressions": 2918,
+        "ctr": 0.025017135023989032,
+        "position": 8.471213159698424
+      },
+      "delta": 54,
+      "impressionDelta": 2279,
+      "positionDelta": -0.1563298762953167
+    },
+    {
+      "path": "/date-tools/date-difference",
+      "previous": {
+        "clicks": 4,
+        "impressions": 11181,
+        "ctr": 0.0003577497540470441,
+        "position": 8.694123960289778
+      },
+      "current": {
+        "clicks": 55,
+        "impressions": 32173,
+        "ctr": 0.0017095079725235446,
+        "position": 7.108880116868181
+      },
+      "delta": 51,
+      "impressionDelta": 20992,
+      "positionDelta": -1.5852438434215967
+    },
+    {
+      "path": "/date-tools/persian-calendar",
+      "previous": {
+        "clicks": 5,
+        "impressions": 787,
+        "ctr": 0.0063532401524777635,
+        "position": 8.944091486658195
+      },
+      "current": {
+        "clicks": 54,
+        "impressions": 6801,
+        "ctr": 0.007940008822232024,
+        "position": 8.297603293633289
+      },
+      "delta": 49,
+      "impressionDelta": 6014,
+      "positionDelta": -0.646488193024906
+    }
+  ],
+  "topPageDecliners": [
+    {
+      "path": "/tools/profit-margin",
+      "previous": {
+        "clicks": 4,
+        "impressions": 22,
+        "ctr": 0.18181818181818182,
+        "position": 17.5
+      },
+      "current": {
+        "clicks": 1,
+        "impressions": 50,
+        "ctr": 0.02,
+        "position": 7.88
+      },
+      "delta": -3,
+      "impressionDelta": 28,
+      "positionDelta": -9.620000000000001
+    },
+    {
+      "path": "/date-tools",
+      "previous": {
+        "clicks": 4,
+        "impressions": 24,
+        "ctr": 0.16666666666666666,
+        "position": 7.875
+      },
+      "current": {
+        "clicks": 1,
+        "impressions": 34,
+        "ctr": 0.029411764705882353,
+        "position": 10.588235294117647
+      },
+      "delta": -3,
+      "impressionDelta": 10,
+      "positionDelta": 2.7132352941176467
+    },
+    {
+      "path": "/tools/leave-calculator",
+      "previous": {
+        "clicks": 2,
+        "impressions": 29,
+        "ctr": 0.06896551724137931,
+        "position": 8.89655172413793
+      },
+      "current": {
+        "clicks": 0,
+        "impressions": 29,
+        "ctr": 0,
+        "position": 9.137931034482758
+      },
+      "delta": -2,
+      "impressionDelta": 0,
+      "positionDelta": 0.2413793103448274
+    },
+    {
+      "path": "/blog/2026-06-27-pdf-comparison-guide",
+      "previous": {
+        "clicks": 2,
+        "impressions": 21,
+        "ctr": 0.09523809523809523,
+        "position": 9.80952380952381
+      },
+      "current": {
+        "clicks": 0,
+        "impressions": 30,
+        "ctr": 0,
+        "position": 7.833333333333333
+      },
+      "delta": -2,
+      "impressionDelta": 9,
+      "positionDelta": -1.9761904761904772
+    }
+  ],
+  "brandBreakdown": {
+    "branded": {
+      "previous": {
+        "clicks": 2,
+        "impressions": 11,
+        "ctr": 0.18181818181818182,
+        "position": 2
+      },
+      "current": {
+        "clicks": 0,
+        "impressions": 0,
+        "ctr": null,
+        "position": null
+      },
+      "clickDelta": -2,
+      "impressionEffect": null,
+      "ctrEffect": null
+    },
+    "nonBranded": {
+      "previous": {
+        "clicks": 602,
+        "impressions": 23076,
+        "ctr": 0.02608771017507367,
+        "position": 10.785578089790258
+      },
+      "current": {
+        "clicks": 1369,
+        "impressions": 82914,
+        "ctr": 0.016511083773548495,
+        "position": 8.240948452613551
+      },
+      "clickDelta": 767,
+      "impressionEffect": 1274.5133161488266,
+      "ctrEffect": -507.5133161488267
+    }
+  },
+  "deviceBreakdown": [
+    {
+      "key": "MOBILE",
+      "previous": {
+        "clicks": 636,
+        "impressions": 17098,
+        "ctr": 0.037197333021406015,
+        "position": 9.003158264124458
+      },
+      "current": {
+        "clicks": 1514,
+        "impressions": 69114,
+        "ctr": 0.02190583673351275,
+        "position": 7.734496628758284
+      },
+      "delta": 878
+    },
+    {
+      "key": "DESKTOP",
+      "previous": {
+        "clicks": 675,
+        "impressions": 20634,
+        "ctr": 0.03271299796452457,
+        "position": 9.991518852379567
+      },
+      "current": {
+        "clicks": 1193,
+        "impressions": 47865,
+        "ctr": 0.02492426616525645,
+        "position": 8.26332393189178
+      },
+      "delta": 518
+    },
+    {
+      "key": "TABLET",
+      "previous": {
+        "clicks": 3,
+        "impressions": 91,
+        "ctr": 0.03296703296703297,
+        "position": 9.076923076923077
+      },
+      "current": {
+        "clicks": 11,
+        "impressions": 403,
+        "ctr": 0.02729528535980149,
+        "position": 7.955334987593052
+      },
+      "delta": 8
+    }
+  ],
+  "conversionSummary": {
+    "settledThrough": "2026-11-25",
+    "previousSessions": 511,
+    "sessions": 751,
+    "organicSessions": 522,
+    "activeUsers": 593,
+    "previousActiveUsers": 406,
+    "engagedSessions": 566,
+    "previousEngagedSessions": 371,
+    "channels": {
+      "organicSearch": 522,
+      "direct": 144,
+      "organicSocial": 62,
+      "referral": 14,
+      "unassigned": 9
+    },
+    "ga4ReportedKeyEvents": 0,
+    "verifiedFunnel": null,
+    "revenue": null
+  },
+  "dataCoverage": {
+    "visible": {
+      "page": {
+        "prior": 284,
+        "current": 310,
+        "new": 70,
+        "lost": 44,
+        "growing": 99,
+        "declining": 39
+      },
+      "query": {
+        "prior": 1464,
+        "current": 2397,
+        "new": 1545,
+        "lost": 612,
+        "growing": 268,
+        "declining": 59
+      }
+    },
+    "totals": {
+      "property": {
+        "previous": {
+          "clicks": 1314,
+          "impressions": 37823,
+          "ctr": 0.03474076620046004,
+          "position": 9.542527033815404
+        },
+        "current": {
+          "clicks": 2718,
+          "impressions": 117382,
+          "ctr": 0.023155168594844185,
+          "position": 7.950895367262443
+        }
+      },
+      "page": {
+        "previous": {
+          "clicks": 1321,
+          "impressions": 38325,
+          "ctr": 0.03446836268754077,
+          "position": 9.602896281800392
+        },
+        "current": {
+          "clicks": 2725,
+          "impressions": 119709,
+          "ctr": 0.02276353490547912,
+          "position": 7.945935560400638
+        }
+      },
+      "query": {
+        "previous": {
+          "clicks": 604,
+          "impressions": 23087,
+          "ctr": 0.026161909299605837,
+          "position": 10.781392125438558
+        },
+        "current": {
+          "clicks": 1369,
+          "impressions": 82914,
+          "ctr": 0.016511083773548495,
+          "position": 8.240948452613551
+        }
+      },
+      "pageQuery": {
+        "previous": {
+          "clicks": 607,
+          "impressions": 23161,
+          "ctr": 0.026207849402012002,
+          "position": 10.866542895384482
+        },
+        "current": {
+          "clicks": 1374,
+          "impressions": 84300,
+          "ctr": 0.016298932384341637,
+          "position": 8.229157769869513
+        }
+      },
+      "date": {
+        "previous": {
+          "clicks": 1314,
+          "impressions": 37823,
+          "ctr": 0.03474076620046004,
+          "position": 9.542527033815404
+        },
+        "current": {
+          "clicks": 2718,
+          "impressions": 117382,
+          "ctr": 0.023155168594844185,
+          "position": 7.950895367262443
+        }
+      }
+    },
+    "crawl": {
+      "sitemapUrls": 480,
+      "attempted": 275,
+      "success": 275,
+      "not200": 0,
+      "probeErrors": 0,
+      "canonicalMismatch": 0,
+      "noindex": 0,
+      "missingH1": 0,
+      "multipleH1": 0,
+      "missingTitle": 0,
+      "missingDescription": 0,
+      "duplicateTitleGroups": 2,
+      "duplicateDescriptionGroups": 2,
+      "rtlFaPages": 275,
+      "ssrHomepageDirectLinks": 61
+    },
+    "countryBreakdown": [
+      {
+        "country": "irn",
+        "clickDelta": 1374
+      },
+      {
+        "country": "deu",
+        "clickDelta": 9
+      },
+      {
+        "country": "usa",
+        "clickDelta": 8
+      },
+      {
+        "country": "can",
+        "clickDelta": 3
+      }
+    ],
+    "searchAppearance": {
+      "previous": 0,
+      "current": 0,
+      "interpretation": "No rows returned for this slice"
+    },
+    "clickCoverage": {
+      "propertyClicks": 2718,
+      "pageClicks": 2725,
+      "queryClicks": 1369,
+      "pageQueryClicks": 1374
+    },
+    "extractedWindows": 16,
+    "urlInspection": {
+      "/text-tools/address-fa-to-en": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-23T09:44:15Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/tools/invoice-generator": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-24T18:34:08Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/career-tools/work-certificate": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-27T17:50:22Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/writing-tools/formal-letter": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-16T10:47:12Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/pdf-tools": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-23T07:14:14Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/developers/api/market": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-25T09:30:35Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/tools/persian-ocr": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-27T17:02:21Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/pdf-tools/split/split-pdf": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-27T21:56:01Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/pdf-tools/compress/compress-pdf": {
+        "verdict": "NEUTRAL",
+        "lastCrawlTime": null,
+        "sameCanonical": null,
+        "error": null
+      },
+      "/pdf-tools/merge/merge-pdf": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-21T22:08:00Z",
+        "sameCanonical": true,
+        "error": null
+      },
+      "/validation-tools/national-id": {
+        "verdict": "PASS",
+        "lastCrawlTime": "2026-11-23T22:23:23Z",
+        "sameCanonical": true,
+        "error": null
+      }
+    }
+  },
+  "limitations": [
+    "Domain includes subdomains. Page versus property aggregation differs. Query samples omit anonymous and lower-volume rows.",
+    "No validated conversion funnel or revenue.",
+    "Causality, field Core Web Vitals, and complete release-to-route correlation are pending."
+  ],
+  "priorityPages": [
+    {
+      "path": "/text-tools/address-fa-to-en",
+      "prior": {
+        "clicks": 427,
+        "impressions": 1137,
+        "ctr": 0.3755496921723835,
+        "position": 2.7308707124010554
+      },
+      "current": {
+        "clicks": 460,
+        "impressions": 1320,
+        "ctr": 0.3484848484848485,
+        "position": 4.3121212121212125
+      }
+    },
+    {
+      "path": "/tools/invoice-generator",
+      "prior": {
+        "clicks": 66,
+        "impressions": 1318,
+        "ctr": 0.05007587253414264,
+        "position": 11.858877086494688
+      },
+      "current": {
+        "clicks": 130,
+        "impressions": 4253,
+        "ctr": 0.03056665882906184,
+        "position": 10.018810251587116
+      }
+    },
+    {
+      "path": "/career-tools/work-certificate",
+      "prior": {
+        "clicks": 165,
+        "impressions": 2492,
+        "ctr": 0.06621187800963081,
+        "position": 7.000802568218298
+      },
+      "current": {
+        "clicks": 190,
+        "impressions": 3909,
+        "ctr": 0.04860578152980302,
+        "position": 7.009721156305961
+      }
+    },
+    {
+      "path": "/writing-tools/formal-letter",
+      "prior": {
+        "clicks": 26,
+        "impressions": 213,
+        "ctr": 0.12206572769953052,
+        "position": 5.633802816901408
+      },
+      "current": {
+        "clicks": 92,
+        "impressions": 537,
+        "ctr": 0.1713221601489758,
+        "position": 4.9031657355679705
+      }
+    },
+    {
+      "path": "/tools/persian-ocr",
+      "prior": {
+        "clicks": 10,
+        "impressions": 468,
+        "ctr": 0.021367521367521368,
+        "position": 8.628205128205128
+      },
+      "current": {
+        "clicks": 40,
+        "impressions": 1392,
+        "ctr": 0.028735632183908046,
+        "position": 8.225574712643677
+      }
+    },
+    {
+      "path": "/pdf-tools/split/split-pdf",
+      "prior": {
+        "clicks": 19,
+        "impressions": 639,
+        "ctr": 0.0297339593114241,
+        "position": 8.62754303599374
+      },
+      "current": {
+        "clicks": 73,
+        "impressions": 2918,
+        "ctr": 0.025017135023989032,
+        "position": 8.471213159698424
+      }
+    }
+  ]
+}

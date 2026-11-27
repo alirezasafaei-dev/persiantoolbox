@@ -38,6 +38,7 @@ docs/reports/live-verification/*
 !docs/reports/live-verification/20261011-1554-persiantoolbox.md
 /public/ocr/v7/
 !docs/growth/agent-loop/reports/
+!docs/growth/seo-intelligence/reports/
 tsconfig.tsbuildinfo
 
 # Local MCP configuration

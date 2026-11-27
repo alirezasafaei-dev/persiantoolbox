@@ -1,0 +1,7 @@
+# Methodology
+
+Use Search Console final Web data with dates in Pacific Time. Compare equal 7, 14, 28 and 90 day periods and use explicit overlapping email-date windows. Sum clicks and impressions, compute CTR as total clicks divided by total impressions, and weight position by impressions. Decompose clicks using the average of the two CTRs for the impression effect and the average impressions for the CTR effect. Match URL/query rows across periods and weight their position changes by the smaller of the two impression counts. Category bucketing assigns each page to a single route group and keeps other hosts separate. Browser/user consent coverage affects GA4 independently of Search Console.
+
+Name a returned query new or lost only within the visible API rows. The case-insensitive brand match includes PersianToolbox, پرشین تولباکس and جعبه ابزار فارسی with spacing variations. Google can anonymize queries and limit the returned rows. Document grouping, missing slices, and API aggregation before comparing sums. Search appearance is queried separately with automatic aggregation. Do not report causality from a pre/post move alone. See [Google Search Analytics documentation](https://developers.google.com/webmaster-tools/v1/searchanalytics/query).
+
+Private collection is in the project’s ignored runtime evidence directory. Never attach or commit raw queries, token material, user content, transactions, or private evidence. All public values are aggregate evidence or public route paths. JSON uses schema version 1 and null for unknown measures.
