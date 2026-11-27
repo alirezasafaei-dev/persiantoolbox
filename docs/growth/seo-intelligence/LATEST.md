@@ -1,6 +1,6 @@
 # PersianToolbox SEO intelligence checkpoint
 
-- Report timestamp `2026-11-27T22:08:25.573Z`.
+- Report timestamp `2026-11-27T22:44:31.705Z`.
 - Final Search Console cutoff `2026-11-25` (Pacific time), Domain property and Web search.
 - Comparison `2026-10-01 to 2026-10-28` versus `2026-10-29 to 2026-11-25`.
 - Analysis source and live production SHA `897ae74b8ec401a0db0c88cbbe0e0c45820d66dd`.
