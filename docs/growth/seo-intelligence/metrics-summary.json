@@ -1166,20 +1166,21 @@
     },
     "crawl": {
       "sitemapUrls": 480,
-      "attempted": 275,
-      "success": 275,
+      "attempted": 480,
+      "success": 480,
       "not200": 0,
       "probeErrors": 0,
       "canonicalMismatch": 0,
       "noindex": 0,
-      "missingH1": 0,
+      "missingH1": 17,
       "multipleH1": 0,
       "missingTitle": 0,
       "missingDescription": 0,
       "duplicateTitleGroups": 2,
       "duplicateDescriptionGroups": 2,
-      "rtlFaPages": 275,
-      "ssrHomepageDirectLinks": 61
+      "rtlFaPages": 480,
+      "ssrHomepageDirectLinks": 61,
+      "renderedMobileMissingH1": 17
     },
     "countryBreakdown": [
       {

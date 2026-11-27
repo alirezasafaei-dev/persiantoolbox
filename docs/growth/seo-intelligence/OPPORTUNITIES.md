@@ -8,3 +8,6 @@
 [Machine-readable backlog](opportunities.json)
 
 - **SEO-005 P2** Align invoice and certificate sitemap dates with their latest confirmed substantive releases.
+
+- **SEO-006 P2** Add one visible and descriptive H1 to the 17 verified routes, using the existing title and preserving the heading order and layout.
+- **SEO-007 P2** Compare the two blog-category alias pairs before choosing differentiated metadata or consolidation.

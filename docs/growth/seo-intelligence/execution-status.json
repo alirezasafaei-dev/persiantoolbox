@@ -4,7 +4,8 @@
   "completed": [
     "Direct GSC and GA4 extraction",
     "Current production identity",
-    "Public SEO checkpoint"
+    "Public SEO checkpoint",
+    "Full 480-URL sitemap HTML crawl and follow-up rendering on 17 heading exceptions"
   ],
   "inProgress": ["Technical and content candidates", "Release correlation and product acceptance"],
   "blocked": [
@@ -231,5 +232,5 @@
   "mergedChanges": [298, 302, 303, 304, 305],
   "deployedChanges": [298, 302, 303, 304, 305],
   "latestVerifiedProductionSha": "897ae74b8ec401a0db0c88cbbe0e0c45820d66dd",
-  "nextActions": ["SEO-005", "SEO-001", "SEO-002", "SEO-003", "SEO-004"]
+  "nextActions": ["SEO-005", "SEO-001", "SEO-002", "SEO-003", "SEO-004", "SEO-006", "SEO-007"]
 }

@@ -9,9 +9,9 @@ Search Console final Web data through **2026-11-25** shows **1,314 → 2,718 cli
 
 The user-specified overlapping email-date windows returned **1,837 → 2,619 clicks** (+782). The outgoing nine days had 515 clicks and the incoming nine days had 1,297. The email headline itself was not re-read.
 
-Lower aggregate CTR and a 55-click reduction from other hosts offset part of the growth. The private 28-day comparison covered 310 visible pages and 2,397 visible queries in the current period. The live HTML crawl attempted 275 of 480 sitemap URLs.
+Lower aggregate CTR and a 55-click reduction from other hosts offset part of the growth. The private 28-day comparison covered 310 visible pages and 2,397 visible queries in the current period. The completed crawl verified HTTP 200, indexability directives and canonical URLs for all 480 sitemap entries. Seventeen pages have no H1 in the initial HTML or the rendered mobile viewport.
 
-Completed direct extraction, verified production and created this reporting checkpoint. There were 34 open PRs in the inventory. The active PDF work remains held in Draft #301. See the PR dispositions in [Current status](CURRENT_STATUS.md). Invoice and certificate SEO effects require settled post-release data. Conversion measurement is blocked on event coverage. See [current status](CURRENT_STATUS.md), [evidence](EVIDENCE_INDEX.md), and [next actions](reports/2026-11-27/NEXT_ACTIONS.md).
+Completed direct extraction, verified production and created this reporting checkpoint. There were 34 open PRs in the inventory. The active PDF work remains held in Draft #301. See the PR dispositions in [Current status](CURRENT_STATUS.md). Invoice and certificate SEO effects require settled post-release data. Conversion measurement is blocked on event coverage. The four-tool sitemap correction is tracked in [PR #307](https://github.com/alirezasafaei-dev/persiantoolbox/pull/307). See [current status](CURRENT_STATUS.md), [evidence](EVIDENCE_INDEX.md), and [next actions](reports/2026-11-27/NEXT_ACTIONS.md).
 
 ## Dated reports
 
