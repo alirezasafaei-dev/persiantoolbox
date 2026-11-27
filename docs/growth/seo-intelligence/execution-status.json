@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-27T22:44:31.705Z",
+  "generatedAt": "2026-11-27T23:11:52.635Z",
   "completed": [
     "Direct GSC and GA4 extraction",
     "Current production identity",
     "Public SEO checkpoint",
-    "Full 480-URL sitemap HTML crawl and follow-up rendering on 17 heading exceptions"
+    "Full 480-URL sitemap HTML crawl and follow-up rendering on 17 heading exceptions",
+    "Verified live sitemap freshness for four priority tools"
   ],
   "inProgress": ["Technical and content candidates", "Release correlation and product acceptance"],
   "blocked": [
@@ -21,7 +22,8 @@
   "pendingMeasurement": [
     "Invoice matched window through 2026-12-05",
     "Certificate observed recrawl 2026-11-27. Compare full settled days through 2026-12-04 for the earliest 7-day window.",
-    "Formal letter completion after instrumented events"
+    "Formal letter completion after instrumented events",
+    "PR #307 sitemap freshness: after recrawl and final data through earliest full 7-day cohort"
   ],
   "openPullRequests": [
     {
@@ -229,8 +231,8 @@
       "note": null
     }
   ],
-  "mergedChanges": [298, 302, 303, 304, 305],
-  "deployedChanges": [298, 302, 303, 304, 305],
-  "latestVerifiedProductionSha": "897ae74b8ec401a0db0c88cbbe0e0c45820d66dd",
-  "nextActions": ["SEO-005", "SEO-001", "SEO-002", "SEO-003", "SEO-004", "SEO-006", "SEO-007"]
+  "mergedChanges": [298, 302, 303, 304, 305, 307],
+  "deployedChanges": [298, 302, 303, 304, 305, 307],
+  "latestVerifiedProductionSha": "55373bc4fc0481238a1f48bd5256a88f532a61e0",
+  "nextActions": ["SEO-001", "SEO-002", "SEO-003", "SEO-004", "SEO-006", "SEO-007"]
 }

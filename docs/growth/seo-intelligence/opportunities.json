@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-27T22:44:31.705Z",
+  "generatedAt": "2026-11-27T23:11:52.635Z",
   "opportunities": [
     {
       "id": "SEO-001",
@@ -110,7 +110,7 @@
       "relatedPr": 307,
       "acceptanceCriteria": "Both dates match verified substantive releases and unrelated sitemap entries are preserved",
       "verificationMethod": "Exact sitemap regression and live XML",
-      "status": "open"
+      "status": "deployed"
     },
     {
       "id": "SEO-006",
