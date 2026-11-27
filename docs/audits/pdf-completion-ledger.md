@@ -277,11 +277,14 @@ with Rust 1.96.0, its `wasm32-unknown-unknown` target, a host linker and
 wasm-bindgen CLI 0.2.129. The command extracts the pinned revision into
 a temporary directory and applies the [preview patch](fixtures/opendoc-word-preview.patch).
 The staging command above checks the resulting runtime files by SHA-256.
-A fresh WSL Ubuntu 24.04 build matched all five staged file hashes from
-the separate build. The standalone smoke checks seven preview assets
-when the flag is on, including WASM, both JavaScript files, notices and
-the Persian fallback font. Redistribution review and broader
-compatibility remain open.
+A fresh WSL Ubuntu 24.04 build matched the staged engine and upstream
+notice hashes from the separate build. Build also needs Node.js to gather
+license texts from the locked WASM Cargo dependency graph, embedded
+fonts and ECMA-376 data. It copies the Rust standard library copyright
+file from the pinned toolchain. The standalone smoke checks all nine
+preview assets when the flag is on. The collector records license
+expressions and verbatim notices. It does not decide license choices or
+authorize public distribution. Broader compatibility remains open.
 
 On `7aeb880e`, the preview-enabled standalone build passed the focused
 invalid-input, retry, real PDF download and worker CSP test in Chromium,
