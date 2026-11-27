@@ -1,7 +1,7 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { dirname, extname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const HOST = process.env.SMOKE_HOST ?? '127.0.0.1';
@@ -32,12 +32,6 @@ const ROUTE_CHECKS = [
 ];
 
 const PDF_ASSETS = [
-  { path: '/pdf.worker.min.mjs', contentType: 'javascript' },
-  { path: '/pdfjs/cmaps/UniJIS-UCS2-H.bcmap', contentType: 'application/octet-stream' },
-  { path: '/pdfjs/cmaps/LICENSE', contentType: 'application/octet-stream' },
-  { path: '/pdfjs/standard_fonts/FoxitSymbol.pfb', contentType: 'application/x-font-type1' },
-  { path: '/pdfjs/standard_fonts/LICENSE_FOXIT', contentType: 'application/octet-stream' },
-  { path: '/pdfjs/standard_fonts/LICENSE_LIBERATION', contentType: 'application/octet-stream' },
   { path: '/pdf-engine/v1/document-worker.mjs', contentType: 'javascript' },
   { path: '/pdf-engine/v1/runtime/qpdf.wasm', contentType: 'application/wasm' },
   { path: '/pdf-engine/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
@@ -59,6 +53,36 @@ const PDF_ASSETS = [
       ]
     : []),
 ];
+
+async function pdfJsSmokeAssets(rootDir) {
+  const packageDir = resolve(rootDir, 'node_modules/pdfjs-dist');
+  const assets = [
+    {
+      path: '/pdf.worker.min.mjs',
+      contentType: 'javascript',
+      source: resolve(packageDir, 'build/pdf.worker.min.mjs'),
+    },
+  ];
+  for (const directory of ['cmaps', 'standard_fonts']) {
+    const files = await readdir(resolve(packageDir, directory), { withFileTypes: true });
+    if (!files.some((file) => file.isFile())) {
+      throw new Error(`PDF.js has no files in ${directory}`);
+    }
+    for (const file of files.filter((entry) => entry.isFile())) {
+      const contentType =
+        {
+          '.pfb': 'application/x-font-type1',
+          '.ttf': 'font/ttf',
+        }[extname(file.name)] ?? 'application/octet-stream';
+      assets.push({
+        path: `/pdfjs/${directory}/${file.name}`,
+        contentType,
+        source: resolve(packageDir, directory, file.name),
+      });
+    }
+  }
+  return assets;
+}
 
 const delay = (ms) => new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
 
@@ -223,12 +247,15 @@ export async function runLocalSmoke(rootDir = process.cwd()) {
       throw new Error(`Local smoke failed:\n- ${failures.join('\n- ')}`);
     }
     console.log(`[smoke] standalone routes passed (${ROUTE_CHECKS.length} checks)`);
-    for (const asset of PDF_ASSETS) {
-      const expected = await readFile(resolve(rootDir, 'public', asset.path.slice(1)));
+    const pdfAssets = [...(await pdfJsSmokeAssets(rootDir)), ...PDF_ASSETS];
+    for (const asset of pdfAssets) {
+      const expected = await readFile(
+        asset.source ?? resolve(rootDir, 'public', asset.path.slice(1)),
+      );
       const response = await fetchWithTimeout(`${BASE_URL}${asset.path}`, REQUEST_TIMEOUT_MS);
       await verifySmokeAsset(asset, response, expected);
     }
-    console.log(`[smoke] standalone PDF assets passed (${PDF_ASSETS.length} checks)`);
+    console.log(`[smoke] standalone PDF assets passed (${pdfAssets.length} checks)`);
   } finally {
     process.off('SIGINT', handleSignal);
     process.off('SIGTERM', handleSignal);

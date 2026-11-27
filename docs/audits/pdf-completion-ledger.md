@@ -290,6 +290,13 @@ preview assets when the flag is on. The collector records license
 expressions and verbatim notices. It does not decide license choices or
 authorize public distribution. Broader compatibility remains open.
 
+The standalone smoke verifies the PDF.js worker and every installed
+CMap, standard font and accompanying notice over HTTP. It compares
+response bytes with the pinned dependency, so missing or stale copies in
+`public/` fail the check. On application SHA `8cf55604`, the updated
+smoke passed 11 routes and 199 PDF asset checks with the Word preview
+enabled, including all 186 PDF.js files.
+
 On `7aeb880e`, the preview-enabled standalone build passed the focused
 invalid-input, retry, real PDF download and worker CSP test in Chromium,
 Firefox and WebKit over isolated HTTPS. The earlier WebKit development
