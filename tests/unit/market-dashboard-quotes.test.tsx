@@ -25,6 +25,14 @@ it('calculates rial equivalents from user-supplied dollar prices during an outag
       target: { value: '۱ ۰۰۰ ۰۰۰' },
     });
     expect(result).toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
+    fireEvent.change(screen.getByLabelText('قیمت هر یورو (دلار)'), { target: { value: '0.6' } });
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '9007199254740991' },
+    });
+    expect(result).toHaveTextContent('۵٬۴۰۴٬۳۱۹٬۵۵۲٬۸۴۴٬۵۹۵ ریال');
+    expect(result).toHaveTextContent('بیشتر از محدودهٔ محاسبه');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), { target: { value: '0.1' } });
+    expect(result).toHaveTextContent('کمتر از یک ریال');
     fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
       target: { value: '۹۰۰۷۱۹۹۲۵۴۷۴۰۹۹۳' },
     });

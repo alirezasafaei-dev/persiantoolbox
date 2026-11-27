@@ -5,7 +5,9 @@ import Card from '@/shared/ui/Card';
 import Input from '@/shared/ui/Input';
 import { toEnglishDigits } from '@/shared/utils/numbers';
 
-const GRAMS_PER_TROY_OUNCE = 31.1034768;
+const MAX_RIALS = BigInt(Number.MAX_SAFE_INTEGER);
+// 31.1034768 grams per troy ounce, represented as an exact ratio.
+const TROY_OUNCE = { numerator: 311034768n, denominator: 10000000n };
 const formatter = new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 0 });
 const assets = [
   { id: 'gold', label: 'قیمت اونس تروا طلا (دلار)' },
@@ -17,24 +19,53 @@ const assets = [
 function positiveValue(input: string) {
   const normalized = toEnglishDigits(input.trim()).replace(/[ \u00a0\u202f]/g, ',');
   if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(normalized)) {
-    return 0;
+    return null;
   }
-  const number = Number(normalized.replaceAll(',', ''));
-  return number > 0 && number <= Number.MAX_SAFE_INTEGER ? number : 0;
+  const [integer = '', fraction = ''] = normalized.replaceAll(',', '').split('.');
+  const numerator = BigInt(integer + fraction);
+  const denominator = 10n ** BigInt(fraction.length);
+  return numerator > 0n && numerator <= MAX_RIALS * denominator ? { numerator, denominator } : null;
+}
+
+type Ratio = NonNullable<ReturnType<typeof positiveValue>>;
+
+function formatRials(rate: Ratio, price: Ratio, multiplier = 1n, divisor = 1n) {
+  const numerator = rate.numerator * price.numerator * multiplier;
+  const denominator = rate.denominator * price.denominator * divisor;
+  const rounded = (2n * numerator + denominator) / (2n * denominator);
+  if (rounded === 0n) {
+    return 'کمتر از یک ریال';
+  }
+  if (rounded > MAX_RIALS) {
+    return 'بیشتر از محدودهٔ محاسبه';
+  }
+  return `${formatter.format(rounded)} ریال`;
 }
 
 export default function DollarConversion() {
   const [rate, setRate] = useState('');
   const [amounts, setAmounts] = useState({ gold: '', bitcoin: '', ethereum: '', euro: '' });
   const usdToIrr = positiveValue(rate);
-  const pureGold = (positiveValue(amounts.gold) / GRAMS_PER_TROY_OUNCE) * usdToIrr;
+  const gold = positiveValue(amounts.gold);
   const results = [
-    { label: 'ارزش محاسباتی هر گرم طلای خالص', value: pureGold },
-    { label: 'ارزش محاسباتی هر گرم طلای ۱۸ عیار', value: pureGold * 0.75 },
-    { label: 'ارزش محاسباتی یک بیت‌کوین', value: positiveValue(amounts.bitcoin) * usdToIrr },
-    { label: 'ارزش محاسباتی یک اتریوم', value: positiveValue(amounts.ethereum) * usdToIrr },
-    { label: 'ارزش محاسباتی یک یورو', value: positiveValue(amounts.euro) * usdToIrr },
-  ].filter(({ value }) => value > 0);
+    {
+      label: 'ارزش محاسباتی هر گرم طلای خالص',
+      price: gold,
+      multiplier: TROY_OUNCE.denominator,
+      divisor: TROY_OUNCE.numerator,
+    },
+    {
+      label: 'ارزش محاسباتی هر گرم طلای ۱۸ عیار',
+      price: gold,
+      multiplier: TROY_OUNCE.denominator * 3n,
+      divisor: TROY_OUNCE.numerator * 4n,
+    },
+    { label: 'ارزش محاسباتی یک بیت‌کوین', price: positiveValue(amounts.bitcoin) },
+    { label: 'ارزش محاسباتی یک اتریوم', price: positiveValue(amounts.ethereum) },
+    { label: 'ارزش محاسباتی یک یورو', price: positiveValue(amounts.euro) },
+  ].flatMap(({ label, price, multiplier, divisor }) =>
+    usdToIrr && price ? [{ label, value: formatRials(usdToIrr, price, multiplier, divisor) }] : [],
+  );
 
   return (
     <Card role="region" aria-label="تبدیل قیمت دلاری به ریال" className="space-y-4 p-6">
@@ -75,13 +106,7 @@ export default function DollarConversion() {
             {results.map(({ label, value }) => (
               <div key={label} className="flex flex-wrap justify-between gap-x-4">
                 <dt>{label}</dt>
-                <dd className="font-semibold">
-                  {value > Number.MAX_SAFE_INTEGER
-                    ? 'بیشتر از محدودهٔ محاسبه'
-                    : value < 0.5
-                      ? 'کمتر از یک ریال'
-                      : `${formatter.format(value)} ریال`}
-                </dd>
+                <dd className="font-semibold">{value}</dd>
               </div>
             ))}
           </dl>
