@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Card, Button } from '@/components/ui';
 import UpgradeModal from '@/components/features/pricing/UpgradeModal';
 import { useSubscriptionStatus } from '@/shared/hooks/useSubscriptionStatus';
@@ -73,6 +73,8 @@ export default function FormalLetterForm({ isPremium: premiumOverride = false }:
   const [errors, setErrors] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'form' | 'preview' | 'export'>('form');
   const [selectedPremiumParagraphs, setSelectedPremiumParagraphs] = useState<string[]>([]);
+  const bodyFieldId = useId();
+  const signatureFieldId = useId();
   const { requestToken, confirmExport, cancelReservation } = useExportToken();
   const {
     trackExportClick,
@@ -466,7 +468,7 @@ export default function FormalLetterForm({ isPremium: premiumOverride = false }:
                 placeholder={getDefaultSalutation()}
               />
               <div>
-                <label className="block text-sm text-(--text-secondary) mb-1">
+                <label htmlFor={bodyFieldId} className="block text-sm text-(--text-secondary) mb-1">
                   متن نامه *{' '}
                   {bodyExceedsLimit ? (
                     <span className="text-danger">
@@ -475,6 +477,7 @@ export default function FormalLetterForm({ isPremium: premiumOverride = false }:
                   ) : null}
                 </label>
                 <textarea
+                  id={bodyFieldId}
                   value={data.body}
                   onChange={(e) => updateField('body', e.target.value)}
                   placeholder="متن نامه خود را وارد کنید..."
@@ -560,8 +563,14 @@ export default function FormalLetterForm({ isPremium: premiumOverride = false }:
               <h2 className="text-lg font-bold text-(--text-primary)">امضا</h2>
               {featureGate.canUseSignature ? (
                 <div>
-                  <label className="block text-sm text-(--text-secondary) mb-1">تصویر امضا</label>
+                  <label
+                    htmlFor={signatureFieldId}
+                    className="block text-sm text-(--text-secondary) mb-1"
+                  >
+                    تصویر امضا
+                  </label>
                   <input
+                    id={signatureFieldId}
                     type="file"
                     accept="image/*"
                     aria-label="انتخاب تصویر امضا"
@@ -706,10 +715,15 @@ function FormField({
   placeholder?: string;
   disabled?: boolean;
 }) {
+  const inputId = useId();
+
   return (
     <div>
-      <label className="block text-sm text-(--text-secondary) mb-1">{label}</label>
+      <label htmlFor={inputId} className="block text-sm text-(--text-secondary) mb-1">
+        {label}
+      </label>
       <input
+        id={inputId}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}

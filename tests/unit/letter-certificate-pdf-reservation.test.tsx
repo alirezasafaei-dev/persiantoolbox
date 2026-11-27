@@ -67,6 +67,17 @@ beforeEach(() => {
   state.reserve.mockResolvedValue({ reservationId: 'synthetic-reservation' });
 });
 
+it('associates the formal letter controls with their visible labels', () => {
+  render(<FormalLetterForm />);
+
+  expect(screen.getByRole('textbox', { name: 'موضوع *' })).toHaveValue('Synthetic subject');
+  expect(screen.getByRole('textbox', { name: 'متن نامه *' })).toHaveValue('Synthetic body');
+  expect(screen.getByLabelText('تاریخ *')).toHaveValue('2026-11-13');
+
+  const signatureInput = screen.getByLabelText('انتخاب تصویر امضا');
+  expect(signatureInput.labels?.[0]).toHaveTextContent('تصویر امضا');
+});
+
 it.each([
   ['work-certificate', WorkCertificateForm],
   ['formal-letter', FormalLetterForm],
