@@ -1,7 +1,21 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { Document, Packer, PageBreak, Paragraph } from 'docx';
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import {
+  Document,
+  Footer,
+  Header,
+  ImageRun,
+  Packer,
+  PageBreak,
+  PageNumber,
+  Paragraph,
+  Table,
+  TableCell,
+  TableLayoutType,
+  TableRow,
+  TextRun,
+} from 'docx';
+import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 test('Word preview recovers from invalid input and cancellation and downloads a local PDF', async ({
   page,
@@ -101,4 +115,103 @@ test('Word preview recovers from invalid input and cancellation and downloads a 
   const response = await page.request.get(route);
   expect(worker.headers()['content-security-policy']).toContain("'wasm-unsafe-eval'");
   expect(response.headers()['content-security-policy']).not.toContain("'wasm-unsafe-eval'");
+});
+
+test('Word preview preserves the mixed-script table, image, headers and numbered footers', async ({
+  page,
+}) => {
+  test.skip(
+    process.env['NEXT_PUBLIC_WORD_PDF_PREVIEW'] !== '1',
+    'Requires the staged OpenDoc preview',
+  );
+  const values = Array.from({ length: 42 }, (_, index) => (index + 1) * 125_000);
+  const image = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAE0lEQVR4nGP4z8DwHwwZGP6DAQBJyAn3FGMynQAAAABJRU5ErkJggg==',
+    'base64',
+  );
+  const doc = new Document({
+    sections: [
+      {
+        headers: { default: new Header({ children: [new Paragraph('PT RUNNING HEADER')] }) },
+        footers: {
+          default: new Footer({
+            children: [
+              new Paragraph({
+                children: [
+                  new TextRun('صفحه PT FOOTER '),
+                  new TextRun({ children: [PageNumber.CURRENT] }),
+                ],
+              }),
+            ],
+          }),
+        },
+        children: [
+          new Table({
+            layout: TableLayoutType.AUTOFIT,
+            rows: values.map(
+              (value, index) =>
+                new TableRow({
+                  children: [
+                    `ردیف ${index + 1}`,
+                    `Mixed English ${index + 1} - متن فارسی`,
+                    String(value),
+                  ].map((text) => new TableCell({ children: [new Paragraph(text)] })),
+                }),
+            ),
+          }),
+          new Paragraph({ children: [new PageBreak()] }),
+          new Paragraph('PT AFTER PAGE BREAK'),
+          new Paragraph({
+            children: [
+              new ImageRun({ type: 'png', data: image, transformation: { width: 32, height: 32 } }),
+            ],
+          }),
+        ],
+      },
+    ],
+  });
+  await page.goto('/pdf-tools/convert/word-to-pdf');
+  await page.getByLabel('انتخاب فایل DOCX').setInputFiles({
+    name: 'mixed-layout.docx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    buffer: await Packer.toBuffer(doc),
+  });
+  await page.getByRole('button', { name: 'تبدیل به PDF', exact: true }).click();
+  const link = page.getByRole('link', { name: 'دانلود PDF', exact: true });
+  const [file] = await Promise.all([page.waitForEvent('download'), link.click()]);
+  const task = getDocument({
+    data: Uint8Array.from(await readFile(await file.path())),
+    isEvalSupported: false,
+  });
+  try {
+    const pdf = await task.promise;
+    expect(pdf.numPages).toBe(2);
+    for (const number of [1, 2]) {
+      const pdfPage = await pdf.getPage(number);
+      const content = await pdfPage.getTextContent();
+      const runs = content.items.flatMap((item) => ('str' in item ? [item.str] : []));
+      const text = runs.join(' ').normalize('NFKC');
+      expect(text).toContain('PT RUNNING HEADER');
+      const footer = content.items.find((item) => 'str' in item && item.str === 'PT FOOTER');
+      expect(footer).toBeDefined();
+      if (!footer || !('str' in footer)) throw new Error('Missing text at the footer anchor');
+      expect(footer.transform[4]).toBeGreaterThanOrEqual(pdfPage.view[0]);
+      expect(footer.transform[4] + footer.width).toBeLessThanOrEqual(pdfPage.view[2]);
+      const footerText = text.slice(text.lastIndexOf('PT FOOTER'));
+      expect(footerText).toMatch(new RegExp(`^PT FOOTER\\s+صفحه\\s+${number}\\s*$`, 'u'));
+      if (number === 1) {
+        expect(runs.filter((run) => /^\d{6,}$/.test(run)).map(Number)).toEqual(values);
+      } else {
+        expect(text).toContain('PT AFTER PAGE BREAK');
+        const operators = await pdfPage.getOperatorList();
+        expect(
+          operators.fnArray.some((operator) =>
+            [OPS.paintImageXObject, OPS.paintInlineImageXObject].includes(operator),
+          ),
+        ).toBe(true);
+      }
+    }
+  } finally {
+    await task.destroy();
+  }
 });

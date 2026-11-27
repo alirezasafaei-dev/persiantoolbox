@@ -293,6 +293,23 @@ invalid-input, retry, real PDF download and worker CSP test in Chromium,
 Firefox and WebKit over isolated HTTPS. The earlier WebKit development
 run did not enable conversion after file selection.
 
+On application SHA `a85a4c20`, the Word route downloaded a two-page PDF
+with 42 ordered table rows, mixed Persian and English, a running header
+and a numbered Persian footer on each page, a page break, and a PNG on
+page two. The Playwright assertions inspect PDF text and operators and
+check the footer anchor's horizontal bounds. The five runs passed on
+desktop Chromium, Firefox and WebKit and on Pixel 7 and iPhone 13
+emulations. This fixture has one table that fits on the first page.
+Physical devices and general Word layout fidelity remain open.
+
+For the same application SHA, the normal build and `ci:quick` passed
+(293 files and 2,256 tests). The loopback standalone smoke passed 11
+route and nine PDF asset checks. The default standalone public directory
+had no staged Word engine. The preview build and its staged-file hash
+check also passed. On GitHub, [Lighthouse CI](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/45972515585/job/140416267037)
+measured performance scores of 0.66 on Home and 0.63 on Blog against
+the 0.75 threshold. Those lab results leave the hosted gate open.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
