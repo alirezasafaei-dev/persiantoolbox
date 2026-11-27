@@ -206,10 +206,14 @@ async function checkWordLayout(page: Page, rowCount: number) {
       const text = runs.join(' ').normalize('NFKC');
       expect(text).toContain('PT RUNNING HEADER');
       const footer = content.items.find((item) => 'str' in item && item.str === 'PT FOOTER');
-      expect(footer).toBeDefined();
       if (!footer || !('str' in footer)) throw new Error('Missing text at the footer anchor');
-      expect(footer.transform[4]).toBeGreaterThanOrEqual(pdfPage.view[0]);
-      expect(footer.transform[4] + footer.width).toBeLessThanOrEqual(pdfPage.view[2]);
+      const [left, , right] = pdfPage.view;
+      const x: unknown = footer.transform[4];
+      if (left === undefined || right === undefined || typeof x !== 'number') {
+        throw new Error('Missing horizontal bounds for the footer');
+      }
+      expect(x).toBeGreaterThanOrEqual(left);
+      expect(x + footer.width).toBeLessThanOrEqual(right);
       const footerText = text.slice(text.lastIndexOf('PT FOOTER'));
       expect(footerText).toMatch(new RegExp(`^PT FOOTER\\s+صفحه\\s+${number}\\s*$`, 'u'));
       const rows = runs.filter((run) => /^\d{6,}$/.test(run)).map(Number);
