@@ -21,6 +21,15 @@ it('calculates rial equivalents from user-supplied dollar prices during an outag
     expect(result).toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
     expect(result).toHaveTextContent('۶۰٬۰۰۰٬۰۰۰٬۰۰۰ ریال');
     expect(result).toHaveTextContent('۲٬۰۰۰٬۰۰۰٬۰۰۰ ریال');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '۱ ۰۰۰ ۰۰۰' },
+    });
+    expect(result).toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '۹۰۰۷۱۹۹۲۵۴۷۴۰۹۹۳' },
+    });
+    expect(screen.getByText('نرخ مثبت و معتبر وارد کنید.')).toBeVisible();
+    expect(result).not.toHaveTextContent('ریال');
     fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), { target: { value: '0' } });
     expect(result).not.toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
   } finally {

@@ -15,12 +15,12 @@ const assets = [
 ] as const;
 
 function positiveValue(input: string) {
-  const normalized = toEnglishDigits(input.trim());
+  const normalized = toEnglishDigits(input.trim()).replace(/[ \u00a0\u202f]/g, ',');
   if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/.test(normalized)) {
     return 0;
   }
   const number = Number(normalized.replaceAll(',', ''));
-  return Number.isFinite(number) && number > 0 ? number : 0;
+  return number > 0 && number <= Number.MAX_SAFE_INTEGER ? number : 0;
 }
 
 export default function DollarConversion() {
@@ -34,7 +34,7 @@ export default function DollarConversion() {
     { label: 'ارزش محاسباتی یک بیت‌کوین', value: positiveValue(amounts.bitcoin) * usdToIrr },
     { label: 'ارزش محاسباتی یک اتریوم', value: positiveValue(amounts.ethereum) * usdToIrr },
     { label: 'ارزش محاسباتی یک یورو', value: positiveValue(amounts.euro) * usdToIrr },
-  ].filter(({ value }) => value >= 0.5 && value <= Number.MAX_SAFE_INTEGER);
+  ].filter(({ value }) => value > 0);
 
   return (
     <Card role="region" aria-label="تبدیل قیمت دلاری به ریال" className="space-y-4 p-6">
@@ -75,7 +75,13 @@ export default function DollarConversion() {
             {results.map(({ label, value }) => (
               <div key={label} className="flex flex-wrap justify-between gap-x-4">
                 <dt>{label}</dt>
-                <dd className="font-semibold">{formatter.format(value)} ریال</dd>
+                <dd className="font-semibold">
+                  {value > Number.MAX_SAFE_INTEGER
+                    ? 'بیشتر از محدودهٔ محاسبه'
+                    : value < 0.5
+                      ? 'کمتر از یک ریال'
+                      : `${formatter.format(value)} ریال`}
+                </dd>
               </div>
             ))}
           </dl>
