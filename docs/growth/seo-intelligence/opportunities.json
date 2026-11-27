@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-27T22:08:25.573Z",
+  "opportunities": [
+    {
+      "id": "SEO-001",
+      "priority": "P1",
+      "url": null,
+      "problem": "GA4 funnel coverage absent",
+      "evidence": "GA4 reads no tool or checkout funnel rows, repository custom dispatch excludes GA4",
+      "searchIntent": "Complete a tool successfully",
+      "metrics": null,
+      "potentialImpact": "Restores conversion measurement",
+      "businessRelevance": "High",
+      "effort": "Medium",
+      "risk": "Medium",
+      "confidence": "High",
+      "relatedPr": null,
+      "acceptanceCriteria": "Consent-aware tool lifecycle with no user content and verified events",
+      "verificationMethod": "Synthetic browser and real Data API",
+      "status": "open"
+    },
+    {
+      "id": "SEO-002",
+      "priority": "P1",
+      "url": "/validation-tools/national-id",
+      "problem": "Increased exposure with low CTR",
+      "evidence": "2.42% CTR, position 6.59, +226 clicks",
+      "searchIntent": "Validate a national ID",
+      "metrics": {
+        "clicks": 254,
+        "impressions": 10496,
+        "ctr": 0.02419969512195122,
+        "position": 6.588795731707317
+      },
+      "potentialImpact": "At fixed 10,496 impressions, +0.5 CTR points would mean about +52 clicks per 28 days",
+      "businessRelevance": "Medium",
+      "effort": "Low",
+      "risk": "Low",
+      "confidence": "Medium",
+      "relatedPr": null,
+      "acceptanceCriteria": "Establish a verified intent mismatch before a product or title change",
+      "verificationMethod": "Private URL/query pairs and manual SERP review",
+      "status": "open"
+    },
+    {
+      "id": "SEO-003",
+      "priority": "P1",
+      "url": "/pdf-tools/split/split-pdf",
+      "problem": "PDF product and search improvements await hosted acceptance",
+      "evidence": "Existing maintained draft and +54 clicks for split",
+      "searchIntent": "Split a PDF for download",
+      "metrics": {
+        "clicks": 73,
+        "impressions": 2918,
+        "ctr": 0.025017135023989032,
+        "position": 8.471213159698424
+      },
+      "potentialImpact": "Improve successful completed operations",
+      "businessRelevance": "High",
+      "effort": "High",
+      "risk": "High",
+      "confidence": "High",
+      "relatedPr": 301,
+      "acceptanceCriteria": "Exact-head hosted and device acceptance under the existing hold",
+      "verificationMethod": "Existing PR, standalone and hosted evidence",
+      "status": "open"
+    },
+    {
+      "id": "SEO-004",
+      "priority": "P2",
+      "url": "/developers/api/market",
+      "problem": "Fast-growing acquisition page needs completion measurement",
+      "evidence": "Largest selected page gainer. Public API returned HTTP 200 in the spot check",
+      "searchIntent": "Read and integrate market API",
+      "metrics": {
+        "clicks": 271,
+        "impressions": 1516,
+        "ctr": 0.1787598944591029,
+        "position": 6.741424802110818
+      },
+      "potentialImpact": "Measure docs-to-API activation",
+      "businessRelevance": "High",
+      "effort": "Medium",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "relatedPr": 303,
+      "acceptanceCriteria": "Confirm bounded sample contract, freshness and distinguish derived market rates",
+      "verificationMethod": "Read-only API and analytics aggregate",
+      "status": "open"
+    },
+    {
+      "id": "SEO-005",
+      "priority": "P2",
+      "url": "/career-tools/work-certificate",
+      "problem": "Emitted sitemap dates predate substantive updates to work certificate and invoice",
+      "evidence": "Live sitemap plus canonical runs for #298 and #304",
+      "searchIntent": "Find accurate tool features and examples",
+      "metrics": {
+        "clicks": 190,
+        "impressions": 3909,
+        "ctr": 0.04860578152980302,
+        "position": 7.009721156305961
+      },
+      "potentialImpact": "Restore accurate crawl freshness signals",
+      "businessRelevance": "Medium",
+      "effort": "Low",
+      "risk": "Low",
+      "confidence": "High",
+      "relatedPr": null,
+      "acceptanceCriteria": "Both dates match verified substantive releases and unrelated sitemap entries are preserved",
+      "verificationMethod": "Exact sitemap regression and live XML",
+      "status": "open"
+    }
+  ]
+}
