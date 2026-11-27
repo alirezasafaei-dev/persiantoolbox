@@ -225,6 +225,29 @@ Do not derive an upload limit from this text-only profile.
 The measured WASM SHA-256 was
 `b05f93f327fe7709258c4cf4bd02356e830c9beb36037829b4114c9b67ae35a5`.
 
+The same isolated engine also exported a 4,606,886-byte synthetic DOCX
+containing 12 distinct 1,600 × 1,200 JPEG images. Each of three runs in
+Chromium (Pixel 7 emulation), Firefox and WebKit produced the same
+4,629,538-byte PDF. Each download had 12 ordered Persian-text pages
+with an image paint operator on every page. Poppler rendered all 12
+images and pixel checks verified both color bands and the distinct page
+order. Median time to ready was 269 ms, 284 ms and 388 ms respectively.
+The worker's WASM linear memory reached 31,850,496 bytes in all runs.
+The probe moved the result via a transferable buffer and a Blob download.
+The timing excludes fetching the download bytes and parsing them.
+
+A separate run per browser cancelled an operation after posting the file
+to its worker, before the conversion completed. The prototype rejected it
+with `AbortError` and returned a byte-identical PDF on immediate retry.
+The PDF download object URL was revoked after the probe retrieved it.
+The four-page PNG control used the same per-image dimensions, a
+6,962,187-byte input and 50,528,256 bytes of worker linear memory in
+each engine. One run per engine produced the same 6,945,238-byte PDF.
+It passed page order, text and Poppler color checks for all four pages.
+The PNG and JPEG cohorts differ in compressed size and page count.
+These checks cover synthetic same-origin prototype workloads. Peak
+browser process memory and physical devices still need separate evidence.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
