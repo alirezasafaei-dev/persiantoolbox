@@ -265,10 +265,28 @@ changes or the route unmounts. The production policy's page-level WASM
 permission is unchanged. An exact worker URL receives the narrower worker
 CSP only when the preview is enabled.
 
-The preview's provisional caps are 8 MiB compressed input, 100 pages and
-24 MiB output. Those caps do not bound transient parser allocations.
-Reproducible dependency packaging, decompressed input limits, larger
-document compatibility and release-mode browser checks remain open.
+The preview caps compressed input at 8 MiB, output at 24 MiB and page
+count at 100. The patched ZIP reader also checks a 48 MiB expanded total
+and 16 MiB per entry at admission, before reading document parts. These
+ceilings do not measure transient allocations when decoding media or
+laying out pages.
+
+For the pinned source build, use
+`bash scripts/build-word-pdf-preview.sh <OpenDoc-git-checkout> <new-output-directory>`
+with Rust 1.96.0, its `wasm32-unknown-unknown` target, a host linker and
+wasm-bindgen CLI 0.2.129. The command extracts the pinned revision into
+a temporary directory and applies the [preview patch](fixtures/opendoc-word-preview.patch).
+The staging command above checks the resulting runtime files by SHA-256.
+A fresh WSL Ubuntu 24.04 build matched all five staged file hashes from
+the separate build. The standalone smoke checks seven preview assets
+when the flag is on, including WASM, both JavaScript files, notices and
+the Persian fallback font. Redistribution review and broader
+compatibility remain open.
+
+On `7aeb880e`, the preview-enabled standalone build passed the focused
+invalid-input, retry, real PDF download and worker CSP test in Chromium,
+Firefox and WebKit over isolated HTTPS. The earlier WebKit development
+run did not enable conversion after file selection.
 
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned

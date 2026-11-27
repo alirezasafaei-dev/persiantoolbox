@@ -10,6 +10,7 @@ const BASE_URL = `http://${HOST}:${PORT}`;
 const START_TIMEOUT_MS = 120_000;
 const REQUEST_TIMEOUT_MS = 15_000;
 const POLL_INTERVAL_MS = 1_000;
+const WORD_PDF_PREVIEW = process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW === '1';
 
 const ROUTE_CHECKS = [
   { path: '/', expectedStatus: 200 },
@@ -40,6 +41,20 @@ const PDF_ASSETS = [
   { path: '/pdf-engine/v1/document-worker.mjs', contentType: 'javascript' },
   { path: '/pdf-engine/v1/runtime/qpdf.wasm', contentType: 'application/wasm' },
   { path: '/pdf-engine/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
+  ...(WORD_PDF_PREVIEW
+    ? [
+        { path: '/word-pdf/v1/worker.mjs', contentType: 'javascript' },
+        { path: '/word-pdf/v1/runtime/src/index.js', contentType: 'javascript' },
+        { path: '/word-pdf/v1/runtime/pkg/opendoc_viewer.js', contentType: 'javascript' },
+        {
+          path: '/word-pdf/v1/runtime/pkg/opendoc_viewer_bg.wasm',
+          contentType: 'application/wasm',
+        },
+        { path: '/word-pdf/v1/runtime/LICENSE', contentType: 'application/octet-stream' },
+        { path: '/word-pdf/v1/runtime/NOTICE', contentType: 'application/octet-stream' },
+        { path: '/fonts/Vazirmatn-Regular.ttf', contentType: 'font/ttf' },
+      ]
+    : []),
 ];
 
 const delay = (ms) => new Promise((resolveDelay) => setTimeout(resolveDelay, ms));

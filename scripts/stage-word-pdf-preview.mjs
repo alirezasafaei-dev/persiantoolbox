@@ -5,11 +5,11 @@ import { dirname, join, resolve } from 'node:path';
 const source = process.argv[2];
 if (!source) throw new Error('Supply the verified, patched OpenDoc viewer directory.');
 
-// OpenDoc 91775489, Rust 1.96.0, wasm-bindgen 0.2.129, guarded RTL build.
+// OpenDoc 91775489, Rust 1.96.0, wasm-bindgen 0.2.129, bounded RTL build.
 const assets = {
   'src/index.js': '8c5af9ad8138648daaf914f91ea72eb2ff5dcaac7ca15c0ffda37b0e66f1af18',
   'pkg/opendoc_viewer.js': '0370cc66d10dcabb7fa458f2ea997124d7a8b3ef323cf80e13f7d737b989197a',
-  'pkg/opendoc_viewer_bg.wasm': 'b05f93f327fe7709258c4cf4bd02356e830c9beb36037829b4114c9b67ae35a5',
+  'pkg/opendoc_viewer_bg.wasm': '043c545c1ffa6e1f5d772e3588ab54b6d107554700a3762f6ddc128b95e4960f',
   LICENSE: 'c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4',
   NOTICE: '7885e537500ca31a3abdead472d2c061367cf981d47950751fd8ec8269286484',
 };
