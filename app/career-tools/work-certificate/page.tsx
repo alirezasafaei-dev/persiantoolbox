@@ -35,27 +35,6 @@ export default async function WorkCertificatePage() {
 
   return (
     <SiteShell containerClassName="py-10">
-      <Script
-        id="work-certificate-breadcrumb"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'خانه', item: siteUrl },
-              {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'ابزارهای شغلی',
-                item: `${siteUrl}/career-tools`,
-              },
-              { '@type': 'ListItem', position: 3, name: 'گواهی سابقه کار' },
-            ],
-          }),
-        }}
-      />
       <BreadcrumbSchema
         items={[
           { name: 'خانه', url: siteUrl },
