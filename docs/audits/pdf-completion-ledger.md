@@ -446,6 +446,19 @@ Read-only Production checks returned HTTP 200 for both version and health.
 The version endpoint reported `771366adb58ac1290c6cfa192ecd803d849a426f`,
 the merge for PR #302. This is a separate live checkpoint from PR #301.
 
+## PDF to Image cancellation
+
+Chromium reproduced the loss of keyboard focus when the cancel button
+disappeared. Cancel now returns focus to the enabled Convert button.
+The regression retries while the canceled file read is still pending,
+downloads a PNG, checks its decoded dimensions, and confirms that a late
+read failure leaves the output URL and visible state intact.
+
+The Node 20 build passed. In isolated standalone HTTPS, Chromium,
+Firefox and WebKit each passed cancellation with retry, oversized-canvas
+rejection with smaller-page recovery, and the ZIP test comparing its PNG
+entry with the individual download. Physical-device limits remain open.
+
 ## Tagged PDF output follow-up
 
 The Chromium baseline downloaded a PDF from each operation, and both

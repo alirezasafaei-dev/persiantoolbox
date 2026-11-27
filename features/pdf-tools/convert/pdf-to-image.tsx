@@ -148,6 +148,15 @@ export default function PdfToImagePage() {
   const active = useRef(false);
   const selection = useRef<AbortController | null>(null);
   const conversion = useRef<AbortController | null>(null);
+  const convertButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef(false);
+
+  useEffect(() => {
+    if (!busy && restoreFocusRef.current) {
+      restoreFocusRef.current = false;
+      convertButtonRef.current?.focus();
+    }
+  }, [busy]);
 
   useEffect(() => {
     active.current = true;
@@ -504,11 +513,23 @@ export default function PdfToImagePage() {
             >
               تغییر فایل
             </Button>
-            <Button type="button" onClick={onConvert} disabled={busy || zipBusy}>
+            <Button
+              ref={convertButtonRef}
+              type="button"
+              onClick={onConvert}
+              disabled={busy || zipBusy}
+            >
               {busy ? 'در حال تبدیل...' : 'تبدیل به تصویر'}
             </Button>
             {busy ? (
-              <Button type="button" variant="secondary" onClick={cancelConversion}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  restoreFocusRef.current = true;
+                  cancelConversion();
+                }}
+              >
                 لغو پردازش
               </Button>
             ) : null}

@@ -42,6 +42,68 @@ for (const colorScheme of ['light', 'dark'] as const) {
   });
 }
 
+test('canceling PDF rasterization restores keyboard focus and allows immediate retry', async ({
+  page,
+}) => {
+  const source = await PDFDocument.create();
+  source.addPage([160, 100]).drawRectangle({ x: 12, y: 12, width: 60, height: 40 });
+  const fixture = {
+    name: 'raster-cancel.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from(await source.save()),
+  };
+  await page.addInitScript(() => {
+    const read = File.prototype.arrayBuffer;
+    let paused = false;
+    File.prototype.arrayBuffer = async function (this: File) {
+      if (
+        this.name === 'raster-cancel.pdf' &&
+        document.documentElement.dataset['pauseRasterRead'] === 'true' &&
+        !paused
+      ) {
+        paused = true;
+        await new Promise<void>((resolve) => {
+          window.addEventListener('release-raster-read', () => resolve(), { once: true });
+          document.documentElement.dataset['rasterReadPending'] = 'true';
+        });
+        throw new Error('Late failure from canceled rasterization');
+      }
+      return read.call(this);
+    };
+  });
+  await page.goto('/pdf-tools/convert/pdf-to-image');
+  const consent = page.getByRole('dialog', { name: 'cookie consent' });
+  await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
+  const input = page.getByLabel('انتخاب فایل PDF');
+  await expect(async () => {
+    await input.setInputFiles([]);
+    await input.setInputFiles(fixture);
+    await expect(page.getByText(fixture.name, { exact: false })).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  await page.locator('#pdf-to-image-scale').selectOption('1');
+  await page.evaluate(() => {
+    document.documentElement.dataset['pauseRasterRead'] = 'true';
+  });
+  const convert = page.getByRole('button', { name: 'تبدیل به تصویر', exact: true });
+  await convert.press('Enter');
+  await expect(page.locator('html')).toHaveAttribute('data-raster-read-pending', 'true');
+  await page.getByRole('button', { name: 'لغو پردازش', exact: true }).press('Enter');
+  await expect(convert).toBeFocused();
+  await convert.press('Enter');
+
+  const link = page.locator('a[download="page-1.png"]');
+  const pngBytes = await downloadBytes(link);
+  const { format, width, height } = await sharp(pngBytes).metadata();
+  expect({ format, width, height }).toEqual({ format: 'png', width: 160, height: 100 });
+  const imageUrl = await link.getAttribute('href');
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('release-raster-read'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  });
+  await expect(page.getByText('Late failure from canceled rasterization')).toHaveCount(0);
+  await expect(link).toHaveAttribute('href', imageUrl ?? '');
+});
+
 test('downloading the image ZIP preserves separate PDF page downloads', async ({ page }) => {
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Symbol);
