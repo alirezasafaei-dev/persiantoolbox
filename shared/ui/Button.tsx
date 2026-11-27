@@ -1,7 +1,7 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ComponentPropsWithRef, ReactNode } from 'react';
 import { getButtonClasses, type ButtonSize, type ButtonVariant } from './buttonStyles';
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ComponentPropsWithRef<'button'> & {
   children: ReactNode;
   variant?: ButtonVariant;
   size?: ButtonSize;

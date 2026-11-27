@@ -26,6 +26,15 @@ export default function WordToPdfPreview() {
   const [result, setResult] = useState<Result | null>(null);
   const operationRef = useRef<Operation | null>(null);
   const objectUrlRef = useRef<string | null>(null);
+  const convertButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef(false);
+
+  useEffect(() => {
+    if (!busy && restoreFocusRef.current) {
+      restoreFocusRef.current = false;
+      convertButtonRef.current?.focus();
+    }
+  }, [busy]);
 
   useEffect(() => {
     return () => {
@@ -148,11 +157,23 @@ export default function WordToPdfPreview() {
       />
       {file ? <bdi className="block break-all">{file.name}</bdi> : null}
       <div className="flex flex-wrap gap-2">
-        <Button type="button" disabled={!file || busy} onClick={() => void convert()}>
+        <Button
+          ref={convertButtonRef}
+          type="button"
+          disabled={!file || busy}
+          onClick={() => void convert()}
+        >
           تبدیل به PDF
         </Button>
         {busy ? (
-          <Button type="button" variant="outline" onClick={cancel}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              restoreFocusRef.current = true;
+              cancel();
+            }}
+          >
             لغو تبدیل
           </Button>
         ) : null}

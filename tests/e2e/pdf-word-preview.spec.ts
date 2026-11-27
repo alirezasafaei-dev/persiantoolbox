@@ -68,12 +68,13 @@ test('Word preview recovers from invalid input and cancellation and downloads a 
   });
   await convert.click();
   await expect(page.locator('html')).toHaveAttribute('data-preview-read-pending', 'true');
-  await page.getByRole('button', { name: 'لغو تبدیل', exact: true }).click();
+  await page.getByRole('button', { name: 'لغو تبدیل', exact: true }).press('Enter');
   await expect(convert).toBeEnabled();
+  await expect(convert).toBeFocused();
   await expect(download).toHaveCount(0);
   await page.evaluate(() => document.dispatchEvent(new Event('release-preview-read')));
 
-  await convert.click();
+  await page.keyboard.press('Enter');
   await expect(download).toBeVisible();
   const [file] = await Promise.all([page.waitForEvent('download'), download.click()]);
   expect(file.suggestedFilename()).toBe('preview.pdf');

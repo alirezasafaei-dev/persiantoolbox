@@ -55,6 +55,12 @@ remaining per-tool acceptance criteria.
 
 The Add Page Numbers regression preserved the attachment filename and all five synthetic bytes in the actual download. Chromium and Firefox passed on isolated standalone HTTP. WebKit passed over isolated HTTPS after the HTTP run failed to load application assets. The tested application code is unchanged from `822fa2d6`.
 
+The opt-in Word converter has an additional keyboard regression in
+`tests/e2e/pdf-word-preview.spec.ts`: cancelling a pending file read with
+Enter restores focus to Convert, and pressing Enter again produces the
+same downloadable two-page PDF. This covers explicit cancellation in
+the standalone preview over local HTTPS.
+
 ### Standalone candidate `385d534b`
 
 - **No-JavaScript rendering** · PASS in Chromium and Firefox for one visible
