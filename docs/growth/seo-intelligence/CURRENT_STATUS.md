@@ -1,6 +1,6 @@
 # Current status
 
-Latest confirmed production: `897ae74b8ec401a0db0c88cbbe0e0c45820d66dd`.
+Latest confirmed production: `55373bc4fc0481238a1f48bd5256a88f532a61e0`.
 
 Direct Google Search Console and GA4 reads succeeded. Baseline attribution and technical evidence are recorded in [Latest](LATEST.md). PR #301 remains draft and held. Open items include the remaining technical and competitive review, conversion instrumentation, release-to-route evidence, and follow-up measurements.
 

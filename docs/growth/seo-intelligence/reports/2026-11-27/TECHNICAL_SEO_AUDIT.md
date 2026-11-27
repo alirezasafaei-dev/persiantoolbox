@@ -6,7 +6,7 @@ The public sitemap returned HTTP 200 with 480 unique URLs. The audit used rate-l
 
 ## HTML crawl coverage
 
-Attempted 275/480 sitemap URLs. HTTP 200 275, other HTTP statuses 0, request errors 0, canonical mismatches 0, noindex 0, missing H1 0, multiple H1 0. Duplicate titles 2 groups and descriptions 2 groups in the sampled HTML. This is a static SSR probe, and any duplicate needs intent review.
+All 480 sitemap URLs returned HTTP 200 with self-canonical URLs, Persian RTL markup and no noindex directive. Seventeen pages had no H1 in SSR HTML. All 17 also had no H1 after a mobile Chromium render. No page had multiple H1s in SSR. Two pairs of Persian blog category pages share both title and description. Inspect article-set overlap and navigation intent before consolidating. Field Core Web Vitals and complete internal-link reachability remain open.
 
 The sitemap dates for invoice (2026-09-13) and work certificate (2026-06-30) predate confirmed substantive live updates on 2026-11-21 and 2026-11-27. Update the maintained registry dates and add an emitted-sitemap regression. Avoid stamping every route with the build date.
 

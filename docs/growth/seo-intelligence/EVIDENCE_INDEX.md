@@ -7,3 +7,5 @@
 - [Sitemap](https://persiantoolbox.ir/sitemap.xml) and [robots](https://persiantoolbox.ir/robots.txt)
 - [Reported aggregate data](metrics-summary.json)
 - Raw Search Console and GA4 records are private and require authorized access to independently recompute.
+
+- [Strict production verification for sitemap freshness](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/46078794473)

@@ -7,3 +7,7 @@
 | [#305](https://github.com/alirezasafaei-dev/persiantoolbox/pull/305) Letter field labels              | 2026-11-27, SHA `897ae74b8ec401a0db0c88cbbe0e0c45820d66dd` | `/writing-tools/formal-letter`   | When verified completion instrumentation has 7 finalized days                      | PENDING_MEASUREMENT     |
 
 Baselines use the previous and current matched property windows in [Metrics](metrics-summary.json). Freeze a matched, URL-level reference before grading impact. Report organic changes separately from functional verification.
+
+## Sitemap freshness correction
+
+[PR #307](https://github.com/alirezasafaei-dev/persiantoolbox/pull/307) deployed `55373bc4fc0481238a1f48bd5256a88f532a61e0`. [Strict production verification](https://github.com/alirezasafaei-dev/persiantoolbox/actions/runs/46078794473) completed at 23:10 UTC on 2026-11-27. The affected routes are address conversion, invoice, work certificate and formal letter. The four URLs remain self-canonical and the sitemap now gives their verified substantive update dates. The hypothesis is improved freshness accuracy. Use the URL aggregates in [Metrics](metrics-summary.json) as the observational baseline. Track the first observed crawl per URL, then compare 7, 14 and 28 settled days starting on the following full day. Status PENDING_MEASUREMENT.
