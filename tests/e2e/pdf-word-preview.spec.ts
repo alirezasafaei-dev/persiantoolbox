@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { Document, Packer, PageBreak, Paragraph } from 'docx';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-test('Word preview recovers from an invalid document and downloads a local PDF', async ({
+test('Word preview recovers from invalid input and cancellation and downloads a local PDF', async ({
   page,
 }) => {
   test.skip(
@@ -49,6 +49,30 @@ test('Word preview recovers from an invalid document and downloads a local PDF',
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     buffer: await Packer.toBuffer(doc),
   });
+  await page.evaluate(() => {
+    const read = File.prototype.arrayBuffer;
+    File.prototype.arrayBuffer = function () {
+      if (this.name !== 'preview.docx') {
+        return read.call(this);
+      }
+      File.prototype.arrayBuffer = read;
+      return new Promise<ArrayBuffer>((resolve, reject) => {
+        document.addEventListener(
+          'release-preview-read',
+          () => void read.call(this).then(resolve, reject),
+          { once: true },
+        );
+        document.documentElement.dataset['previewReadPending'] = 'true';
+      });
+    };
+  });
+  await convert.click();
+  await expect(page.locator('html')).toHaveAttribute('data-preview-read-pending', 'true');
+  await page.getByRole('button', { name: 'لغو تبدیل', exact: true }).click();
+  await expect(convert).toBeEnabled();
+  await expect(download).toHaveCount(0);
+  await page.evaluate(() => document.dispatchEvent(new Event('release-preview-read')));
+
   await convert.click();
   await expect(download).toBeVisible();
   const [file] = await Promise.all([page.waitForEvent('download'), download.click()]);
@@ -73,7 +97,7 @@ test('Word preview recovers from an invalid document and downloads a local PDF',
   }
   expect(requests).toEqual([]);
   const worker = await page.request.get('/word-pdf/v1/worker.mjs');
-  const document = await page.request.get(route);
+  const response = await page.request.get(route);
   expect(worker.headers()['content-security-policy']).toContain("'wasm-unsafe-eval'");
-  expect(document.headers()['content-security-policy']).not.toContain("'wasm-unsafe-eval'");
+  expect(response.headers()['content-security-policy']).not.toContain("'wasm-unsafe-eval'");
 });
