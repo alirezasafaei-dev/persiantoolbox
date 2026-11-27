@@ -2,8 +2,12 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
-const source = process.argv[2];
-if (!source) throw new Error('Supply the verified, patched OpenDoc viewer directory.');
+const target = resolve('public/word-pdf/v1/runtime');
+const argument = process.argv[2];
+const check = argument === '--check';
+if (!argument) throw new Error('Supply the verified, patched OpenDoc viewer directory.');
+if (check && process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW !== '1') process.exit(0);
+const source = check ? target : argument;
 
 // OpenDoc 91775489, Rust 1.96.0, wasm-bindgen 0.2.129, bounded RTL build.
 const assets = {
@@ -17,17 +21,27 @@ const assets = {
 };
 const verified = await Promise.all(
   Object.entries(assets).map(async ([file, expected]) => {
-    const bytes = await readFile(join(source, file));
+    const bytes = await readFile(join(source, file)).catch((error) => {
+      if (check && error.code === 'ENOENT') {
+        throw new Error(
+          `Missing OpenDoc preview asset: ${file}. Run scripts/stage-word-pdf-preview.mjs first.`,
+        );
+      }
+      throw error;
+    });
     if (createHash('sha256').update(bytes).digest('hex') !== expected) {
       throw new Error(`OpenDoc preview asset failed verification: ${file}`);
     }
     return { file, bytes };
   }),
 );
-const target = resolve('public/word-pdf/v1/runtime');
-for (const { file, bytes } of verified) {
-  const output = join(target, file);
-  await mkdir(dirname(output), { recursive: true });
-  await writeFile(output, bytes);
+if (!check) {
+  for (const { file, bytes } of verified) {
+    const output = join(target, file);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, bytes);
+  }
 }
-console.log(`Verified and staged ${verified.length} OpenDoc preview assets.`);
+console.log(
+  `${check ? 'Verified' : 'Verified and staged'} ${verified.length} OpenDoc preview assets.`,
+);
