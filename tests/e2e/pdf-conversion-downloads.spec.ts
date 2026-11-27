@@ -106,6 +106,8 @@ test('canceling PDF rasterization restores keyboard focus and allows immediate r
 
 test('downloading the image ZIP preserves separate PDF page downloads', async ({ page }) => {
   const pdf = await PDFDocument.create();
+  const privateTitle = 'SYNTHETIC-PRIVATE-RASTER-TITLE';
+  pdf.setTitle(privateTitle);
   const font = await pdf.embedFont(StandardFonts.Symbol);
   pdf.addPage([180, 130]).drawText('Ω∑αβγ', { font, x: 20, y: 55, size: 24 });
   const fontResponses: string[] = [];
@@ -118,6 +120,32 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
   const consent = page.getByRole('dialog', { name: 'cookie consent' });
   await consent.getByRole('button', { name: 'رد همه کوکی‌ها', exact: true }).click();
   await expect(consent).toBeHidden();
+  const history: unknown[] = [];
+  const outbound: string[] = [];
+  await page.exposeFunction('captureRasterHistory', (payload: unknown) => {
+    history.push(payload);
+  });
+  await page.evaluate(() => {
+    document.cookie = 'pt_session=synthetic-history-fixture; Path=/; SameSite=Lax';
+    const capture = (
+      window as Window & { captureRasterHistory?: (payload: unknown) => Promise<void> }
+    ).captureRasterHistory;
+    if (!capture) throw new Error('Missing raster history capture');
+    const fetch = window.fetch.bind(window);
+    window.fetch = async (input, init) => {
+      if (input === '/api/history' && init?.method === 'POST' && typeof init.body === 'string') {
+        await capture(JSON.parse(init.body));
+        return Response.json({});
+      }
+      return fetch(input, init);
+    };
+  });
+  expect(await page.evaluate(() => document.cookie.includes('pt_session='))).toBe(true);
+  page.on('request', (request) => {
+    if (/^https?:/.test(request.url())) {
+      outbound.push(`${request.url()}\n${request.postData() ?? ''}`);
+    }
+  });
   const input = page.getByLabel('انتخاب فایل PDF');
   const fixture = {
     name: 'conversion-fixture.pdf',
@@ -146,6 +174,25 @@ test('downloading the image ZIP preserves separate PDF page downloads', async ({
   const archived = await zip.file('page-1.png')?.async('nodebuffer');
   expect(archived?.equals(first)).toBe(true);
   expect((await downloadBytes(link)).equals(first)).toBe(true);
+  const imageHistory = {
+    tool: 'pdf-to-image',
+    inputSummary: 'صفحه 1',
+    outputSummary: 'دانلود تصویر صفحه 1',
+  };
+  await expect
+    .poll(() => history)
+    .toEqual([
+      imageHistory,
+      {
+        tool: 'pdf-to-image',
+        inputSummary: 'ZIP | تعداد صفحات: 1',
+        outputSummary: 'دانلود فایل ZIP تصاویر',
+      },
+      imageHistory,
+    ]);
+  expect(outbound.some((item) => item.includes(fixture.name) || item.includes(privateTitle))).toBe(
+    false,
+  );
 });
 
 test('image to PDF rejects oversized and empty selections without clearing valid images', async ({
