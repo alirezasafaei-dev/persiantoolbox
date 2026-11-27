@@ -1,0 +1,428 @@
+diff --git a/crates/casual-doc-layout/src/flow.rs b/crates/casual-doc-layout/src/flow.rs
+index 09f10d8..1bd7880 100644
+--- a/crates/casual-doc-layout/src/flow.rs
++++ b/crates/casual-doc-layout/src/flow.rs
+@@ -2328,6 +2328,7 @@ fn flow_table<S: GalleySink + ?Sized>(
+         ctx,
+         &merge_roles,
+         &style_layers,
++        &border_candidates,
+     );
+
+     // Logical grid edges are independent of physical alignment. `w:bidiVisual`
+@@ -3249,6 +3250,7 @@ fn solve_table_columns(
+     ctx: &FlowCtx,
+     merge_roles: &[Vec<VerticalMergeRole>],
+     style_layers: &[Vec<TableStyleLayer>],
++    border_candidates: &[Vec<TableBorders>],
+ ) -> Vec<Twip> {
+     let ncols = table_column_count(table);
+
+@@ -3279,7 +3281,28 @@ fn solve_table_columns(
+                     .width
+                     .and_then(|width| width.dxa_twips())
+                     .unwrap_or(0);
+-                let cpref = cmax.max(cell_pref);
++                let margins = cell_content_margins(
++                    &cell.properties,
++                    &style_layers[row_index][cell_index],
++                    props,
++                );
++                let spacing = effective_cell_spacing(props, row).max(0);
++                let row_borders = &border_candidates[row_index];
++                let (start, end) = resolve_vertical_cell_borders(
++                    row_borders,
++                    cell_index,
++                    spacing == 0,
++                    ctx.palette,
++                );
++                let edge_reserve = |edge: Option<ResolvedEdge>| {
++                    edge.map_or(0, |edge| edge.total_thickness().raw() / 2)
++                };
++                let horizontal_padding = margins.start.raw()
++                    .saturating_add(margins.end.raw())
++                    .saturating_add(edge_reserve(start))
++                    .saturating_add(edge_reserve(end))
++                    .saturating_add(spacing);
++                let cpref = cmax.saturating_add(horizontal_padding).max(cell_pref);
+                 // `w:noWrap` raises the cell's *minimum* to its unwrapped width, so
+                 // the solver widens the column rather than wrapping the content.
+                 // The column carries the cell's content margins as well as its
+@@ -3291,14 +3314,9 @@ fn solve_table_columns(
+                 // change to the solver's inputs and is left alone deliberately —
+                 // only the no-wrap minimum, where it is load-bearing, is fixed.)
+                 let cmin = if cell_no_wrap_applies(&cell.properties) {
+-                    let margins = cell_content_margins(
+-                        &cell.properties,
+-                        &style_layers[row_index][cell_index],
+-                        props,
+-                    );
+-                    cmin.max(cpref.saturating_add(margins.start.raw() + margins.end.raw()))
++                    cmin.max(cpref)
+                 } else {
+-                    cmin
++                    cmin.saturating_add(horizontal_padding)
+                 };
+                 // A spanning cell's demand is shared over the columns it covers.
+                 let per_min = div_ceil(cmin, span as i32);
+@@ -3552,6 +3570,9 @@ fn block_intrinsic(
+                     mctx.default_tab,
+                     LineConstraints {
+                         max_width: Twip(1),
++                        // Measure at the physical left edge, without the
++                        // paragraph's auto-detected directional start offset.
++                        alignment: TextAlignment::Intrinsic,
+                         ..LineConstraints::default()
+                     },
+                     range,
+@@ -3572,6 +3593,9 @@ fn block_intrinsic(
+                     mctx.default_tab,
+                     LineConstraints {
+                         max_width: Twip(1_000_000),
++                        // Measure at the physical left edge, without the
++                        // paragraph's auto-detected directional start offset.
++                        alignment: TextAlignment::Intrinsic,
+                         ..LineConstraints::default()
+                     },
+                     range,
+@@ -3607,6 +3631,9 @@ fn block_intrinsic(
+                     std::slice::from_ref(&run),
+                     LineConstraints {
+                         max_width: Twip(1),
++                        // Measure at the physical left edge, without the
++                        // paragraph's auto-detected directional start offset.
++                        alignment: TextAlignment::Intrinsic,
+                         ..LineConstraints::default()
+                     },
+                     range,
+@@ -3615,6 +3642,9 @@ fn block_intrinsic(
+                     &[run],
+                     LineConstraints {
+                         max_width: Twip(1_000_000),
++                        // Measure at the physical left edge, without the
++                        // paragraph's auto-detected directional start offset.
++                        alignment: TextAlignment::Intrinsic,
+                         ..LineConstraints::default()
+                     },
+                     range,
+@@ -3695,8 +3725,6 @@ fn resolve_cell_borders(
+ ) -> CellBorders {
+     let row = &rows[row_index].cells;
+     let own = &effective[row_index][index];
+-    let left = index.checked_sub(1).map(|i| &effective[row_index][i]);
+-    let right = effective[row_index].get(index + 1);
+     let before_of = |r: usize| rows[r].properties.grid_before.unwrap_or(0) as usize;
+     let (start_col, end_col) = cell_column_range(row, index, before_of(row_index));
+
+@@ -3729,10 +3757,7 @@ fn resolve_cell_borders(
+         );
+     }
+
+-    let own_start = own.start.as_ref();
+-    let left_end = left.and_then(|borders| borders.end.as_ref());
+-    let own_end = own.end.as_ref();
+-    let right_start = right.and_then(|borders| borders.start.as_ref());
++    let (start, end) = resolve_vertical_cell_borders(&effective[row_index], index, true, palette);
+
+     let top_segments = row_index
+         .checked_sub(1)
+@@ -3769,13 +3794,31 @@ fn resolve_cell_borders(
+     CellBorders {
+         top: resolve_edge(&top_candidates, palette),
+         bottom: resolve_edge(&bottom_candidates, palette),
+-        start: resolve_edge(&[left_end, own_start], palette),
+-        end: resolve_edge(&[own_end, right_start], palette),
++        start,
++        end,
+         top_segments,
+         bottom_segments,
+     }
+ }
+
++fn resolve_vertical_cell_borders(
++    row: &[TableBorders],
++    index: usize,
++    collapse: bool,
++    palette: Option<&ResolvedPalette>,
++) -> (Option<ResolvedEdge>, Option<ResolvedEdge>) {
++    let own = &row[index];
++    if !collapse {
++        return (resolve_edge(&[own.start.as_ref()], palette), resolve_edge(&[own.end.as_ref()], palette));
++    }
++    let left_end = index.checked_sub(1).and_then(|i| row[i].end.as_ref());
++    let right_start = row.get(index + 1).and_then(|cell| cell.start.as_ref());
++    (
++        resolve_edge(&[left_end, own.start.as_ref()], palette),
++        resolve_edge(&[own.end.as_ref(), right_start], palette),
++    )
++}
++
+ /// Resolves one cell's already materialized sides without consulting adjacent
+ /// cells. This is the non-zero-spacing mode: each side remains visible in its
+ /// own inset cell box instead of collapsing to one shared winner.
+@@ -7110,7 +7153,7 @@ fn layout_fielded_line(
+         let offset = match constraints.alignment {
+             TextAlignment::Center => slack / 2,
+             TextAlignment::End => slack,
+-            TextAlignment::Start | TextAlignment::Justify => 0,
++            TextAlignment::Start | TextAlignment::Justify | TextAlignment::Intrinsic => 0,
+         };
+         if offset > 0 {
+             for run in &mut runs {
+@@ -7264,12 +7307,22 @@ fn measure_fielded_segment(
+                 if let Some(line) = layout.lines.first() {
+                     ascent = ascent.max(line.ascent);
+                     descent = descent.max(line.descent);
++                    // Start alignment is directional. Parley can place an RTL
++                    // group at the far edge of the unwrapped measurement line.
++                    // Measure and place the group from its own visual origin.
++                    let left = line
++                        .runs
++                        .iter()
++                        .map(|run| run.origin.x)
++                        .min()
++                        .unwrap_or(Twip::ZERO);
+                     let mut group_w = 0i32;
+                     for r in &line.runs {
+-                        let end = r.origin.x.raw() + run_advance(r).raw();
++                        let local_x = r.origin.x - left;
++                        let end = local_x.raw() + run_advance(r).raw();
+                         group_w = group_w.max(end);
+                         let mut placed = r.clone();
+-                        placed.origin = Point::new(r.origin.x + Twip(pen), Twip::ZERO);
++                        placed.origin = Point::new(local_x + Twip(pen), Twip::ZERO);
+                         runs.push(placed);
+                     }
+                     pen += group_w;
+diff --git a/crates/casual-doc-layout/src/shape.rs b/crates/casual-doc-layout/src/shape.rs
+index 51b3ad3..d415572 100644
+--- a/crates/casual-doc-layout/src/shape.rs
++++ b/crates/casual-doc-layout/src/shape.rs
+@@ -533,6 +533,12 @@ const CJK_SINGLE_LINE_FACTOR: f32 = 1.2;
+ ///
+ /// Delegates to [`crate::script::is_east_asian`], the single source of truth for
+ /// the East-Asian range table (also used by per-script font-slot selection).
++fn is_arabic_mark(ch: char) -> bool {
++    matches!(ch as u32,
++        0x0610..=0x061A | 0x064B..=0x065F | 0x0670 |
++        0x06D6..=0x06ED | 0x0897..=0x089F | 0x08CA..=0x08FF)
++}
++
+ fn is_cjk_scalar(ch: char) -> bool {
+     crate::script::is_east_asian(ch)
+ }
+@@ -828,6 +834,7 @@ fn alignment(alignment: TextAlignment, rtl: bool) -> Alignment {
+         (TextAlignment::End, true) => Alignment::Left,
+         (TextAlignment::Center, _) => Alignment::Center,
+         (TextAlignment::Justify, _) => Alignment::Justify,
++        (TextAlignment::Intrinsic, _) => Alignment::Left,
+     }
+ }
+
+@@ -1052,8 +1059,21 @@ impl ParleyShaper {
+         // unchanged. It also reports whether the paragraph contains a CJK run that
+         // shaped with a dynamic (non-bundled) OS/host *fallback* face, whose native
+         // line height does not represent the run font's size.
+-        let (layout, cjk_fallback) = self.shape_inner(runs, objects, constraints, range, false);
++        let (layout, cjk_fallback, arabic_fallback) = self.shape_inner(runs, objects, constraints, range, None);
+         if !cjk_fallback {
++            if arabic_fallback
++                && constraints.line_exact.is_none()
++                && constraints.line_at_least.is_none()
++                && constraints.line_height_percent.is_none()
++                && constraints.line_grid_pitch.is_none()
++                && objects.images.is_empty()
++                && objects.maths.is_empty()
++                && objects.floats.is_empty()
++                && !runs.iter().any(|run| run.text.chars().any(is_arabic_mark))
++            {
++                // Isolated metric experiment, calibrated to the reference fixture.
++                return self.shape_inner(runs, objects, constraints, range, Some(1.09)).0;
++            }
+             return layout;
+         }
+         // Re-shape the CJK paragraph with the line box driven by the *run font size*
+@@ -1062,7 +1082,7 @@ impl ParleyShaper {
+         // `parley` (rather than rewriting the box afterwards) keeps the glyph
+         // baselines and the line box consistent on every downstream path, including
+         // paragraphs that never go through the flow layer's line restacking.
+-        let mut normalized = self.shape_inner(runs, objects, constraints, range, true).0;
++        let mut normalized = self.shape_inner(runs, objects, constraints, range, Some(CJK_SINGLE_LINE_FACTOR)).0;
+         if constraints.alignment == TextAlignment::Start
+             && images.is_empty()
+             && maths.is_empty()
+@@ -1094,8 +1114,8 @@ impl ParleyShaper {
+         objects: InlineObjects<'_>,
+         constraints: LineConstraints,
+         range: ModelRange,
+-        normalize_cjk: bool,
+-    ) -> (LineLayout, bool) {
++        fallback_line_factor: Option<f32>,
++    ) -> (LineLayout, bool, bool) {
+         // A paragraph with no runs (a model-empty paragraph, or a break/section
+         // paragraph whose only content is a zero-width control) has nothing to
+         // shape. Returning no lines — rather than letting `parley` fabricate one at
+@@ -1109,7 +1129,7 @@ impl ParleyShaper {
+             && objects.maths.is_empty()
+             && objects.floats.is_empty()
+         {
+-            return (LineLayout { lines: Vec::new() }, false);
++            return (LineLayout { lines: Vec::new() }, false, false);
+         }
+
+         let mut fonts = self.fonts.borrow_mut();
+@@ -1158,8 +1178,7 @@ impl ParleyShaper {
+         // em. PR #170's blanket one-em floor prevented overpaint but visibly
+         // enlarged selected SDS paragraphs. Exact-height lines retain their
+         // explicit clip/baseline containment; `auto` spacing remains source-faithful.
+-        let cjk_line_factor = CJK_SINGLE_LINE_FACTOR * percent;
+-        if normalize_cjk {
++        if let Some(factor) = fallback_line_factor {
+             // Drive the line box from the run font size (Word's single-line height),
+             // not the fallback face's native metrics: every run's line height becomes
+             // `CJK_SINGLE_LINE_FACTOR * percent * font_size`, so a CJK line matches
+@@ -1167,7 +1186,7 @@ impl ParleyShaper {
+             // substitute face's ascent+descent. `parley` positions the baseline
+             // within this box, leaving room for the glyph ink so CJK is not clipped.
+             builder.push_default(StyleProperty::LineHeight(LineHeight::FontSizeRelative(
+-                cjk_line_factor,
++                factor * percent,
+             )));
+         } else if constraints.line_height_percent.is_some() {
+             // Line height as a percent of the metrics line height (`w:spacing@line`).
+@@ -1238,7 +1257,7 @@ impl ParleyShaper {
+                 // calculation so vertical metrics remain authored-size metrics.
+                 builder.push(
+                     StyleProperty::LineHeight(LineHeight::FontSizeRelative(
+-                        cjk_line_factor * 100.0 / f32::from(scale),
++                        fallback_line_factor.unwrap_or(CJK_SINGLE_LINE_FACTOR) * percent * 100.0 / f32::from(scale),
+                     )),
+                     *start..*end,
+                 );
+@@ -1331,6 +1350,7 @@ impl ParleyShaper {
+         // coverage-fallback face — the signal that this paragraph should be re-shaped
+         // with the run-font-driven line box (see `shape_paragraph`).
+         let mut cjk_fallback = false;
++        let mut arabic_fallback = false;
+         for (index, line) in layout.lines().enumerate() {
+             let metrics = line.metrics();
+             let mut out_runs = Vec::new();
+@@ -1465,11 +1485,11 @@ impl ParleyShaper {
+                 // under `system-fonts`, e.g. installed Arial) carry no CJK scalars, so
+                 // they never qualify — Latin docs stay pixel-identical. The bundled /
+                 // deterministic path is never a fallback face, so it never qualifies.
+-                if is_fallback
+-                    && let Some(slice) = text.get(run.text_range())
+-                    && slice.chars().any(is_cjk_scalar)
+-                {
+-                    cjk_fallback = true;
++                if is_fallback && let Some(slice) = text.get(run.text_range()) {
++                    cjk_fallback |= slice.chars().any(is_cjk_scalar);
++                    arabic_fallback |= slice.chars().any(|ch| {
++                        matches!(ch as u32, 0x0620..=0x06FF | 0x0750..=0x077F | 0x08A0..=0x08FF)
++                    });
+                 }
+                 // Record what this run could not draw properly, as a coverage gap
+                 // a host can query (`registry.missing_coverage`) and fetch a face
+@@ -1574,10 +1594,23 @@ impl ParleyShaper {
+                 let em = shaped_size.raw();
+                 let mut this_run_trim = 0i32;
+                 let mut glyphs: Vec<Glyph> = Vec::new();
++                let mut measured_end = glyph_run.offset();
+                 for glyph in glyph_run.glyphs() {
+                     let cluster = run_offsets.get(cursor).copied().unwrap_or(base);
+                     let is_whitespace = run_whitespace.get(cursor).copied().unwrap_or(false);
+-                    let native = glyph.advance.round() as i32;
++                    let native = if constraints.alignment == TextAlignment::Intrinsic {
++                        // Preserve a conservative right edge for line breaking in integer
++                        // twips without rounding each glyph's independent advance.
++                        let previous = if glyphs.is_empty() {
++                            glyph_run.offset().round()
++                        } else {
++                            measured_end.ceil()
++                        };
++                        measured_end += glyph.advance;
++                        (measured_end.ceil() - previous) as i32
++                    } else {
++                        glyph.advance.round() as i32
++                    };
+                     let advance = if is_fallback && !is_rtl {
+                         full_width_cjk_advance(
+                             run_cjk.get(cursor).copied().unwrap_or(false),
+@@ -1718,7 +1751,7 @@ impl ParleyShaper {
+             output_y = output_y + height;
+             source_y = source_y + natural;
+         }
+-        (LineLayout { lines }, cjk_fallback)
++        (LineLayout { lines }, cjk_fallback, arabic_fallback)
+     }
+ }
+
+diff --git a/crates/casual-doc-layout/src/text.rs b/crates/casual-doc-layout/src/text.rs
+index ea01857..896d972 100644
+--- a/crates/casual-doc-layout/src/text.rs
++++ b/crates/casual-doc-layout/src/text.rs
+@@ -904,6 +904,8 @@ pub enum TextAlignment {
+     Center,
+     /// Justified (last line start-aligned).
+     Justify,
++    /// Physical left alignment for measuring intrinsic widths.
++    Intrinsic,
+ }
+
+ /// The constraints a paragraph is shaped under.
+diff --git a/crates/casual-doc-layout/tests/field_paragraph_flow.rs b/crates/casual-doc-layout/tests/field_paragraph_flow.rs
+index f784602..5775998 100644
+--- a/crates/casual-doc-layout/tests/field_paragraph_flow.rs
++++ b/crates/casual-doc-layout/tests/field_paragraph_flow.rs
+@@ -299,3 +299,26 @@ fn a_recomputed_field_run_carries_the_faces_metrics_not_zero() {
+         line.ascent
+     );
+ }
++
++#[test]
++fn mixed_page_field_stays_inside_the_line_measure() {
++    let document = document(vec![paragraph(
++        100,
++        ParagraphProperties::default(),
++        vec![
++            run(101, "صفحه PT FOOTER MARKER "),
++            field(200, " PAGE ", "1"),
++        ],
++    )]);
++
++    let lines = lines(&document);
++    let line = lines.first().expect("the paragraph lays out one line");
++    assert_eq!(line.fields.len(), 1);
++    let field = &line.runs[line.fields[0].run as usize];
++    assert!(!field.glyphs.is_empty(), "the page value has glyphs");
++    assert!(
++        line.runs.iter().all(|run| run.origin.x >= Twip::ZERO && run.origin.x < MEASURE),
++        "short text and its PAGE field must stay within the available measure; got {:?}",
++        line.runs.iter().map(|run| run.origin.x).collect::<Vec<_>>()
++    );
++}
+diff --git a/crates/opendoc-viewer/src/lib.rs b/crates/opendoc-viewer/src/lib.rs
+index 9092e6e..0efadd3 100644
+--- a/crates/opendoc-viewer/src/lib.rs
++++ b/crates/opendoc-viewer/src/lib.rs
+@@ -220,13 +220,14 @@ impl fmt::Debug for ViewerDocument {
+     }
+ }
+
+-/// The input ceilings, the same envelope the editor admits (`casual-doc-wasm`'s
+-/// `viewer_limits`): a large DOCX is large because of its pictures.
++/// Admission limits for a single browser conversion worker. The ZIP reader
++/// applies the expanded-byte limits before document parts are read.
+ fn package_limits() -> casual_doc_ooxml::PackageLimits {
++    const MIB: usize = 1024 * 1024;
+     casual_doc_ooxml::PackageLimits {
+-        max_input_bytes: 200 * 1024 * 1024,
+-        max_total_expanded_bytes: 512 * 1024 * 1024,
+-        max_single_expanded_bytes: 200 * 1024 * 1024,
++        max_input_bytes: 8 * MIB,
++        max_total_expanded_bytes: 48 * MIB as u64,
++        max_single_expanded_bytes: 16 * MIB as u64,
+         ..casual_doc_ooxml::PackageLimits::default()
+     }
+ }

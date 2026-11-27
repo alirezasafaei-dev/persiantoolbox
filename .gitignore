@@ -68,6 +68,8 @@ packages/telegram-bot/pnpm-lock.yaml
 packages/telegram-bot/cf-worker/node_modules
 packages/telegram-bot/cf-worker/.wrangler
 public/pdf.worker.min.mjs
+public/pdfjs/cmaps/
+public/pdfjs/standard_fonts/
 tmp/
 
 # Internal / agent-only artifacts (not for public distribution)
@@ -91,3 +93,5 @@ id_ed25519
 *.dump
 gho_*
 cfut_*
+/public/pdf-engine/v1/runtime/
+/public/word-pdf/v1/runtime/

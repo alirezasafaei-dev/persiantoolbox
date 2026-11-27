@@ -163,10 +163,13 @@ export function proxy(request: NextRequest) {
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
   const requestHeaders = new Headers(request.headers);
   // A direct worker uses its response policy; page scripts retain the nonce policy.
-  const isOcrWorker = request.nextUrl.pathname === '/ocr/v7/worker.min.js';
+  const pathname = request.nextUrl.pathname;
+  const isWasmWorker =
+    ['/ocr/v7/worker.min.js', '/pdf-engine/v1/document-worker.mjs'].includes(pathname) ||
+    (process.env['NEXT_PUBLIC_WORD_PDF_PREVIEW'] === '1' && pathname === '/word-pdf/v1/worker.mjs');
   const workerCsp = "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'";
-  const csp = isOcrWorker ? workerCsp : buildCsp(nonce);
-  const reportOnlyCsp = isOcrWorker ? workerCsp : buildReportOnlyCsp(nonce);
+  const csp = isWasmWorker ? workerCsp : buildCsp(nonce);
+  const reportOnlyCsp = isWasmWorker ? workerCsp : buildReportOnlyCsp(nonce);
   requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('x-csp-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', reportOnlyCsp);
@@ -202,7 +205,6 @@ export function proxy(request: NextRequest) {
     response.headers.set(key, value);
   }
 
-  const pathname = request.nextUrl.pathname;
   const isAdminPage = pathname.startsWith('/admin');
   const isAdminApi = pathname.startsWith('/api/admin') || pathname.startsWith('/api/push/send');
   const isProtectedRoute = isAdminPage || isAdminApi;

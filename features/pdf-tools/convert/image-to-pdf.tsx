@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button, Card } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
@@ -8,6 +8,13 @@ import { loadPdfLib } from '@/features/pdf-tools/lazy-deps';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 import { formatBytesFa } from '@/shared/utils/format';
+
+const MAX_IMAGE_MIB = 20;
+const MAX_BATCH_MIB = 50;
+const MAX_IMAGES = 20;
+const MIB = 1024 * 1024;
+const MAX_IMAGE_PIXELS = 8_000_000;
+const MAX_BATCH_PIXELS = 24_000_000;
 
 const PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -21,26 +28,84 @@ type ImageItem = {
   id: string;
   file: File;
   previewUrl: string;
+  sourcePixels: number;
 };
 
-async function fileToPngBytes(file: File): Promise<Uint8Array> {
+function isJpeg(file: File) {
+  return file.type === 'image/jpeg' || file.type === 'image/jpg';
+}
+
+async function readJpegPixels(file: File): Promise<number> {
+  const { JpegEmbedder } = await loadPdfLib();
+  const { width, height } = await JpegEmbedder.for(new Uint8Array(await file.arrayBuffer())).catch(
+    () => {
+      throw new Error('ساختار JPEG معتبر نیست.');
+    },
+  );
+  if (!width || !height || width * height > MAX_IMAGE_PIXELS) {
+    throw new Error('ابعاد JPEG باید معتبر و حداکثر ۸ میلیون پیکسل باشد.');
+  }
+  return width * height;
+}
+
+async function readPngPixels(file: File): Promise<number> {
+  const header = new DataView(await file.slice(0, 24).arrayBuffer());
+  if (
+    header.byteLength !== 24 ||
+    header.getUint32(0) !== 0x89504e47 ||
+    header.getUint32(4) !== 0x0d0a1a0a ||
+    header.getUint32(8) !== 13 ||
+    header.getUint32(12) !== 0x49484452
+  ) {
+    throw new Error('ساختار PNG معتبر نیست.');
+  }
+  const width = header.getUint32(16);
+  const height = header.getUint32(20);
+  if (!width || !height || width * height > MAX_IMAGE_PIXELS) {
+    throw new Error('ابعاد PNG باید معتبر و حداکثر ۸ میلیون پیکسل باشد.');
+  }
+  return width * height;
+}
+
+async function fileToPngBytes(file: File, remainingPixels: number, signal: AbortSignal) {
   const bitmap = await createImageBitmap(file);
+  if (signal.aborted) {
+    bitmap.close();
+    signal.throwIfAborted();
+  }
+  const pixels = bitmap.width * bitmap.height;
+  if (pixels > MAX_IMAGE_PIXELS) {
+    bitmap.close();
+    throw new Error('ابعاد تصویر برای تبدیل بیش از ۸ میلیون پیکسل است.');
+  }
+  if (pixels > remainingPixels) {
+    bitmap.close();
+    throw new Error(`${file.name}: مجموع تصاویر نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
+  }
   const canvas = document.createElement('canvas');
   canvas.width = bitmap.width;
   canvas.height = bitmap.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
+    bitmap.close();
     throw new Error('مرورگر از پردازش تصویر پشتیبانی نمی کند.');
   }
-  ctx.drawImage(bitmap, 0, 0);
+  try {
+    ctx.drawImage(bitmap, 0, 0);
+  } finally {
+    bitmap.close();
+  }
   const blob = await new Promise<Blob | null>((resolve) => {
     canvas.toBlob(resolve, 'image/png');
+  }).finally(() => {
+    canvas.width = 0;
+    canvas.height = 0;
   });
   if (!blob) {
     throw new Error('تبدیل تصویر ناموفق بود.');
   }
   const buffer = await blob.arrayBuffer();
-  return new Uint8Array(buffer);
+  return { bytes: new Uint8Array(buffer), pixels };
 }
 
 export default function ImageToPdfPage() {
@@ -50,58 +115,131 @@ export default function ImageToPdfPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const previews = useRef(new Set<string>());
+  const active = useRef(false);
+  const conversion = useRef<AbortController | null>(null);
+  const selecting = useRef(false);
+  const [checkingImages, setCheckingImages] = useState(false);
+
+  useEffect(() => {
+    const urls = previews.current;
+    active.current = true;
+    return () => {
+      active.current = false;
+      conversion.current?.abort();
+      conversion.current = null;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
       if (downloadUrl) {
         URL.revokeObjectURL(downloadUrl);
       }
-      images.forEach((item) => URL.revokeObjectURL(item.previewUrl));
     };
-  }, [downloadUrl, images]);
+  }, [downloadUrl]);
 
   const totalSize = useMemo(() => images.reduce((sum, item) => sum + item.file.size, 0), [images]);
 
-  const onSelectImages = (fileList: FileList | null) => {
-    setError(null);
-    setDownloadUrl(null);
-
-    if (!fileList || fileList.length === 0) {
+  const onSelectImages = async (fileList: FileList | null) => {
+    if (busy || selecting.current || !fileList?.length) {
       return;
     }
+    const selectedFiles = Array.from(fileList);
+    selecting.current = true;
+    setCheckingImages(true);
+    setError(null);
 
-    const next: ImageItem[] = [];
-    Array.from(fileList).forEach((file) => {
-      if (!file.type.startsWith('image/')) {
+    try {
+      const next: ImageItem[] = [];
+      const errors = new Set<string>();
+      let batchSize = totalSize;
+      let batchPixels = images.reduce((sum, image) => sum + image.sourcePixels, 0);
+      for (const file of selectedFiles) {
+        if (!file.type.startsWith('image/')) {
+          errors.add(`${file.name}: فقط فایل تصویری پذیرفته می‌شود.`);
+          continue;
+        }
+        if (!file.size || file.size > MAX_IMAGE_MIB * MIB) {
+          errors.add(
+            `${file.name}: تصویر باید غیرخالی و حداکثر ${MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت باشد.`,
+          );
+          continue;
+        }
+        if (images.length + next.length >= MAX_IMAGES) {
+          errors.add(`حداکثر ${MAX_IMAGES.toLocaleString('fa-IR')} تصویر قابل انتخاب است.`);
+          continue;
+        }
+        if (batchSize + file.size > MAX_BATCH_MIB * MIB) {
+          errors.add(
+            `${file.name}: حجم مجموع تصاویر از ${MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت بیشتر می‌شود.`,
+          );
+          continue;
+        }
+        let sourcePixels = 0;
+        if (file.type === 'image/png' || isJpeg(file)) {
+          try {
+            sourcePixels = await (isJpeg(file) ? readJpegPixels(file) : readPngPixels(file));
+          } catch (cause) {
+            errors.add(
+              `${file.name}: ${cause instanceof Error ? cause.message : 'خواندن تصویر ممکن نبود.'}`,
+            );
+            continue;
+          }
+        }
+        if (!active.current) {
+          return;
+        }
+        if (batchPixels + sourcePixels > MAX_BATCH_PIXELS) {
+          errors.add(`${file.name}: مجموع تصاویر PNG و JPEG نباید بیشتر از ۲۴ میلیون پیکسل باشد.`);
+          continue;
+        }
+        batchPixels += sourcePixels;
+        batchSize += file.size;
+        const previewUrl = URL.createObjectURL(file);
+        previews.current.add(previewUrl);
+        next.push({
+          id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
+          file,
+          previewUrl,
+          sourcePixels,
+        });
+      }
+
+      if (!active.current) {
         return;
       }
-      const previewUrl = URL.createObjectURL(file);
-      next.push({
-        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
-        file,
-        previewUrl,
-      });
-    });
+      if (errors.size) {
+        setError([...errors].slice(0, 3).join(' | '));
+      }
+      if (next.length === 0) {
+        return;
+      }
 
-    if (next.length === 0) {
-      setError('فقط فایل های تصویری قابل انتخاب هستند.');
-      return;
+      setDownloadUrl(null);
+      setImages((prev) => [...prev, ...next]);
+    } finally {
+      selecting.current = false;
+      if (active.current) {
+        setCheckingImages(false);
+      }
     }
-
-    setImages((prev) => [...prev, ...next]);
   };
 
   const removeImage = (id: string) => {
-    setImages((prev) => {
-      const target = prev.find((item) => item.id === id);
-      if (target) {
-        URL.revokeObjectURL(target.previewUrl);
-      }
-      return prev.filter((item) => item.id !== id);
-    });
+    const target = images.find((image) => image.id === id);
+    if (target) {
+      URL.revokeObjectURL(target.previewUrl);
+      previews.current.delete(target.previewUrl);
+    }
+    setImages((prev) => prev.filter((item) => item.id !== id));
+    setDownloadUrl(null);
   };
 
   const moveImage = (id: string, direction: 'up' | 'down') => {
+    setDownloadUrl(null);
     setImages((prev) => {
       const index = prev.findIndex((item) => item.id === id);
       if (index < 0) {
@@ -135,31 +273,44 @@ export default function ImageToPdfPage() {
   };
 
   const onConvert = async () => {
+    if (selecting.current || conversion.current) {
+      return;
+    }
     setError(null);
     if (images.length === 0) {
       setError('حداقل یک تصویر انتخاب کنید.');
       return;
     }
 
+    const operation = new AbortController();
+    conversion.current = operation;
+    const { signal } = operation;
     setBusy(true);
+    setDownloadUrl(null);
     try {
       const { PDFDocument } = await loadPdfLib();
+      signal.throwIfAborted();
       const pdf = await PDFDocument.create();
+      signal.throwIfAborted();
+      let remainingPixels =
+        MAX_BATCH_PIXELS - images.reduce((sum, image) => sum + image.sourcePixels, 0);
 
       for (const item of images) {
-        const buffer = await item.file.arrayBuffer();
-        let imageBytes = new Uint8Array(buffer);
         let image;
 
-        if (item.file.type === 'image/png') {
-          image = await pdf.embedPng(imageBytes);
-        } else if (item.file.type === 'image/jpeg' || item.file.type === 'image/jpg') {
-          image = await pdf.embedJpg(imageBytes);
+        const jpeg = isJpeg(item.file);
+        if (item.file.type === 'image/png' || jpeg) {
+          const bytes = await item.file.arrayBuffer();
+          signal.throwIfAborted();
+          image = await (jpeg ? pdf.embedJpg(bytes) : pdf.embedPng(bytes));
         } else {
-          imageBytes = await fileToPngBytes(item.file);
-          image = await pdf.embedPng(imageBytes);
+          const raster = await fileToPngBytes(item.file, remainingPixels, signal);
+          signal.throwIfAborted();
+          remainingPixels -= raster.pixels;
+          image = await pdf.embedPng(raster.bytes);
         }
 
+        signal.throwIfAborted();
         const { width, height } = image.scale(1);
         const pageSizeResolved = resolvePageSize(width, height);
         const page = pdf.addPage([pageSizeResolved.width, pageSizeResolved.height]);
@@ -178,17 +329,22 @@ export default function ImageToPdfPage() {
       }
 
       const bytes = await pdf.save();
+      signal.throwIfAborted();
       const blob = new Blob([bytes], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
+      if (active.current) {
+        setDownloadUrl(URL.createObjectURL(blob));
       }
-      setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (conversion.current === operation) {
+        setError(message);
+      }
     } finally {
-      setBusy(false);
+      if (conversion.current === operation) {
+        conversion.current = null;
+        setBusy(false);
+      }
     }
   };
 
@@ -209,7 +365,7 @@ export default function ImageToPdfPage() {
               تصاویر خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="pdf-file-dropzone relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
@@ -229,7 +385,7 @@ export default function ImageToPdfPage() {
                   'border-primary',
                   'bg-[rgb(var(--color-primary-rgb)/0.05)]',
                 );
-                onSelectImages(e.dataTransfer.files);
+                void onSelectImages(e.dataTransfer.files);
               }}
             >
               <input
@@ -238,7 +394,12 @@ export default function ImageToPdfPage() {
                 aria-label="انتخاب تصویر"
                 accept="image/*"
                 multiple
-                onChange={(e) => onSelectImages(e.target.files)}
+                disabled={busy || checkingImages}
+                aria-describedby="image-to-pdf-limits"
+                onChange={(event) => {
+                  void onSelectImages(event.currentTarget.files);
+                  event.currentTarget.value = '';
+                }}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
@@ -253,6 +414,13 @@ export default function ImageToPdfPage() {
             </div>
           </div>
 
+          <p id="image-to-pdf-limits" className="text-xs text-(--text-muted)">
+            حداکثر {MAX_IMAGES.toLocaleString('fa-IR')} تصویر،{' '}
+            {MAX_IMAGE_MIB.toLocaleString('fa-IR')} مگابایت برای هر تصویر و{' '}
+            {MAX_BATCH_MIB.toLocaleString('fa-IR')} مگابایت در مجموع. حداکثر ۸ میلیون پیکسل برای هر
+            تصویر و ۲۴ میلیون پیکسل در مجموع.
+          </p>
+
           {images.length > 0 && (
             <div className="grid gap-3">
               {images.map((item, index) => (
@@ -260,28 +428,28 @@ export default function ImageToPdfPage() {
                   key={item.id}
                   className="flex flex-col gap-3 rounded-md border border-(--border-light) bg-(--surface-1) p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
                     <Image
                       src={item.previewUrl}
                       alt={item.file.name}
                       width={64}
                       height={64}
                       unoptimized
-                      className="h-16 w-16 rounded-lg object-cover"
+                      className="h-16 w-16 shrink-0 rounded-lg object-cover"
                     />
                     <div className="text-sm text-(--text-primary)">
-                      <div className="font-semibold">
-                        {index + 1}. {item.file.name}
+                      <div className="wrap-anywhere font-semibold">
+                        {index + 1}. <bdi>{item.file.name}</bdi>
                       </div>
                       <div className="text-(--text-muted)">{formatBytesFa(item.file.size)}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={() => moveImage(item.id, 'up')}
-                      disabled={busy || index === 0}
+                      disabled={busy || checkingImages || index === 0}
                     >
                       بالا
                     </Button>
@@ -289,7 +457,7 @@ export default function ImageToPdfPage() {
                       type="button"
                       variant="secondary"
                       onClick={() => moveImage(item.id, 'down')}
-                      disabled={busy || index === images.length - 1}
+                      disabled={busy || checkingImages || index === images.length - 1}
                     >
                       پایین
                     </Button>
@@ -297,7 +465,7 @@ export default function ImageToPdfPage() {
                       type="button"
                       variant="danger"
                       onClick={() => removeImage(item.id)}
-                      disabled={busy}
+                      disabled={busy || checkingImages}
                     >
                       حذف
                     </Button>
@@ -351,18 +519,36 @@ export default function ImageToPdfPage() {
             <div className="text-sm text-(--text-muted)">
               تعداد تصاویر: {images.length} | حجم کل: {formatBytesFa(totalSize)}
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => setImages([])}
-                disabled={busy || images.length === 0}
+                onClick={() => {
+                  previews.current.forEach((url) => URL.revokeObjectURL(url));
+                  previews.current.clear();
+                  setImages([]);
+                  setDownloadUrl(null);
+                }}
+                disabled={busy || checkingImages || images.length === 0}
               >
                 پاک کردن لیست
               </Button>
-              <Button type="button" onClick={onConvert} disabled={busy}>
+              <Button type="button" onClick={onConvert} disabled={busy || checkingImages}>
                 {busy ? 'در حال تبدیل...' : 'تبدیل به PDF'}
               </Button>
+              {busy ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    conversion.current?.abort();
+                    conversion.current = null;
+                    setBusy(false);
+                  }}
+                >
+                  لغو تبدیل
+                </Button>
+              ) : null}
             </div>
           </div>
 

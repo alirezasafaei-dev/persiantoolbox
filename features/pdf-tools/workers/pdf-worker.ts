@@ -3,28 +3,15 @@
 /* eslint-env worker */
 /* global DedicatedWorkerGlobalScope */
 
-import { PDFDocument, rgb, degrees } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
-
-type MergeRequest = {
-  id: string;
-  type: 'merge';
-  files: ArrayBuffer[];
-};
-
-type SplitRequest = {
-  id: string;
-  type: 'split';
-  file: ArrayBuffer;
-  pages: number[];
-};
-
-type ReorderRequest = {
-  id: string;
-  type: 'reorder';
-  file: ArrayBuffer;
-  pages: number[];
-};
+import {
+  PDFDict,
+  PDFDocument,
+  PDFName,
+  beginMarkedContent,
+  degrees,
+  endMarkedContent,
+  type PDFPage,
+} from 'pdf-lib';
 
 type RotateRequest = {
   id: string;
@@ -44,8 +31,9 @@ type WatermarkRequest = {
   id: string;
   type: 'watermark';
   file: ArrayBuffer;
-  text: string;
-  fontSize: number;
+  png: ArrayBuffer;
+  width: number;
+  height: number;
   opacity: number;
   rotation: number;
   position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -57,14 +45,7 @@ type CountPagesRequest = {
   file: ArrayBuffer;
 };
 
-type WorkerRequest =
-  | MergeRequest
-  | SplitRequest
-  | ReorderRequest
-  | RotateRequest
-  | CompressRequest
-  | WatermarkRequest
-  | CountPagesRequest;
+type WorkerRequest = RotateRequest | CompressRequest | WatermarkRequest | CountPagesRequest;
 
 type WorkerResponse =
   | { id: string; type: 'progress'; progress: number }
@@ -73,22 +54,6 @@ type WorkerResponse =
   | { id: string; type: 'error'; message: string };
 
 const ctx: DedicatedWorkerGlobalScope = self as DedicatedWorkerGlobalScope;
-const fontBytesCache: { promise?: Promise<Uint8Array> } = {};
-
-const loadPersianFontBytes = async () => {
-  if (!fontBytesCache.promise) {
-    const fontUrl = new URL('/fonts/fonnts.com-IRANSansXRegular.ttf', ctx.location.href);
-    fontBytesCache.promise = fetch(fontUrl).then(async (response) => {
-      if (!response.ok) {
-        throw new Error('دانلود فونت فارسی ناموفق بود.');
-      }
-      const buffer = await response.arrayBuffer();
-      return new Uint8Array(buffer);
-    });
-  }
-  return fontBytesCache.promise;
-};
-
 const postProgress = (id: string, progress: number) => {
   const message: WorkerResponse = { id, type: 'progress', progress };
   ctx.postMessage(message);
@@ -97,28 +62,73 @@ const postProgress = (id: string, progress: number) => {
 const toArrayBuffer = (bytes: Uint8Array) =>
   bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
 
-const resolvePosition = (
-  position: WatermarkRequest['position'],
-  pageWidth: number,
-  pageHeight: number,
-  textWidth: number,
-  textHeight: number,
-) => {
-  const margin = 32;
-  switch (position) {
-    case 'top-left':
-      return { x: margin, y: pageHeight - textHeight - margin };
-    case 'top-right':
-      return { x: pageWidth - textWidth - margin, y: pageHeight - textHeight - margin };
-    case 'bottom-left':
-      return { x: margin, y: margin };
-    case 'bottom-right':
-      return { x: pageWidth - textWidth - margin, y: margin };
-    case 'center':
-    default:
-      return { x: (pageWidth - textWidth) / 2, y: (pageHeight - textHeight) / 2 };
+function rejectSignatureRewrite(document: PDFDocument) {
+  const hasSignature = document.context
+    .enumerateIndirectObjects()
+    .some(
+      ([, object]) =>
+        object instanceof PDFDict &&
+        (object.lookup(PDFName.of('FT')) === PDFName.of('Sig') ||
+          object.has(PDFName.of('ByteRange'))),
+    );
+  if (hasSignature || document.catalog.has(PDFName.of('Perms'))) {
+    throw new Error('برای حفظ اعتبار امضای دیجیتال، این فایل بازنویسی نمی‌شود.');
   }
-};
+}
+
+function watermarkPlacement(page: PDFPage, options: WatermarkRequest) {
+  const crop = page.getCropBox();
+  const pageAngle = ((page.getRotation().angle % 360) + 360) % 360;
+  const sideways = pageAngle === 90 || pageAngle === 270;
+  const viewWidth = sideways ? crop.height : crop.width;
+  const viewHeight = sideways ? crop.width : crop.height;
+  const radians = (options.rotation * Math.PI) / 180;
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  const boundsWidth = options.width * Math.abs(cos) + options.height * Math.abs(sin);
+  const boundsHeight = options.width * Math.abs(sin) + options.height * Math.abs(cos);
+  const margin = Math.min(24, viewWidth / 8, viewHeight / 8);
+  const scale = Math.min(
+    1,
+    (viewWidth - 2 * margin) / boundsWidth,
+    (viewHeight - 2 * margin) / boundsHeight,
+  );
+  const width = options.width * scale;
+  const height = options.height * scale;
+  const horizontal = (boundsWidth * scale) / 2 + margin;
+  const vertical = (boundsHeight * scale) / 2 + margin;
+  let centerX = viewWidth / 2;
+  let centerY = viewHeight / 2;
+  if (options.position.endsWith('-left')) {
+    centerX = horizontal;
+  }
+  if (options.position.endsWith('-right')) {
+    centerX = viewWidth - horizontal;
+  }
+  if (options.position.startsWith('top-')) {
+    centerY = viewHeight - vertical;
+  }
+  if (options.position.startsWith('bottom-')) {
+    centerY = vertical;
+  }
+  const u = centerX - (width * cos - height * sin) / 2;
+  const v = centerY - (width * sin + height * cos) / 2;
+
+  const origins: Record<number, [number, number]> = {
+    0: [u, v],
+    90: [crop.width - v, u],
+    180: [crop.width - u, crop.height - v],
+    270: [v, crop.height - u],
+  };
+  const [x, y] = origins[pageAngle] ?? [u, v];
+  return {
+    x: crop.x + x,
+    y: crop.y + y,
+    width,
+    height,
+    rotate: degrees(pageAngle + options.rotation),
+  };
+}
 
 ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   const payload = event.data;
@@ -135,66 +145,21 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         ctx.postMessage(response);
         return;
       }
-      case 'merge': {
-        const mergedPdf = await PDFDocument.create();
-        let index = 0;
-        for (const file of payload.files) {
-          const pdf = await PDFDocument.load(file);
-          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-          copiedPages.forEach((page) => mergedPdf.addPage(page));
-          index += 1;
-          postProgress(payload.id, index / payload.files.length);
-        }
-        const bytes = await mergedPdf.save();
-        const buffer = toArrayBuffer(bytes);
-        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
-        ctx.postMessage(response, [buffer]);
-        return;
-      }
-      case 'split': {
-        postProgress(payload.id, 0.2);
-        const sourcePdf = await PDFDocument.load(payload.file);
-        const resultPdf = await PDFDocument.create();
-        const copiedPages = await resultPdf.copyPages(sourcePdf, payload.pages);
-        copiedPages.forEach((page) => resultPdf.addPage(page));
-        const bytes = await resultPdf.save();
-        const buffer = toArrayBuffer(bytes);
-        postProgress(payload.id, 1);
-        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
-        ctx.postMessage(response, [buffer]);
-        return;
-      }
-      case 'reorder': {
-        postProgress(payload.id, 0.1);
-        const sourcePdf = await PDFDocument.load(payload.file);
-        const resultPdf = await PDFDocument.create();
-        const copiedPages = await resultPdf.copyPages(sourcePdf, payload.pages);
-        if (copiedPages.length === 0) {
-          throw new Error('هیچ صفحه ای برای جابجایی ارسال نشده است.');
-        }
-        copiedPages.forEach((page, index) => {
-          resultPdf.addPage(page);
-          postProgress(payload.id, (index + 1) / copiedPages.length);
-        });
-        const bytes = await resultPdf.save();
-        const buffer = toArrayBuffer(bytes);
-        const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
-        ctx.postMessage(response, [buffer]);
-        return;
-      }
       case 'rotate': {
         postProgress(payload.id, 0.1);
-        const pdfDoc = await PDFDocument.load(payload.file);
+        const pdfDoc = await PDFDocument.load(payload.file, { updateMetadata: false });
+        rejectSignatureRewrite(pdfDoc);
         const total = payload.pages.length;
         if (total === 0) {
           throw new Error('هیچ صفحه ای برای چرخش ارسال نشده است.');
         }
         payload.pages.forEach((index, idx) => {
           const page = pdfDoc.getPage(index);
-          page.setRotation(degrees(payload.rotation));
+          const angle = page.getRotation().angle + payload.rotation;
+          page.setRotation(degrees(((angle % 360) + 360) % 360));
           postProgress(payload.id, (idx + 1) / total);
         });
-        const bytes = await pdfDoc.save();
+        const bytes = await pdfDoc.save({ addDefaultPage: false, updateFieldAppearances: false });
         const buffer = toArrayBuffer(bytes);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
         ctx.postMessage(response, [buffer]);
@@ -202,12 +167,18 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'compress': {
         postProgress(payload.id, 0.2);
-        const sourcePdf = await PDFDocument.load(payload.file);
-        const compressedPdf = await PDFDocument.create();
-        const copiedPages = await compressedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices());
-        copiedPages.forEach((page) => compressedPdf.addPage(page));
-        const bytes = await compressedPdf.save({ useObjectStreams: true, addDefaultPage: false });
-        const buffer = toArrayBuffer(bytes);
+        const sourcePdf = await PDFDocument.load(payload.file, { updateMetadata: false });
+        if (sourcePdf.getPageCount() === 0) {
+          throw new Error('این فایل PDF هیچ صفحه‌ای ندارد.');
+        }
+        rejectSignatureRewrite(sourcePdf);
+        const bytes = await sourcePdf.save({
+          useObjectStreams: true,
+          addDefaultPage: false,
+          updateFieldAppearances: false,
+        });
+        const buffer =
+          bytes.byteLength < payload.file.byteLength ? toArrayBuffer(bytes) : payload.file;
         postProgress(payload.id, 1);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };
         ctx.postMessage(response, [buffer]);
@@ -215,27 +186,18 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       }
       case 'watermark': {
         postProgress(payload.id, 0.2);
-        const pdfDoc = await PDFDocument.load(payload.file, { ignoreEncryption: false });
-        pdfDoc.registerFontkit(fontkit);
-        const fontBytes = await loadPersianFontBytes();
-        const font = await pdfDoc.embedFont(fontBytes, { subset: true });
-        const pages = pdfDoc.getPages();
-        pages.forEach((page) => {
-          const { width, height } = page.getSize();
-          const textWidth = font.widthOfTextAtSize(payload.text, payload.fontSize);
-          const textHeight = payload.fontSize;
-          const { x, y } = resolvePosition(payload.position, width, height, textWidth, textHeight);
-          page.drawText(payload.text, {
-            x,
-            y,
-            size: payload.fontSize,
-            font,
-            color: rgb(0, 0, 0),
+        const pdfDoc = await PDFDocument.load(payload.file, { updateMetadata: false });
+        rejectSignatureRewrite(pdfDoc);
+        const watermark = await pdfDoc.embedPng(payload.png);
+        pdfDoc.getPages().forEach((page) => {
+          page.pushOperators(beginMarkedContent('Artifact'));
+          page.drawImage(watermark, {
+            ...watermarkPlacement(page, payload),
             opacity: payload.opacity,
-            rotate: degrees(payload.rotation),
           });
+          page.pushOperators(endMarkedContent());
         });
-        const bytes = await pdfDoc.save();
+        const bytes = await pdfDoc.save({ updateFieldAppearances: false });
         const buffer = toArrayBuffer(bytes);
         postProgress(payload.id, 1);
         const response: WorkerResponse = { id: payload.id, type: 'result', buffer };

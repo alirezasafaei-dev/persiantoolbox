@@ -1,0 +1,41 @@
+diff --git a/dist/index.js b/dist/index.js
+index 7bf161b4a7c313a560138b231a1f94f68e7e0513..7f6cc658b56309343008131c67a1537cc33b5049 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -33,7 +33,7 @@ function filePath(name) {
+     return `/work/${path}`;
+ }
+ /** Raw qpdf CLI results, including nonzero exit codes. Files are relative to /work. */
+-export async function run(args, files, options = runtimeOptions) {
++export async function run(args, files, options = runtimeOptions, { outputFiles } = {}) {
+     const stdout = [], stderr = [];
+     const locateFile = options.locateFile ?? (options.wasmUrl ? (path, prefix) => path.endsWith('.wasm') ? String(options.wasmUrl) : prefix + path : undefined);
+     let module;
+@@ -79,6 +79,12 @@ export async function run(args, files, options = runtimeOptions) {
+                 hostProcess.exitCode = previousExitCode;
+         }
+         const output = Object.create(null);
++        const readOutput = (name) => {
++            const normalized = name.replaceAll('\\', '/');
++            const path = filePath(normalized);
++            if (module.FS.analyzePath(path).exists)
++                output[normalized] = module.FS.readFile(path).slice();
++        };
+         function collect(directory) {
+             for (const name of module.FS.readdir(directory)) {
+                 if (name === '.' || name === '..')
+@@ -90,7 +96,13 @@ export async function run(args, files, options = runtimeOptions) {
+                     output[path.slice('/work/'.length)] = module.FS.readFile(path).slice();
+             }
+         }
+-        collect('/work');
++        if (outputFiles) {
++            for (const name of outputFiles)
++                readOutput(name);
++        }
++        else {
++            collect('/work');
++        }
+         return { exitCode, stdout: stdout.join('\n'), stderr: stderr.join('\n'), files: output };
+     }
+     catch (cause) {

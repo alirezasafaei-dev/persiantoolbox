@@ -69,7 +69,9 @@ describe('local-first privacy contract', () => {
       const tools = getToolsByCategory(catId);
       expect(Array.isArray(tools)).toBe(true);
       for (const tool of tools) {
-        expect(['Offline-Guaranteed', 'Hybrid', 'Online-Required']).toContain(tool.tier);
+        expect(['Offline-Guaranteed', 'Local-Processing', 'Hybrid', 'Online-Required']).toContain(
+          tool.tier,
+        );
         expect(tool.path).toBeTruthy();
         expect(tool.title).toBeTruthy();
         expect(typeof tool.indexable).toBe('boolean');

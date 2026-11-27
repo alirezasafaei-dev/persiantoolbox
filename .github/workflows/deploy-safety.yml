@@ -76,6 +76,8 @@ jobs:
           bash -n scripts/deploy/sync-retained-static-assets.sh
           bash -n scripts/deploy/verify-release-assets.sh
       - name: Lint deployment changes
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm exec eslint . --format json --output-file lint-report.json
       - name: Upload lint diagnostics
         if: failure()
@@ -85,6 +87,8 @@ jobs:
           path: lint-report.json
           if-no-files-found: error
       - name: Typecheck deployment contracts
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: |
           set +e
           pnpm typecheck 2>&1 | tee typecheck-report.txt

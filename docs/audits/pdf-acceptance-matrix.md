@@ -1,0 +1,110 @@
+# PDF tool acceptance matrix
+
+PASS applies to the cited fixture and build. NOT_RUN means there is no
+identified receipt for that criterion. The [execution report](pdf-quality-seo-execution-2026-11.md)
+contains the command results and limitations. The [completion ledger](pdf-completion-ledger.md)
+tracks the current candidate. The candidate-wide checks below do not close the
+remaining per-tool acceptance criteria.
+
+| Tool             | Downloaded output and structural evidence                                                                                                                                                    | Invalid input and recovery                                                                                       | Cancellation and resource check                                                                                                                              | Observed privacy                                                                 |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Merge PDF        | PASS · same-named form values, both attachments, order and Poppler render `e347a6ba`                                                                                                         | PASS · over-limit selection, valid retry `4b649b42`                                                              | NOT_RUN cancel; PASS · near-48 MiB file on emulated viewport `4b649b42`                                                                                      | PASS · no POST during near-limit fixture `4b649b42`                              |
+| Split PDF        | PASS · actual ordered PDFs, form values and Poppler render `e347a6ba`                                                                                                                        | PASS · three invalid inputs, valid retry `16a05a23`                                                              | PASS · cancel/retry `cb3b633e`; PASS for scoped memory fixture, see below                                                                                    | PASS for consent unit checks; final network checks NOT_RUN                       |
+| Compress PDF     | PASS · smaller rewrite, form values and Poppler render `e347a6ba`                                                                                                                            | NOT_RUN on a SHA identified here                                                                                 | PASS for cancel at `6588e297`; PASS · 250 pages at near-48 MiB `4b649b42`                                                                                    | PASS · consent probe with no content markers `f31f9f95`                          |
+| PDF to Image     | PASS · nonblank PNG using same-origin fallback font `4a056228`                                                                                                                               | PASS · three invalid inputs, valid retry `16a05a23`                                                              | PASS · [cancel, retry and canvas limit on this revision](pdf-completion-ledger.md#pdf-to-image-cancellation); device limits NOT_RUN                          | PASS · synthetic history and filename/title probe `c60d5066`                     |
+| Image to PDF     | PASS · two-image conversion in standalone browser suite `11582c17`                                                                                                                           | NOT_RUN on a SHA identified here                                                                                 | PASS · cancel and retry in combined suite `11582c17`; device limits NOT_RUN                                                                                  | NOT_RUN                                                                          |
+| Decrypt PDF      | PASS · AES-256 and RC4 documents, text, form and page geometry `11582c17`                                                                                                                    | PASS · wrong password and signature refusal on correct password `77f8901f`                                       | PASS for cancel at `822fa2d6`; peak resources NOT_RUN                                                                                                        | PASS · stubbed history payload and no password or title in requests `11582c17`   |
+| Encrypt PDF      | PASS · AES-256 and PDF.js password round-trip `77f8901f`                                                                                                                                     | PASS · malformed input, retry and signature refusal `77f8901f`                                                   | PASS · [cancel and retry on this revision](pdf-completion-ledger.md#encryption-cancellation); peak resources NOT_RUN                                         | NOT_RUN                                                                          |
+| Add Watermark    | PASS · Persian and Latin placement `11582c17`                                                                                                                                                | NOT_RUN on a SHA identified here                                                                                 | NOT_RUN                                                                                                                                                      | PASS · stubbed allowlisted history payload `11582c17`                            |
+| Rotate Pages     | PASS · relative rotation and range behavior `11582c17`                                                                                                                                       | PASS · three invalid inputs, valid retry `16a05a23`                                                              | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Reorder Pages    | PASS · order, forms and Poppler render `e347a6ba`                                                                                                                                            | PASS · three invalid inputs, valid retry `16a05a23`                                                              | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Delete Pages     | PASS · retained widgets and Poppler render `e347a6ba`                                                                                                                                        | PASS · three invalid inputs, valid retry `16a05a23`                                                              | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Extract Pages    | PASS · selected form and Poppler render `e347a6ba`                                                                                                                                           | PASS · three invalid inputs, valid retry `16a05a23`                                                              | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Add Page Numbers | PASS · visible position on cropped and rotated fixtures `11582c17`                                                                                                                           | PASS · three invalid inputs, valid retry `16a05a23`                                                              | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Extract Text     | PASS · multilingual TXT and page markers `4a056228`                                                                                                                                          | PASS · empty extracted text recoverable `11582c17`                                                               | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| PDF to Text      | PASS · multilingual TXT without page markers `4a056228`                                                                                                                                      | PASS · empty extracted text recoverable `11582c17`                                                               | NOT_RUN                                                                                                                                                      | NOT_RUN                                                                          |
+| Word to PDF      | PASS · [two-page opt-in preview with 42 ordered table rows, numbered footers and image](pdf-completion-ledger.md#application-preview) at `a85a4c20`. Default conversion remains unavailable. | PASS for malformed input and valid retry in three browsers at `7aeb880e` with the bounded engine from `b0860bbb` | PASS for cancellation during file read and successful retry on standalone Chromium, Firefox and WebKit at app SHA `6014336e`; physical device limits NOT_RUN | PASS for same-origin traffic and worker-only WASM CSP in the focused preview E2E |
+| PDF to Word      | PASS · editable multilingual DOCX text `4a056228`                                                                                                                                            | PASS · empty output rejected `11582c17`                                                                          | PASS · cancel in standalone suite `11582c17`; resource ceiling NOT_RUN                                                                                       | NOT_RUN                                                                          |
+
+## Surface and compatibility evidence
+
+- **Chromium and Firefox** · PASS for the cases in the combined 14-spec
+  suite at `11582c17`. The guide is a page check and the two Firefox CLS
+  skips are N/A because those tests use a Chromium API.
+- **WebKit** · PASS for the 67 executed suite cases at `0a0c9718`.
+  Two CLS cases used a Chromium-only API. Final Candidate WebKit is NOT_RUN.
+- **Mobile, RTL, light and dark, and accessibility** · PASS for initial
+  page checks on all 17 routes at `4b649b42` in Pixel 7 emulation.
+  Desktop picker keyboard access passed on all 16 interactive routes at
+  `a6f7d52b`. End-to-end physical device coverage is BLOCKED on a
+  provisioned device. Full interactive accessibility is NOT_RUN.
+- **SEO** · PASS for HTTP, H1, self-canonical, unique title and description,
+  parseable JSON-LD and index directives on all 17 routes at `0a0c9718`.
+  Split no-JavaScript content passed at `cb3b633e`. See the later
+  standalone receipt for candidate-wide no-JavaScript coverage.
+
+### Later evidence by criterion
+
+| Tool         | Criterion                     | Result and tested revision                                                                                                                                                                                                                                                                                                                                  |
+| ------------ | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Split PDF    | Peak memory and ZIP integrity | PASS for the matched attachment-heavy Chromium fixture at `385d534b`. Five runs per mode gave a median sampled browser-private peak of 651.3 MiB for full-directory collection and 574.5 MiB for output-only collection. All 20 PDFs in each ZIP parsed with the expected order and page counts. Large ZIP payloads and physical-device memory are NOT_RUN. |
+| Split PDF    | Analytics consent             | PASS for unit-level start, completion, error, cancel, refusal and revocation at `08ea957e`. Production event collection is NOT_RUN.                                                                                                                                                                                                                         |
+| Compress PDF | Cancel and recover            | PASS at `6588e297` in Chromium, Firefox and WebKit. The retry produced a readable two-page PDF with the expected order.                                                                                                                                                                                                                                     |
+| Decrypt PDF  | Cancel and recover            | PASS at `822fa2d6` in Chromium, Firefox and WebKit. The retry opened without a password.                                                                                                                                                                                                                                                                    |
+| Word to PDF  | Local conversion feasibility  | FAIL for OpenDoc `0.1.0-alpha.1`. The generated PDF contains the mixed Persian footer at x ≈ 50,000 pt on a 595.3 pt page when a PAGE field follows the text. The Latin control is within the page. The pinned, patched preview passes the footer regression and is opt-in.                                                                                 |
+
+The Add Page Numbers regression preserved the attachment filename and all five synthetic bytes in the actual download. Chromium and Firefox passed on isolated standalone HTTP. WebKit passed over isolated HTTPS after the HTTP run failed to load application assets. The tested application code is unchanged from `822fa2d6`.
+
+Word preview multi-page table coverage is PASS at application SHA
+`04439365` on desktop Chromium, Firefox and WebKit and on Pixel 7 and
+iPhone 13 emulations. All 84 rows remained in order across table pages,
+the final page retained the explicit break and image, and PDF text
+confirmed the numbered Persian footer on every page.
+
+Word preview page-limit recovery is PASS on this revision. Chromium,
+Firefox and WebKit rejected a 101-page DOCX with the specific 100-page
+limit message and no download. Each then downloaded a readable two-page
+PDF with the expected second-page text.
+
+PDF to Image privacy is PASS for the synthetic fixture at application
+SHA `c60d5066`. Chromium, Firefox and WebKit produced matching PNG and
+ZIP entry bytes and generated only the expected page and count fields
+at the mocked history boundary. Neither the fixture filename nor its
+PDF title appeared in the observed HTTP requests. This uses a synthetic
+client-visible cookie and does not measure authenticated live history.
+
+The opt-in Word converter has an additional keyboard regression in
+`tests/e2e/pdf-word-preview.spec.ts`: cancelling a pending file read with
+Enter restores focus to Convert, and pressing Enter again produces the
+same downloadable two-page PDF. This covers explicit cancellation in
+the standalone preview over local HTTPS.
+
+### Standalone candidate `385d534b`
+
+- **No-JavaScript rendering** · PASS in Chromium and Firefox for one visible
+  main heading, HTTP 200 and the expected canonical on all 17 tools, the
+  hub and the uses guide. The five refreshed tool pages also exposed their
+  specific guidance and links. The Word page passed as a guide only.
+- **Mobile emulation** · PASS at 320 CSS pixels for RTL, dark preference,
+  one visible heading and no horizontal document overflow across the hub
+  and 17 tools. Tab reached the picker on all 16 interactive pages.
+  The Word guide has no picker, so its picker check is N/A.
+- **Accessibility** · PASS for zero serious or critical axe findings in
+  `main` on the same 18 paths in light and dark at 390 CSS pixels.
+  Interactive accessibility and physical-device checks remain open.
+- **WebKit** · The two-worker standalone suite returned 97 PASS, 2 FAIL
+  and 2 Chromium-only N/A. Image ZIP readiness and Rotate's subsequent
+  output link timed out. Both cases passed five times each in isolation
+  with one worker. The earlier two-worker failures remain unresolved.
+
+### Structure fixture coverage
+
+| Structure                                                        | Verified behavior on tested fixtures                                                                                                                                                                                                                                                           | Open acceptance                                                           |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| AcroForm                                                         | Merge preserves both colliding field values; Split and Extract preserve selected widgets; Delete and Reorder preserve retained form data                                                                                                                                                       | Other operations and representative form variants                         |
+| Attachments and metadata                                         | Merge and Reorder retain tested attachments; Delete retains the document attachment; Extract excludes it; Reorder and Compress verify title preservation                                                                                                                                       | Embedded file variants and document metadata across all transforms        |
+| Outline and bookmarks                                            | Delete removes the discarded destination and retains a nested bookmark; Extract drops the source outline                                                                                                                                                                                       | Other operations and outline hierarchy variants                           |
+| Named destinations, internal and external links, chained actions | Delete and Extract resolve retained page links, retain the URI action and remove discarded chained targets; Split retains tested links within a part                                                                                                                                           | Navigation combinations beyond the fixtures                               |
+| CropBox and rotation                                             | Poppler comparisons cover sampled output pages; numbering and watermark verify placement on cropped and rotated pages                                                                                                                                                                          | Additional geometry and reader variants                                   |
+| Encryption and signature                                         | AES-256 and RC4 round-trip or decryption fixtures; encryption and decryption reject tested signature markers                                                                                                                                                                                   | Genuine signed input interoperability and broader encrypted-input routing |
+| Tagged PDF and XFA                                               | Reorder retains the tested tag tree; QPDF page-set changes refuse tested tag and XFA inputs. Watermark preserves the tested tag reference, and numbering and watermark mark new content as artifacts. Rotate, Compress, Watermark and Numbering preserve synthetic XFA XML in rewritten files. | PDF/UA conformance and interactive XFA behavior across readers            |

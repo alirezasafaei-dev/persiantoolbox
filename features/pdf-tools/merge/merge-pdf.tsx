@@ -45,7 +45,7 @@ export default function MergePdfPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -75,6 +75,10 @@ export default function MergePdfPage() {
       }
       if (file.size > MAX_FILE_SIZE_BYTES) {
         errors.push(`${file.name}: حجم فایل از ${MAX_FILE_SIZE_MB} مگابایت بیشتر است.`);
+        return;
+      }
+      if (!file.size) {
+        errors.push(`فایل ${file.name} خالی است.`);
         return;
       }
       const projectedTotal =
@@ -200,6 +204,11 @@ export default function MergePdfPage() {
           </p>
         </div>
 
+        <Alert variant="info">
+          عنوان و اطلاعات کلی سند از اولین PDF می‌آیند. نشانک‌ها و ساختار دسترس‌پذیری فایل‌های بعدی
+          ممکن است منتقل نشوند. فایل‌هایی که نشانگر امضای دیجیتال دارند بازنویسی نمی‌شوند.
+        </Alert>
+
         <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
             <label
@@ -209,7 +218,7 @@ export default function MergePdfPage() {
               فایل‌های PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="pdf-file-dropzone relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(

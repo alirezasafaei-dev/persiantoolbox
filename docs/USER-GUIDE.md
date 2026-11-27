@@ -240,15 +240,15 @@
 
 - تبدیل فایل PDF به متن ساده قابل ویرایش
 
-### تبدیل Word به PDF (`/pdf-tools/convert/word-to-pdf`)
+### راهنمای تبدیل Word به PDF (`/pdf-tools/convert/word-to-pdf`)
 
-- تبدیل فایل‌های DOC و DOCX به PDF
-- نمایش صحیح در تمام دستگاه‌ها
+- مراحل گرفتن خروجی PDF در نسخهٔ دسکتاپ Microsoft Word و LibreOffice Writer
+- بررسی صفحه‌بندی و نمایش متن فارسی پیش از ارسال خروجی
 
 ### تبدیل PDF به Word (`/pdf-tools/convert/pdf-to-word`)
 
-- تبدیل PDF به سند Word (.docx)
-- حفظ ساختار پاراگراف‌ها
+- ذخیرهٔ متن قابل انتخاب PDF در سند Word (.docx)
+- خروجی متنی قابل ویرایش، بدون بازسازی جدول‌ها، تصویرها یا صفحه‌بندی
 
 ---
 

@@ -1,0 +1,168 @@
+import { expect, test } from '@playwright/test';
+import { getToolsByCategory } from '../../lib/tools-registry';
+
+test('compression search metadata and visible guidance describe the available operation', async ({
+  request,
+  page,
+}) => {
+  const route = '/pdf-tools/compress/compress-pdf';
+  const response = await request.get(route);
+  expect(response.status()).toBe(200);
+  const html = await response.text();
+  expect(html).toContain('میزان کاهش حجم به ساختار PDF بستگی دارد');
+  expect(html).not.toMatch(/تا ۹۰٪|سه سطح کیفیت|سطح فشرده‌سازی را انتخاب کنید/);
+
+  await page.goto(route);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PDF');
+  await expect(
+    page
+      .getByRole('main')
+      .getByText(/۵۰ مگابایت/)
+      .first(),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole('main')
+      .getByText(/برای فایل امضاشده/)
+      .first(),
+  ).toBeVisible();
+});
+
+test('the PDF hub and all 17 tools expose indexable HTML and valid structured data', async ({
+  request,
+}) => {
+  const tools = getToolsByCategory('pdf-tools').filter(
+    (tool) => tool.kind === 'tool' && tool.indexable,
+  );
+  expect(tools).toHaveLength(17);
+
+  const sitemapResponse = await request.get('/sitemap.xml');
+  expect(sitemapResponse.status()).toBe(200);
+  const sitemap = await sitemapResponse.text();
+  const robotsResponse = await request.get('/robots.txt');
+  expect(robotsResponse.status()).toBe(200);
+  const robots = await robotsResponse.text();
+  expect(robots).not.toMatch(/^Disallow:\s*\/pdf-tools(?:\/|\s|$)/m);
+
+  const paths = ['/pdf-tools', ...tools.map((tool) => tool.path)];
+  const titles = new Set();
+  const descriptions = new Set();
+  for (const path of paths) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+    const html = await response.text();
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1];
+    expect(canonical, path).toBe(`https://persiantoolbox.ir${path}`);
+    expect(sitemap.includes(`<loc>${canonical}</loc>`), path).toBe(true);
+    expect(response.headers()['x-robots-tag'] ?? '', path).not.toMatch(/noindex/i);
+    expect(html.match(/<meta name="robots" content="([^"]+)"/)?.[1] ?? '', path).not.toMatch(
+      /noindex/i,
+    );
+    expect(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1], path).toBeTruthy();
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
+    const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
+    expect(title, path).toBeTruthy();
+    expect(description, path).toBeTruthy();
+    titles.add(title);
+    descriptions.add(description);
+    expect(html.match(/<meta property="og:image" content="([^"]+)"/)?.[1], path).toBeTruthy();
+    const schema = [
+      ...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g),
+    ];
+    expect(schema.length, path).toBeGreaterThan(0);
+    schema.forEach((item) => {
+      const node = JSON.parse(item[1] ?? '');
+      expect(node['@context'], path).toBeTruthy();
+    });
+    if (path === '/pdf-tools') {
+      for (const tool of tools) {
+        expect(html.includes(`href="${tool.path}"`), tool.path).toBe(true);
+      }
+    }
+  }
+
+  expect(titles.size).toBe(paths.length);
+  expect(descriptions.size).toBe(paths.length);
+});
+
+test('PDF guides link to the actual tools and describe the available outputs', async ({
+  request,
+}) => {
+  for (const slug of [
+    '2026-06-22-pdf-tools-complete-guide',
+    '2026-06-23-pdf-tools-ultimate-guide',
+    '2026-06-28-pdf-tools-complete-guide',
+  ]) {
+    const path = `/blog/${slug}`;
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(200);
+    const html = await response.text();
+    expect(html, path).toContain(`https://persiantoolbox.ir${path}`);
+    expect(html, path).toContain('href="/pdf-tools/convert/pdf-to-word"');
+    expect(html, path).toContain('href="/pdf-tools/compress/compress-pdf"');
+    expect(html, path).not.toMatch(
+      /کاهش حجم تا ۷۰٪|سطوح فشرده‌سازی|جداول و لیست‌ها را تشخیص می‌دهد/,
+    );
+  }
+});
+
+test.describe('PDF search guidance without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const [path, heading, relatedPath] of [
+    ['/pdf-tools/merge/merge-pdf', 'ادغام PDF با ترتیب دلخواه', '/pdf-tools/edit/reorder-pages'],
+    [
+      '/pdf-tools/edit/rotate-pages',
+      'چرخاندن صفحه‌های انتخابی PDF',
+      '/pdf-tools/edit/reorder-pages',
+    ],
+    [
+      '/pdf-tools/edit/reorder-pages',
+      'تغییر ترتیب صفحه‌های یک PDF',
+      '/pdf-tools/edit/delete-pages',
+    ],
+    [
+      '/pdf-tools/extract/extract-pages',
+      'استخراج صفحه‌های لازم از PDF',
+      '/pdf-tools/split/split-pdf',
+    ],
+    [
+      '/pdf-tools/edit/add-page-numbers',
+      'افزودن شماره صفحه در جای درست',
+      '/pdf-tools/watermark/add-watermark',
+    ],
+  ] as const) {
+    test(`renders task guidance and related links for ${path}`, async ({ page }) => {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      const main = page.getByRole('main');
+      await expect(main.getByRole('heading', { name: heading, exact: true })).toBeVisible();
+      await expect(
+        main
+          .getByRole('navigation', { name: 'ابزارهای مرتبط' })
+          .locator(`a[href="${relatedPath}"]`),
+      ).toBeVisible();
+    });
+  }
+});
+
+test.describe('PDF route headings without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  const toolPaths = getToolsByCategory('pdf-tools')
+    .filter((tool) => tool.kind === 'tool' && tool.indexable)
+    .map((tool) => tool.path);
+
+  for (const path of ['/pdf-tools', '/pdf-tools/uses', ...toolPaths]) {
+    test(`renders the primary content for ${path}`, async ({ page }) => {
+      const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      const heading = page.getByRole('main').getByRole('heading', { level: 1 });
+      await expect(heading).toHaveCount(1);
+      await expect(heading).toBeVisible();
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        `https://persiantoolbox.ir${path}`,
+      );
+    });
+  }
+});

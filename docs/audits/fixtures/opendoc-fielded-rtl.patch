@@ -1,0 +1,60 @@
+diff --git a/crates/casual-doc-layout/src/flow.rs b/crates/casual-doc-layout/src/flow.rs
+index 09f10d8..8151c7d 100644
+--- a/crates/casual-doc-layout/src/flow.rs
++++ b/crates/casual-doc-layout/src/flow.rs
+@@ -7264,12 +7264,22 @@ fn measure_fielded_segment(
+                 if let Some(line) = layout.lines.first() {
+                     ascent = ascent.max(line.ascent);
+                     descent = descent.max(line.descent);
++                    // Start alignment is directional. Parley can place an RTL
++                    // group at the far edge of the unwrapped measurement line.
++                    // Measure and place the group from its own visual origin.
++                    let left = line
++                        .runs
++                        .iter()
++                        .map(|run| run.origin.x)
++                        .min()
++                        .unwrap_or(Twip::ZERO);
+                     let mut group_w = 0i32;
+                     for r in &line.runs {
+-                        let end = r.origin.x.raw() + run_advance(r).raw();
++                        let local_x = r.origin.x - left;
++                        let end = local_x.raw() + run_advance(r).raw();
+                         group_w = group_w.max(end);
+                         let mut placed = r.clone();
+-                        placed.origin = Point::new(r.origin.x + Twip(pen), Twip::ZERO);
++                        placed.origin = Point::new(local_x + Twip(pen), Twip::ZERO);
+                         runs.push(placed);
+                     }
+                     pen += group_w;
+diff --git a/crates/casual-doc-layout/tests/field_paragraph_flow.rs b/crates/casual-doc-layout/tests/field_paragraph_flow.rs
+index f784602..5775998 100644
+--- a/crates/casual-doc-layout/tests/field_paragraph_flow.rs
++++ b/crates/casual-doc-layout/tests/field_paragraph_flow.rs
+@@ -299,3 +299,26 @@ fn a_recomputed_field_run_carries_the_faces_metrics_not_zero() {
+         line.ascent
+     );
+ }
++
++#[test]
++fn mixed_page_field_stays_inside_the_line_measure() {
++    let document = document(vec![paragraph(
++        100,
++        ParagraphProperties::default(),
++        vec![
++            run(101, "صفحه PT FOOTER MARKER "),
++            field(200, " PAGE ", "1"),
++        ],
++    )]);
++
++    let lines = lines(&document);
++    let line = lines.first().expect("the paragraph lays out one line");
++    assert_eq!(line.fields.len(), 1);
++    let field = &line.runs[line.fields[0].run as usize];
++    assert!(!field.glyphs.is_empty(), "the page value has glyphs");
++    assert!(
++        line.runs.iter().all(|run| run.origin.x >= Twip::ZERO && run.origin.x < MEASURE),
++        "short text and its PAGE field must stay within the available measure; got {:?}",
++        line.runs.iter().map(|run| run.origin.x).collect::<Vec<_>>()
++    );
++}

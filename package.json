@@ -5,7 +5,7 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm generate:ocr && pnpm generate:og && next build",
+    "build": "node scripts/stage-word-pdf-preview.mjs --check && pnpm generate:ocr && pnpm generate:pdf-engine && node scripts/copy-pdf-worker.mjs && pnpm generate:og && next build",
     "gpu:build": "../../../scripts/gpu-browser-run.sh pnpm run build",
     "build:lib": "tsup",
     "start": "next start",
@@ -50,7 +50,7 @@
     "start:prod": "next start -p 3000",
     "lighthouse": "pnpm dlx lighthouse http://localhost:3000 --output html --output-path ./reports/lighthouse/report.html",
     "lighthouse:ci": "pnpm dlx @lhci/cli@0.13.0 autorun && node scripts/quality/summarize-lighthouse-ci.mjs",
-    "postinstall": "node scripts/copy-pdf-worker.mjs",
+    "postinstall": "node scripts/copy-pdf-worker.mjs && node scripts/generate-pdf-engine-assets.mjs",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -60,6 +60,7 @@
     "release": "semantic-release",
     "generate:og": "node scripts/generate-og-images.mjs",
     "generate:ocr": "node scripts/generate-ocr-assets.mjs",
+    "generate:pdf-engine": "node scripts/generate-pdf-engine-assets.mjs",
     "blog:images:capture": "node scripts/capture-blog-screenshots.js",
     "blog:images:audit": "node scripts/audit-blog-images.mjs",
     "gate:local-first": "tsx scripts/quality/verify-local-first.ts",
@@ -131,6 +132,7 @@
     "mcp-start": "bash scripts/mcp-start.sh"
   },
   "dependencies": {
+    "@arshad-shah/qpdf-wasm": "0.1.0",
     "@imgly/background-removal": "1.7.0",
     "@pdf-lib/fontkit": "^1.1.1",
     "@pdfsmaller/pdf-encrypt-lite": "1.2.0",
@@ -357,7 +359,8 @@
     },
     "patchedDependencies": {
       "gray-matter@4.0.3": "patches/gray-matter@4.0.3.patch",
-      "@imgly/background-removal@1.7.0": "patches/@imgly__background-removal@1.7.0.patch"
+      "@imgly/background-removal@1.7.0": "patches/@imgly__background-removal@1.7.0.patch",
+      "@arshad-shah/qpdf-wasm@0.1.0": "patches/@arshad-shah__qpdf-wasm@0.1.0.patch"
     }
   }
 }

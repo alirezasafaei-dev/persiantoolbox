@@ -10,85 +10,113 @@ import { formatBytesFa } from '@/shared/utils/format';
 import { trackAnalyticsEvent, ANALYTICS_EVENTS } from '@/shared/analytics/events';
 
 const MAX_FILE_SIZE_MB = 50;
+const MAX_BATCH_SIZE_MB = 200;
+const MAX_BATCH_FILES = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const MAX_BATCH_SIZE_BYTES = MAX_BATCH_SIZE_MB * 1024 * 1024;
 
 type SelectedFile = {
   file: File;
   id: string;
-  result?: { buffer: ArrayBuffer; originalSize: number };
+  downloadName: string;
+  result?: { url: string; size: number };
 };
 
 export default function CompressPdfPage() {
   const [files, setFiles] = useState<SelectedFile[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [downloadUrls, setDownloadUrls] = useState<{ name: string; url: string }[]>([]);
   const [progress, setProgress] = useState(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
+  const downloadUrls = useRef(new Map<string, string>());
+  const nextFileId = useRef(0);
 
   useEffect(() => {
+    const urls = downloadUrls.current;
+
     return () => {
       workerRef.current?.terminate();
       workerRef.current = null;
+      urls.forEach((url) => URL.revokeObjectURL(url));
+      urls.clear();
     };
   }, []);
 
-  const getWorker = () => {
-    if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+  const releaseDownload = (id: string) => {
+    const url = downloadUrls.current.get(id);
+    if (url) {
+      URL.revokeObjectURL(url);
+      downloadUrls.current.delete(id);
     }
-    return workerRef.current;
   };
-
-  useEffect(() => {
-    return () => {
-      downloadUrls.forEach((d) => URL.revokeObjectURL(d.url));
-    };
-  }, [downloadUrls]);
 
   const totalSize = useMemo(() => files.reduce((sum, item) => sum + item.file.size, 0), [files]);
 
   const onSelectFiles = (fileList: FileList | null) => {
-    setError(null);
-    setDownloadUrls([]);
-    setFiles((prev) => prev.filter((f) => !f.result));
-
-    if (!fileList || fileList.length === 0) {
+    if (busy || !fileList?.length) {
       return;
     }
 
+    setError(null);
+    const usedNames = new Set(files.map((item) => item.downloadName.toLowerCase()));
     const next: SelectedFile[] = [];
-    const errors: string[] = [];
+    const errors = new Set<string>();
+    let batchSize = totalSize;
     Array.from(fileList).forEach((file) => {
       if (file.type !== 'application/pdf') {
-        errors.push(`${file.name}: فقط فایل PDF.`);
+        errors.add(`${file.name}: فقط فایل PDF.`);
+        return;
+      }
+      if (!file.size) {
+        errors.add(`فایل ${file.name} خالی است.`);
         return;
       }
       if (file.size > MAX_FILE_SIZE_BYTES) {
-        errors.push(`${file.name}: حجم بیشتر از ${MAX_FILE_SIZE_MB}MB.`);
+        errors.add(
+          `حجم فایل ${file.name} از ${MAX_FILE_SIZE_MB.toLocaleString('fa-IR')} مگابایت بیشتر است.`,
+        );
         return;
       }
-      next.push({
-        file,
-        id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
-      });
+      if (files.length + next.length >= MAX_BATCH_FILES) {
+        errors.add(
+          `حداکثر ${MAX_BATCH_FILES.toLocaleString('fa-IR')} فایل در هر دسته قابل انتخاب است.`,
+        );
+        return;
+      }
+      if (batchSize + file.size > MAX_BATCH_SIZE_BYTES) {
+        errors.add(
+          `حجم کل فایل‌ها نباید از ${MAX_BATCH_SIZE_MB.toLocaleString('fa-IR')} مگابایت بیشتر باشد.`,
+        );
+        return;
+      }
+      const stem = file.name.replace(/\.pdf$/i, '');
+      let downloadName = `${stem}_compressed.pdf`;
+      let suffix = 2;
+      while (usedNames.has(downloadName.toLowerCase())) {
+        downloadName = `${stem}_compressed-${suffix}.pdf`;
+        suffix += 1;
+      }
+      usedNames.add(downloadName.toLowerCase());
+      next.push({ file, id: String(nextFileId.current++), downloadName });
+      batchSize += file.size;
     });
 
-    if (errors.length > 0) {
-      setError(errors.slice(0, 3).join(' | '));
+    if (errors.size > 0) {
+      setError([...errors].slice(0, 3).join(' | '));
     }
 
-    setFiles((prev) => {
-      const existing = prev.filter((f) => !f.result);
-      return [...existing, ...next];
-    });
+    setFiles((prev) => [...prev, ...next]);
   };
 
   const removeFile = (id: string) => {
+    releaseDownload(id);
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
   const onCompress = async () => {
+    if (workerRef.current) {
+      return;
+    }
     setError(null);
     setProgress(0);
     if (files.length === 0) {
@@ -96,11 +124,11 @@ export default function CompressPdfPage() {
       return;
     }
 
+    const worker = createPdfWorkerClient();
+    workerRef.current = worker;
     setBusy(true);
-    const results: { name: string; url: string }[] = [];
 
     try {
-      const worker = getWorker();
       const total = files.length;
 
       for (let i = 0; i < total; i++) {
@@ -109,26 +137,28 @@ export default function CompressPdfPage() {
           continue;
         }
         const buffer = await item.file.arrayBuffer();
+        if (workerRef.current !== worker) {
+          return;
+        }
         const result = await worker.request({ type: 'compress', file: buffer }, (value) => {
           const fileProgress = (i + value) / total;
           setProgress(Math.round(fileProgress * 100));
         });
 
+        if (workerRef.current !== worker) {
+          return;
+        }
         const blob = new Blob([result.buffer], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
-        const compressedName = item.file.name.replace('.pdf', '_compressed.pdf');
-        results.push({ name: compressedName, url });
-
+        releaseDownload(item.id);
+        downloadUrls.current.set(item.id, url);
         setFiles((prev) =>
-          prev.map((f) =>
-            f.id === item.id
-              ? { ...f, result: { buffer: result.buffer, originalSize: item.file.size } }
-              : f,
+          prev.map((file) =>
+            file.id === item.id ? { ...file, result: { url, size: blob.size } } : file,
           ),
         );
       }
 
-      setDownloadUrls(results);
       trackAnalyticsEvent(ANALYTICS_EVENTS.TOOL_COMPLETE, {
         tool_id: 'compress-pdf',
         category: 'pdf',
@@ -141,14 +171,21 @@ export default function CompressPdfPage() {
       });
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+      if (workerRef.current === worker) {
+        setError(message);
+      }
     } finally {
-      setBusy(false);
+      if (workerRef.current === worker) {
+        workerRef.current = null;
+        worker.terminate();
+        setBusy(false);
+      }
     }
   };
 
-  const totalOriginal = files.reduce((s, f) => s + f.file.size, 0);
-  const totalCompressed = files.reduce((s, f) => s + (f.result?.buffer.byteLength ?? 0), 0);
+  const completed = files.filter((file) => file.result);
+  const totalOriginal = completed.reduce((sum, file) => sum + file.file.size, 0);
+  const totalCompressed = completed.reduce((sum, file) => sum + (file.result?.size ?? 0), 0);
   const savedPercent =
     totalOriginal > 0 && totalCompressed > 0
       ? Math.max(0, ((totalOriginal - totalCompressed) / totalOriginal) * 100)
@@ -173,7 +210,7 @@ export default function CompressPdfPage() {
               فایل PDF خود را اینجا بکشید یا انتخاب کنید
             </label>
             <div
-              className="relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
+              className="pdf-file-dropzone relative rounded-md border-2 border-dashed border-(--border-medium) bg-(--surface-2) p-8 text-center transition-colors hover:border-primary hover:bg-[rgb(var(--color-primary-rgb)/0.05)]"
               onDragOver={(e) => {
                 e.preventDefault();
                 e.currentTarget.classList.add(
@@ -200,9 +237,14 @@ export default function CompressPdfPage() {
                 id="compress-pdf-files"
                 type="file"
                 aria-label="انتخاب فایل PDF"
+                aria-describedby="compress-pdf-limits"
                 accept="application/pdf"
                 multiple
-                onChange={(e) => onSelectFiles(e.target.files)}
+                disabled={busy}
+                onChange={(event) => {
+                  onSelectFiles(event.currentTarget.files);
+                  event.currentTarget.value = '';
+                }}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
               <div className="space-y-2">
@@ -213,6 +255,11 @@ export default function CompressPdfPage() {
                 <div className="text-xs text-(--text-muted)">یا کلیک کنید تا فایل انتخاب کنید</div>
               </div>
             </div>
+            <p id="compress-pdf-limits" className="text-xs text-(--text-muted)">
+              حداکثر {MAX_BATCH_FILES.toLocaleString('fa-IR')} فایل در هر دسته،{' '}
+              {MAX_FILE_SIZE_MB.toLocaleString('fa-IR')} مگابایت برای هر فایل و{' '}
+              {MAX_BATCH_SIZE_MB.toLocaleString('fa-IR')} مگابایت برای مجموع فایل‌ها.
+            </p>
             <div className="text-xs text-(--text-muted)">
               می‌توانید چند فایل PDF را هم‌زمان انتخاب و فشرده کنید.
             </div>
@@ -230,33 +277,30 @@ export default function CompressPdfPage() {
                     <span className="text-xs text-(--text-muted)">
                       ({formatBytesFa(item.file.size)}
                       {item.result
-                        ? ` → ${formatBytesFa(item.result.buffer.byteLength)} (${Math.max(0, ((item.file.size - item.result.buffer.byteLength) / item.file.size) * 100).toFixed(1)}% ↓)`
+                        ? ` → ${formatBytesFa(item.result.size)} (${Math.max(0, ((item.file.size - item.result.size) / item.file.size) * 100).toFixed(1)}% ↓)`
                         : ''}
                       )
                     </span>
                   </div>
-                  {!item.result && (
+                  <div className="flex items-center gap-3">
                     <button
                       type="button"
                       onClick={() => removeFile(item.id)}
+                      disabled={busy}
                       className="text-sm text-danger hover:brightness-90"
                     >
                       حذف
                     </button>
-                  )}
-                  {item.result ? (
-                    <a
-                      href={
-                        downloadUrls.find((d) =>
-                          d.name.includes(item.file.name.replace('.pdf', '')),
-                        )?.url ?? '#'
-                      }
-                      download={item.file.name.replace('.pdf', '_compressed.pdf')}
-                      className="text-sm font-semibold text-primary hover:underline"
-                    >
-                      دانلود
-                    </a>
-                  ) : null}
+                    {item.result ? (
+                      <a
+                        href={item.result.url}
+                        download={item.downloadName}
+                        className="text-sm font-semibold text-primary hover:underline"
+                      >
+                        دانلود
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               ))}
               <div className="flex items-center justify-between text-xs text-(--text-muted) pt-2">
@@ -271,8 +315,8 @@ export default function CompressPdfPage() {
               type="button"
               variant="secondary"
               onClick={() => {
+                files.forEach((file) => releaseDownload(file.id));
                 setFiles([]);
-                setDownloadUrls([]);
               }}
               disabled={busy || files.length === 0}
             >
@@ -283,6 +327,21 @@ export default function CompressPdfPage() {
                 ? `در حال فشرده سازی... (${Math.round(progress)}%)`
                 : `فشرده سازی ${files.length > 1 ? `${files.length} فایل` : 'PDF'}`}
             </Button>
+            {busy ? (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  const worker = workerRef.current;
+                  workerRef.current = null;
+                  worker?.terminate();
+                  setBusy(false);
+                  setError('پردازش PDF لغو شد.');
+                }}
+              >
+                لغو پردازش
+              </Button>
+            ) : null}
           </div>
 
           {busy ? <ProgressBar value={progress} /> : null}

@@ -5,6 +5,14 @@ import type JSZip from 'jszip';
 let jszipPromise: Promise<JSZip> | null = null;
 let pdfWorkerReady = false;
 
+export const pdfJsDocumentOptions = {
+  cMapUrl: '/pdfjs/cmaps/',
+  cMapPacked: true,
+  standardFontDataUrl: '/pdfjs/standard_fonts/',
+  isEvalSupported: false,
+  stopAtErrors: true,
+};
+
 export function loadPdfJs() {
   if (!pdfjsPromise) {
     pdfjsPromise = import('pdfjs-dist');
@@ -28,8 +36,8 @@ export function loadJsZip() {
 
 /**
  * Configure pdfjs-dist worker from the public directory.
- * The worker file is copied to public/pdf.worker.min.mjs at install time
- * via the "postinstall" script in package.json.
+ * The worker, CMaps and standard fonts are copied from the same PDF.js installation
+ * during postinstall and production builds.
  * This avoids the unreliable `new URL(..., import.meta.url)` pattern
  * that fails in Next.js production builds.
  */

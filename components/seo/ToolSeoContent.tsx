@@ -1,4 +1,5 @@
 import { getCspNonce } from '@/lib/csp';
+import Link from 'next/link';
 import { buildToolJsonLd } from '@/lib/seo-tools';
 import type { ToolEntry } from '@/lib/tools-registry';
 
@@ -51,12 +52,13 @@ export default async function ToolSeoContent({ tool, includeStructuredData }: Pr
     return null;
   }
 
-  const { intro, sections, steps, tips, faq } = tool.content ?? {
+  const { intro, sections, steps, tips, faq, links } = tool.content ?? {
     intro: '',
     sections: [],
     steps: [],
     tips: [],
     faq: [],
+    links: [],
   };
 
   return (
@@ -118,6 +120,27 @@ export default async function ToolSeoContent({ tool, includeStructuredData }: Pr
                 ))}
               </ul>
             </section>
+          ) : null}
+
+          {links && links.length > 0 ? (
+            <nav aria-label="ابزارهای مرتبط" className="space-y-3">
+              <h3 className="text-xl font-semibold text-(--text-primary)">ابزارهای مرتبط</h3>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="block rounded-md border border-(--border-light) bg-(--surface-1) p-4 transition-colors hover:border-primary"
+                    >
+                      <span className="font-semibold text-primary">{link.label}</span>
+                      <span className="mt-1 block text-sm leading-6 text-(--text-secondary)">
+                        {link.description}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           ) : null}
 
           {faq && faq.length > 0 ? (

@@ -1,6 +1,7 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { dirname, extname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const HOST = process.env.SMOKE_HOST ?? '127.0.0.1';
@@ -9,11 +10,17 @@ const BASE_URL = `http://${HOST}:${PORT}`;
 const START_TIMEOUT_MS = 120_000;
 const REQUEST_TIMEOUT_MS = 15_000;
 const POLL_INTERVAL_MS = 1_000;
+const WORD_PDF_PREVIEW = process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW === '1';
 
 const ROUTE_CHECKS = [
   { path: '/', expectedStatus: 200 },
   { path: '/asdev', expectedStatus: 200 },
-  { path: '/api/ready', expectedStatus: 200, expectedContentType: 'application/json', allow503: true },
+  {
+    path: '/api/ready',
+    expectedStatus: 200,
+    expectedContentType: 'application/json',
+    allow503: true,
+  },
   { path: '/tools', expectedStatus: 200 },
   { path: '/loan', expectedStatus: 200 },
   { path: '/salary', expectedStatus: 200 },
@@ -23,6 +30,59 @@ const ROUTE_CHECKS = [
   { path: '/privacy', expectedStatus: 200 },
   { path: '/sitemap.xml', expectedStatus: 200 },
 ];
+
+const PDF_ASSETS = [
+  { path: '/pdf-engine/v1/document-worker.mjs', contentType: 'javascript' },
+  { path: '/pdf-engine/v1/runtime/qpdf.wasm', contentType: 'application/wasm' },
+  { path: '/pdf-engine/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
+  ...(WORD_PDF_PREVIEW
+    ? [
+        { path: '/word-pdf/v1/worker.mjs', contentType: 'javascript' },
+        { path: '/word-pdf/v1/runtime/src/index.js', contentType: 'javascript' },
+        { path: '/word-pdf/v1/runtime/pkg/opendoc_viewer.js', contentType: 'javascript' },
+        {
+          path: '/word-pdf/v1/runtime/pkg/opendoc_viewer_bg.wasm',
+          contentType: 'application/wasm',
+        },
+        { path: '/word-pdf/v1/runtime/LICENSE', contentType: 'application/octet-stream' },
+        { path: '/word-pdf/v1/runtime/NOTICE', contentType: 'application/octet-stream' },
+        { path: '/word-pdf/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
+        { path: '/word-pdf/v1/runtime/RUST_STD_COPYRIGHT.html', contentType: 'text/html' },
+        { path: '/fonts/Vazirmatn-Regular.ttf', contentType: 'font/ttf' },
+        { path: '/fonts/OFL-Vazirmatn.txt', contentType: 'text/plain' },
+      ]
+    : []),
+];
+
+async function pdfJsSmokeAssets(rootDir) {
+  const packageDir = resolve(rootDir, 'node_modules/pdfjs-dist');
+  const assets = [
+    {
+      path: '/pdf.worker.min.mjs',
+      contentType: 'javascript',
+      source: resolve(packageDir, 'build/pdf.worker.min.mjs'),
+    },
+  ];
+  for (const directory of ['cmaps', 'standard_fonts']) {
+    const files = await readdir(resolve(packageDir, directory), { withFileTypes: true });
+    if (!files.some((file) => file.isFile())) {
+      throw new Error(`PDF.js has no files in ${directory}`);
+    }
+    for (const file of files.filter((entry) => entry.isFile())) {
+      const contentType =
+        {
+          '.pfb': 'application/x-font-type1',
+          '.ttf': 'font/ttf',
+        }[extname(file.name)] ?? 'application/octet-stream';
+      assets.push({
+        path: `/pdfjs/${directory}/${file.name}`,
+        contentType,
+        source: resolve(packageDir, directory, file.name),
+      });
+    }
+  }
+  return assets;
+}
 
 const delay = (ms) => new Promise((resolveDelay) => setTimeout(resolveDelay, ms));
 
@@ -135,6 +195,18 @@ const runRouteChecks = async () => {
   return failures;
 };
 
+export async function verifySmokeAsset(asset, response, expected) {
+  if (response.status !== 200) {
+    throw new Error(`${asset.path}: expected HTTP 200, got ${response.status}`);
+  }
+  if (!(response.headers.get('content-type') ?? '').includes(asset.contentType)) {
+    throw new Error(`${asset.path}: unexpected content-type`);
+  }
+  if (!expected.length || !expected.equals(Buffer.from(await response.arrayBuffer()))) {
+    throw new Error(`${asset.path}: bytes differ from the build asset or are empty`);
+  }
+}
+
 export async function runLocalSmoke(rootDir = process.cwd()) {
   const releaseSha = resolveReleaseSha(rootDir);
   const { standaloneDir, serverPath } = prepareStandaloneRuntime(rootDir);
@@ -175,6 +247,15 @@ export async function runLocalSmoke(rootDir = process.cwd()) {
       throw new Error(`Local smoke failed:\n- ${failures.join('\n- ')}`);
     }
     console.log(`[smoke] standalone routes passed (${ROUTE_CHECKS.length} checks)`);
+    const pdfAssets = [...(await pdfJsSmokeAssets(rootDir)), ...PDF_ASSETS];
+    for (const asset of pdfAssets) {
+      const expected = await readFile(
+        asset.source ?? resolve(rootDir, 'public', asset.path.slice(1)),
+      );
+      const response = await fetchWithTimeout(`${BASE_URL}${asset.path}`, REQUEST_TIMEOUT_MS);
+      await verifySmokeAsset(asset, response, expected);
+    }
+    console.log(`[smoke] standalone PDF assets passed (${pdfAssets.length} checks)`);
   } finally {
     process.off('SIGINT', handleSignal);
     process.off('SIGTERM', handleSignal);

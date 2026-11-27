@@ -5,6 +5,7 @@ import { Button, Card, ProgressBar } from '@/components/ui';
 import Alert from '@/shared/ui/Alert';
 import { createPdfWorkerClient, type PdfWorkerClient } from '@/features/pdf-tools/workerClient';
 import { parsePageRanges } from '@/features/pdf-tools/utils/pageRanges';
+import { getPdfEditFileSizeError } from '@/features/pdf-tools/utils/editFileSize';
 import { recordHistory } from '@/shared/history/recordHistory';
 import RecentHistoryCard from '@/components/features/history/RecentHistoryCard';
 
@@ -17,9 +18,11 @@ export default function ExtractPagesPage() {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const workerRef = useRef<PdfWorkerClient | null>(null);
+  const selectionRef = useRef(0);
 
   useEffect(() => {
     return () => {
+      selectionRef.current += 1;
       workerRef.current?.terminate();
       workerRef.current = null;
     };
@@ -27,7 +30,7 @@ export default function ExtractPagesPage() {
 
   const getWorker = () => {
     if (!workerRef.current) {
-      workerRef.current = createPdfWorkerClient();
+      workerRef.current = createPdfWorkerClient({ preserveDocument: true });
     }
     return workerRef.current;
   };
@@ -41,6 +44,12 @@ export default function ExtractPagesPage() {
   }, [downloadUrl]);
 
   const onSelectFile = async (fileList: FileList | null) => {
+    if (busy) {
+      return;
+    }
+    const selection = ++selectionRef.current;
+    workerRef.current?.cancel();
+    setFile(null);
     setError(null);
     setTotalPages(null);
     setDownloadUrl(null);
@@ -55,23 +64,34 @@ export default function ExtractPagesPage() {
       return;
     }
 
-    try {
-      const worker = getWorker();
-      const buffer = await selected.arrayBuffer();
-      const pages = await worker.countPages({ file: buffer });
-      setTotalPages(pages);
-    } catch (e) {
-      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
-      setError(message);
+    const sizeError = getPdfEditFileSizeError(selected.size);
+    if (sizeError) {
+      setError(sizeError);
       return;
     }
 
-    setFile(selected);
+    try {
+      const buffer = await selected.arrayBuffer();
+      if (selectionRef.current !== selection) {
+        return;
+      }
+      const pages = await getWorker().countPages({ file: buffer });
+      if (selectionRef.current === selection) {
+        setTotalPages(pages);
+        setFile(selected);
+      }
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
+      if (selectionRef.current === selection) {
+        setError(message);
+      }
+    }
   };
 
   const onExtract = async () => {
     setError(null);
     setProgress(0);
+    setDownloadUrl(null);
     if (!file) {
       setError('ابتدا فایل PDF را انتخاب کنید.');
       return;
@@ -90,14 +110,11 @@ export default function ExtractPagesPage() {
       }
 
       const worker = getWorker();
-      const result = await worker.request({ type: 'split', file: buffer, pages }, (value) =>
+      const result = await worker.request({ type: 'extract', file: buffer, pages }, (value) =>
         setProgress(Math.round(value * 100)),
       );
       const blob = new Blob([result.buffer], { type: 'application/pdf' });
 
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
-      }
       setDownloadUrl(URL.createObjectURL(blob));
     } catch (e) {
       const message = e instanceof Error ? e.message : 'خطای نامشخص رخ داد.';
@@ -117,6 +134,11 @@ export default function ExtractPagesPage() {
           </p>
         </div>
 
+        <Alert variant="info">
+          خروجی شامل صفحات انتخاب‌شده و فرم‌های همان صفحات است. پیوست‌ها، نشانک‌ها و اطلاعات کلی سند
+          اصلی منتقل نمی‌شوند.
+        </Alert>
+
         <Card className="p-6 space-y-4" aria-busy={busy}>
           <div className="flex flex-col gap-3">
             <label
@@ -130,7 +152,11 @@ export default function ExtractPagesPage() {
               type="file"
               aria-label="انتخاب فایل PDF"
               accept="application/pdf"
-              onChange={(e) => onSelectFile(e.target.files)}
+              disabled={busy}
+              onChange={(event) => {
+                void onSelectFile(event.currentTarget.files);
+                event.currentTarget.value = '';
+              }}
               className="input-field"
               aria-invalid={Boolean(error)}
               aria-describedby={error ? 'extract-pages-error' : undefined}
@@ -154,7 +180,11 @@ export default function ExtractPagesPage() {
               id="extract-pages-input"
               type="text"
               value={pagesInput}
-              onChange={(e) => setPagesInput(e.target.value)}
+              disabled={busy}
+              onChange={(e) => {
+                setPagesInput(e.target.value);
+                setDownloadUrl(null);
+              }}
               placeholder="مثال: 1-3,5,8"
               className="input-field"
               aria-invalid={Boolean(error)}
@@ -171,7 +201,7 @@ export default function ExtractPagesPage() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setFile(null)}
+              onClick={() => void onSelectFile(null)}
               disabled={busy || !file}
             >
               تغییر فایل

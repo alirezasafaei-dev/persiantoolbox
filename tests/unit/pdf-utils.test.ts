@@ -4,6 +4,15 @@ import { parsePageOrder } from '@/features/pdf-tools/utils/pageOrder';
 
 describe('pdf utils', () => {
   describe('parsePageRanges', () => {
+    it('limits distinct pages during expansion', () => {
+      expect(parsePageRanges('1,1,2', 100_000, 2)).toEqual([0, 1]);
+      expect(() => parsePageRanges('1-100000', 100_000, 2)).toThrow('حداکثر');
+    });
+
+    it('accepts Persian separators and keeps ascending set semantics', () => {
+      expect(parsePageRanges('۳–۱، ۲،۵', 5)).toEqual([0, 1, 2, 4]);
+    });
+
     it('parses ranges and single pages', () => {
       expect(parsePageRanges('1,3-5,7', 10)).toEqual([0, 2, 3, 4, 6]);
     });
@@ -24,6 +33,10 @@ describe('pdf utils', () => {
   });
 
   describe('parsePageOrder', () => {
+    it('keeps reverse ranges and repeated values for order validation', () => {
+      expect(parsePageOrder('۳–۱، ۲', 5)).toEqual([2, 1, 0, 1]);
+    });
+
     it('parses ordered pages and ranges', () => {
       expect(parsePageOrder('3,1-2', 5)).toEqual([2, 0, 1]);
     });
@@ -42,4 +55,11 @@ describe('pdf utils', () => {
       expect(() => parsePageOrder('x', 10)).toThrow('شماره صفحه نامعتبر است.');
     });
   });
+  it.each(['1.5', '1e1', '1-2-3', ',1', '1,', '1,,2', '1 2', '0x2'])(
+    'rejects malformed page expressions %s',
+    (input) => {
+      expect(() => parsePageRanges(input, 20)).toThrow();
+      expect(() => parsePageOrder(input, 20)).toThrow();
+    },
+  );
 });

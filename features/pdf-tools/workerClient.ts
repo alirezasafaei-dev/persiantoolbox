@@ -4,16 +4,11 @@ export type PdfWorkerResult = {
 
 type PdfWorkerProgress = (progress: number) => void;
 
-type PendingRequest = {
-  resolve: (value: PdfWorkerResult) => void;
-  reject: (reason?: unknown) => void;
-  onProgress?: PdfWorkerProgress;
-};
-
 type PdfWorkerMessage = {
   id: string;
-  type: 'progress' | 'result' | 'error' | 'pages';
+  type: 'progress' | 'result' | 'error' | 'pages' | 'parts';
   progress?: number;
+  parts?: ArrayBuffer[];
   buffer?: ArrayBuffer;
   totalPages?: number;
   message?: string;
@@ -21,15 +16,18 @@ type PdfWorkerMessage = {
 
 export type PdfWorkerRequest =
   | { type: 'merge'; files: ArrayBuffer[] }
-  | { type: 'split'; file: ArrayBuffer; pages: number[] }
+  | { type: 'split'; file: ArrayBuffer; pagesPerPart: number }
+  | { type: 'extract' | 'delete'; file: ArrayBuffer; pages: number[] }
   | { type: 'reorder'; file: ArrayBuffer; pages: number[] }
   | { type: 'rotate'; file: ArrayBuffer; pages: number[]; rotation: number }
   | { type: 'compress'; file: ArrayBuffer }
+  | { type: 'encrypt'; file: ArrayBuffer; password: string; ownerPassword: string }
   | {
       type: 'watermark';
       file: ArrayBuffer;
-      text: string;
-      fontSize: number;
+      png: ArrayBuffer;
+      width: number;
+      height: number;
       opacity: number;
       rotation: number;
       position: 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -38,95 +36,153 @@ export type PdfWorkerRequest =
 
 export type PdfWorkerClient = {
   request: (payload: PdfWorkerRequest, onProgress?: PdfWorkerProgress) => Promise<PdfWorkerResult>;
+  split: (
+    file: ArrayBuffer,
+    pagesPerPart: number,
+    onProgress?: PdfWorkerProgress,
+  ) => Promise<ArrayBuffer[]>;
   countPages: (payload: { file: ArrayBuffer }) => Promise<number>;
+  cancel: () => void;
   terminate: () => void;
 };
 
-const createRequestId = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+type PendingRequest = {
+  onResponse: (message: PdfWorkerMessage) => void;
+  reject: (reason: Error) => void;
+  timeout: ReturnType<typeof setTimeout>;
+};
 
-export const createPdfWorkerClient = (): PdfWorkerClient => {
-  const worker = new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), {
-    type: 'module',
-  });
+const CANCELLED = 'پردازش PDF لغو شد.';
+const WORKER_FAILED = 'پردازشگر PDF با خطا روبه‌رو شد. دوباره تلاش کنید.';
+const INVALID_RESPONSE = 'پاسخ پردازشگر PDF نامعتبر است.';
+
+export const createPdfWorkerClient = ({
+  timeoutMs = 120_000,
+  preserveDocument = false,
+} = {}): PdfWorkerClient => {
   const pending = new Map<string, PendingRequest>();
-  const pendingPages = new Map<
-    string,
-    { resolve: (value: number) => void; reject: (reason?: unknown) => void }
-  >();
+  let worker: Worker | undefined;
+  let nextId = 0;
+  let closed = false;
 
-  worker.onmessage = (event: MessageEvent<PdfWorkerMessage>) => {
-    const message = event.data;
-
-    if (message.type === 'progress' && typeof message.progress === 'number') {
-      const entry = pending.get(message.id);
-      entry?.onProgress?.(message.progress);
-      return;
-    }
-
-    if (message.type === 'pages') {
-      const entry = pendingPages.get(message.id);
-      if (entry) {
-        pendingPages.delete(message.id);
-        entry.resolve(message.totalPages ?? 0);
-      }
-      return;
-    }
-
-    if (message.type === 'error') {
-      const entry = pending.get(message.id);
-      if (entry) {
-        pending.delete(message.id);
-        entry.reject(new Error(message.message ?? 'خطای نامشخص رخ داد.'));
-      }
-      const pagesEntry = pendingPages.get(message.id);
-      if (pagesEntry) {
-        pendingPages.delete(message.id);
-        pagesEntry.reject(new Error(message.message ?? 'خطای نامشخص رخ داد.'));
-      }
-      return;
-    }
-
-    if (message.type === 'result' && message.buffer) {
-      const entry = pending.get(message.id);
-      if (entry) {
-        pending.delete(message.id);
-        entry.resolve({ buffer: message.buffer });
-      }
-    }
-  };
-
-  const request = (payload: PdfWorkerRequest, onProgress?: PdfWorkerProgress) => {
-    const id = createRequestId();
-    return new Promise<PdfWorkerResult>((resolve, reject) => {
-      const entry: PendingRequest = { resolve, reject };
-      if (onProgress) {
-        entry.onProgress = onProgress;
-      }
-      pending.set(id, entry);
-      if ('files' in payload) {
-        worker.postMessage({ id, ...payload }, payload.files);
-        return;
-      }
-      if ('file' in payload) {
-        worker.postMessage({ id, ...payload }, [payload.file]);
-        return;
-      }
+  const takeRequest = (id: string) => {
+    const entry = pending.get(id);
+    if (entry) {
+      clearTimeout(entry.timeout);
       pending.delete(id);
-      reject(new Error('Invalid PDF worker request: no file or files provided.'));
-    });
+    }
+    return entry;
   };
 
-  const countPages = (payload: { file: ArrayBuffer }) => {
-    const id = createRequestId();
-    return new Promise<number>((resolve, reject) => {
-      pendingPages.set(id, { resolve, reject });
-      worker.postMessage({ id, type: 'count-pages', file: payload.file }, [payload.file]);
-    });
+  const stopWorker = (message: string) => {
+    if (worker) {
+      worker.onmessage = null;
+      worker.onerror = null;
+      worker.onmessageerror = null;
+      worker.terminate();
+      worker = undefined;
+    }
+    for (const id of pending.keys()) {
+      takeRequest(id)?.reject(new Error(message));
+    }
   };
+
+  const getWorker = () => {
+    if (worker) {
+      return worker;
+    }
+    const instance = preserveDocument
+      ? new Worker('/pdf-engine/v1/document-worker.mjs', { type: 'module' })
+      : new Worker(new URL('./workers/pdf-worker.ts', import.meta.url), { type: 'module' });
+    worker = instance;
+    const onFailure = () => {
+      if (worker === instance) {
+        stopWorker(WORKER_FAILED);
+      }
+    };
+    instance.onerror = onFailure;
+    instance.onmessageerror = onFailure;
+    instance.onmessage = ({ data }: MessageEvent<PdfWorkerMessage>) => {
+      if (!data || typeof data.id !== 'string') {
+        onFailure();
+        return;
+      }
+      const entry = data.type === 'progress' ? pending.get(data.id) : takeRequest(data.id);
+      entry?.onResponse(data);
+    };
+    return instance;
+  };
+
+  const dispatch = <T>(
+    payload: PdfWorkerRequest,
+    readResult: (response: PdfWorkerMessage) => T | undefined,
+    onProgress?: PdfWorkerProgress,
+  ) =>
+    new Promise<T>((resolve, reject) => {
+      if (closed) {
+        reject(new Error(CANCELLED));
+        return;
+      }
+      const id = String(nextId++);
+      try {
+        const instance = getWorker();
+        pending.set(id, {
+          reject,
+          timeout: setTimeout(() => stopWorker('زمان پردازش PDF به پایان رسید.'), timeoutMs),
+          onResponse(message) {
+            if (message.type === 'progress') {
+              if (typeof message.progress === 'number') {
+                onProgress?.(message.progress);
+              }
+              return;
+            }
+            if (message.type === 'error') {
+              reject(new Error(message.message ?? WORKER_FAILED));
+              return;
+            }
+            const result = readResult(message);
+            if (result === undefined) {
+              reject(new Error(INVALID_RESPONSE));
+            } else {
+              resolve(result);
+            }
+          },
+        });
+        const buffers = 'files' in payload ? payload.files : [payload.file];
+        if (payload.type === 'watermark') {
+          buffers.push(payload.png);
+        }
+        instance.postMessage({ id, ...payload }, buffers);
+      } catch {
+        takeRequest(id);
+        reject(new Error(WORKER_FAILED));
+      }
+    });
 
   return {
-    request,
-    countPages,
-    terminate: () => worker.terminate(),
+    request: (payload, onProgress) =>
+      dispatch(
+        payload,
+        (message) =>
+          message.type === 'result' && message.buffer instanceof ArrayBuffer
+            ? { buffer: message.buffer }
+            : undefined,
+        onProgress,
+      ),
+    split: (file, pagesPerPart, onProgress) =>
+      dispatch(
+        { type: 'split', file, pagesPerPart },
+        (message) => (message.type === 'parts' ? message.parts : undefined),
+        onProgress,
+      ),
+    countPages: ({ file }) =>
+      dispatch({ type: 'count-pages', file }, (message) =>
+        message.type === 'pages' ? message.totalPages : undefined,
+      ),
+    cancel: () => stopWorker(CANCELLED),
+    terminate() {
+      closed = true;
+      stopWorker(CANCELLED);
+    },
   };
 };
