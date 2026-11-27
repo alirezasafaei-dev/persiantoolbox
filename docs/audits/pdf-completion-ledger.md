@@ -268,7 +268,11 @@ permission is unchanged. An exact worker URL receives the narrower worker
 CSP only when the preview is enabled.
 
 The preview caps compressed input at 8 MiB, output at 24 MiB and page
-count at 100. The patched ZIP reader also checks a 48 MiB expanded total
+count at 100. A 101-page synthetic DOCX produced a page-specific alert
+and no download. The retry with a two-page DOCX opened successfully
+and contained the expected second-page text in Chromium, Firefox and
+WebKit. This is a page-limit check, separate from memory profiling.
+The patched ZIP reader also checks a 48 MiB expanded total
 and 16 MiB per entry at admission, before reading document parts. These
 ceilings do not measure transient allocations when decoding media or
 laying out pages.

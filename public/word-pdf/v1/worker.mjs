@@ -24,7 +24,7 @@ self.onmessage = async ({ data }) => {
     doc = await openDocument(data, { fontProvider: null });
     doc.registerFallbackFont(font, ['Arabic']);
     if (doc.pageCount > MAX_PAGES) {
-      self.postMessage({ error: 'limit' });
+      self.postMessage({ error: 'page-limit', maxPages: MAX_PAGES });
       return;
     }
     if (!doc.pageCount || doc.missingCodePoints().length) {

@@ -61,6 +61,11 @@ iPhone 13 emulations. All 84 rows remained in order across table pages,
 the final page retained the explicit break and image, and PDF text
 confirmed the numbered Persian footer on every page.
 
+Word preview page-limit recovery is PASS on this revision. Chromium,
+Firefox and WebKit rejected a 101-page DOCX with the specific 100-page
+limit message and no download. Each then downloaded a readable two-page
+PDF with the expected second-page text.
+
 PDF to Image privacy is PASS for the synthetic fixture at application
 SHA `c60d5066`. Chromium, Firefox and WebKit produced matching PNG and
 ZIP entry bytes and generated only the expected page and count fields

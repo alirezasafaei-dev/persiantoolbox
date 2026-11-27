@@ -117,6 +117,55 @@ test('Word preview recovers from invalid input and cancellation and downloads a 
   expect(response.headers()['content-security-policy']).not.toContain("'wasm-unsafe-eval'");
 });
 
+test('Word preview reports the page limit and converts a smaller document on retry', async ({
+  page,
+}) => {
+  test.skip(
+    process.env['NEXT_PUBLIC_WORD_PDF_PREVIEW'] !== '1',
+    'Requires the staged OpenDoc preview',
+  );
+  await page.goto('/pdf-tools/convert/word-to-pdf');
+  const input = page.getByLabel('انتخاب فایل DOCX');
+  const convert = page.getByRole('button', { name: 'تبدیل به PDF', exact: true });
+  const download = page.getByRole('link', { name: 'دانلود PDF', exact: true });
+  const selectDocument = async (pages: number) => {
+    const children = Array.from(
+      { length: pages },
+      (_, index) =>
+        new Paragraph({ text: `Synthetic page ${index + 1}`, pageBreakBefore: index > 0 }),
+    );
+    const doc = new Document({ sections: [{ children }] });
+    await input.setInputFiles({
+      name: 'page-limit.docx',
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      buffer: await Packer.toBuffer(doc),
+    });
+  };
+  await selectDocument(101);
+  await convert.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'سند بیش از ۱۰۰ صفحه دارد' })).toBeVisible(
+    {
+      timeout: 15_000,
+    },
+  );
+  await expect(download).toHaveCount(0);
+  await selectDocument(2);
+  await convert.click();
+  const [file] = await Promise.all([page.waitForEvent('download'), download.click()]);
+  const task = getDocument({
+    data: Uint8Array.from(await readFile(await file.path())),
+    isEvalSupported: false,
+  });
+  try {
+    const pdf = await task.promise;
+    expect(pdf.numPages).toBe(2);
+    const { items } = await (await pdf.getPage(2)).getTextContent();
+    expect(items.some((item) => 'str' in item && item.str === 'Synthetic page 2')).toBe(true);
+  } finally {
+    await task.destroy();
+  }
+});
+
 test('Word preview preserves the mixed-script table, image, headers and numbered footers', async ({
   page,
 }) => {

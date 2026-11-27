@@ -105,7 +105,11 @@ export default function WordToPdfPreview() {
     worker.onmessageerror = () => finish(CONVERSION_ERROR);
     worker.onmessage = ({ data }) => {
       if (!(data?.output instanceof ArrayBuffer)) {
-        finish(workerErrors[data?.error] ?? CONVERSION_ERROR);
+        const message =
+          data?.error === 'page-limit' && Number.isSafeInteger(data.maxPages)
+            ? `سند بیش از ${Number(data.maxPages).toLocaleString('fa-IR')} صفحه دارد. سند کوتاه‌تری انتخاب کنید.`
+            : (workerErrors[data?.error] ?? CONVERSION_ERROR);
+        finish(message);
         return;
       }
       if (!finish()) {
