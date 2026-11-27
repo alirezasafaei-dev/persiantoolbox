@@ -75,7 +75,11 @@ it('associates the formal letter controls with their visible labels', () => {
   expect(screen.getByLabelText('تاریخ *')).toHaveValue('2026-11-13');
 
   const signatureInput = screen.getByLabelText('انتخاب تصویر امضا');
-  expect(signatureInput.labels?.[0]).toHaveTextContent('تصویر امضا');
+  expect(signatureInput.id).not.toBe('');
+  expect(screen.getByText('تصویر امضا', { selector: 'label' })).toHaveAttribute(
+    'for',
+    signatureInput.id,
+  );
 });
 
 it.each([
