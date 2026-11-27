@@ -195,6 +195,36 @@ does not establish exact coordinates or wider document compatibility.
 The Persian fallback metric remains experimental and the application
 does not yet include the engine.
 
+### Isolated Word-to-PDF resource profile
+
+The guarded OpenDoc prototype built from `91775489` was exercised with
+10-, 50- and 100-page synthetic DOCX files, using eight mixed Persian and
+English paragraphs per page and an explicit break before each page marker.
+The input files were 8,810 to 9,994 compressed bytes and contained no
+images. Three fresh runs per size in each of Chromium (Pixel 7 emulation),
+Firefox and WebKit passed. The test parsed every generated PDF and checked
+the ordered marker and Persian text on every page. There were no observed
+cross-origin requests or CSP violations in the probe.
+
+| Pages | Chromium median | Firefox median | WebKit median | WASM memory after export |
+| ----: | --------------: | -------------: | ------------: | -----------------------: |
+|    10 |          395 ms |         356 ms |        453 ms |             10,682,368 B |
+|    50 |          737 ms |         773 ms |        995 ms |             14,483,456 B |
+|   100 |        1,192 ms |       1,385 ms |      1,746 ms |             19,529,728 B |
+
+Browser times include starting the worker and delivering its result to
+the Playwright probe. The largest measured 16-ms timer interval during
+100-page conversion was 58 ms in Chromium, 82 ms in Firefox and 59 ms
+in WebKit. These are event-loop samples on the test host. A separate Node
+Worker measured the engine's linear-memory capacity. Capacity did not
+shrink after freeing the document, so a per-operation worker can release
+the whole instance at termination. The profile does not measure total
+browser memory, physical-device performance or image-heavy documents.
+Do not derive an upload limit from this text-only profile.
+
+The measured WASM SHA-256 was
+`b05f93f327fe7709258c4cf4bd02356e830c9beb36037829b4114c9b67ae35a5`.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
