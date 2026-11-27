@@ -2,6 +2,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema';
 import RelatedTools from '@/components/ui/RelatedTools';
 import WordToPdfGuide from '@/features/pdf-tools/convert/word-to-pdf';
+import WordToPdfPreview from '@/features/pdf-tools/convert/word-to-pdf-preview';
 import { buildMetadata, siteUrl } from '@/lib/seo';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
@@ -29,6 +30,7 @@ export default function WordToPdfRoute() {
         items={breadcrumbs.map((item) => ({ ...item, current: item.href === guide.path }))}
       />
       <WordToPdfGuide />
+      {process.env['NEXT_PUBLIC_WORD_PDF_PREVIEW'] === '1' ? <WordToPdfPreview /> : null}
       {guide.category ? <RelatedTools currentPath={guide.path} category={guide.category} /> : null}
     </div>
   );

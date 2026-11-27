@@ -248,6 +248,28 @@ The PNG and JPEG cohorts differ in compressed size and page count.
 These checks cover synthetic same-origin prototype workloads. Peak
 browser process memory and physical devices still need separate evidence.
 
+### Application preview
+
+The candidate has an opt-in converter on the existing Word-to-PDF route.
+To run it locally, pass the evaluated OpenDoc package directory to
+`node scripts/stage-word-pdf-preview.mjs <package-directory>`, then start
+the local app with `NEXT_PUBLIC_WORD_PDF_PREVIEW=1`. The staging script
+verifies all runtime files and notices before copying them. The generated
+runtime directory is ignored by Git. Keep the preview flag unset on normal
+builds until the engine distribution and acceptance work is complete.
+
+Each conversion transfers the file to a fresh same-origin module worker.
+The preview closes the worker on successful output, failure, cancellation,
+timeout or navigation away. The output URL is revoked when the selection
+changes or the route unmounts. The production policy's page-level WASM
+permission is unchanged. An exact worker URL receives the narrower worker
+CSP only when the preview is enabled.
+
+The preview's provisional caps are 8 MiB compressed input, 100 pages and
+24 MiB output. Those caps do not bound transient parser allocations.
+Reproducible dependency packaging, decompressed input limits, larger
+document compatibility and release-mode browser checks remain open.
+
 The official Rust 1.96 release and installer passed checksum checks. A
 temporary WSL toolchain installed the WASM target, but the pinned
 `wasm-pack 0.13.1 --locked` build exceeded the available execution
