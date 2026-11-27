@@ -1,12 +1,23 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
 const target = resolve('public/word-pdf/v1/runtime');
 const argument = process.argv[2];
 const check = argument === '--check';
 if (!argument) throw new Error('Supply the verified, patched OpenDoc viewer directory.');
-if (check && process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW !== '1') process.exit(0);
+if (check && process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW !== '1') {
+  const stagedRuntime = await lstat(target).catch((error) => {
+    if (error.code !== 'ENOENT') throw error;
+  });
+  if (stagedRuntime) {
+    console.error(
+      'An OpenDoc runtime is staged in public/word-pdf/v1/runtime. Move it outside public before building with the preview disabled.',
+    );
+    process.exit(1);
+  }
+  process.exit(0);
+}
 const source = check ? target : argument;
 
 // OpenDoc 91775489, Rust 1.96.0, wasm-bindgen 0.2.129, bounded RTL build.

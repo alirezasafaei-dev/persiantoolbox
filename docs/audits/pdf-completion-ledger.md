@@ -255,8 +255,10 @@ To run it locally, pass the evaluated OpenDoc package directory to
 `node scripts/stage-word-pdf-preview.mjs <package-directory>`, then start
 the local app with `NEXT_PUBLIC_WORD_PDF_PREVIEW=1`. The staging script
 verifies all runtime files and notices before copying them. The generated
-runtime directory is ignored by Git. Keep the preview flag unset on normal
-builds until the engine distribution and acceptance work is complete.
+runtime directory is ignored by Git. Build the preview in an isolated
+worktree. For a normal build, leave the flag unset and keep the runtime
+outside `public/`. The build rejects staged runtime files when the preview
+is disabled because standalone packaging copies the public directory.
 
 Each conversion transfers the file to a fresh same-origin module worker.
 The preview closes the worker on successful output, failure, cancellation,
