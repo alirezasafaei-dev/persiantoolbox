@@ -4,6 +4,47 @@ import MarketDashboard from '@/components/features/market/MarketDashboard';
 
 const scenario = vi.hoisted(() => ({ unavailable: false }));
 
+it('calculates rial equivalents from user-supplied dollar prices during an outage', () => {
+  scenario.unavailable = true;
+  try {
+    render(<MarketDashboard />);
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '۱٬۰۰۰٬۰۰۰' },
+    });
+    fireEvent.change(screen.getByLabelText('قیمت اونس تروا طلا (دلار)'), {
+      target: { value: '۳۱۱۰٫۳۴۷۶۸' },
+    });
+    fireEvent.change(screen.getByLabelText('قیمت بیت‌کوین (دلار)'), { target: { value: '۶۰۰۰۰' } });
+    fireEvent.change(screen.getByLabelText('قیمت اتریوم (دلار)'), { target: { value: '۲۰۰۰' } });
+    const result = screen.getByRole('status', { name: 'نتیجهٔ تبدیل به ریال' });
+    expect(result).toHaveTextContent('۱۰۰٬۰۰۰٬۰۰۰ ریال');
+    expect(result).toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
+    expect(result).toHaveTextContent('۶۰٬۰۰۰٬۰۰۰٬۰۰۰ ریال');
+    expect(result).toHaveTextContent('۲٬۰۰۰٬۰۰۰٬۰۰۰ ریال');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '۱ ۰۰۰ ۰۰۰' },
+    });
+    expect(result).toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
+    fireEvent.change(screen.getByLabelText('قیمت هر یورو (دلار)'), { target: { value: '0.6' } });
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '9007199254740991' },
+    });
+    expect(result).toHaveTextContent('۵٬۴۰۴٬۳۱۹٬۵۵۲٬۸۴۴٬۵۹۵ ریال');
+    expect(result).toHaveTextContent('بیشتر از محدودهٔ محاسبه');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), { target: { value: '0.1' } });
+    expect(result).toHaveTextContent('کمتر از یک ریال');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), {
+      target: { value: '۹۰۰۷۱۹۹۲۵۴۷۴۰۹۹۳' },
+    });
+    expect(screen.getByText('نرخ مثبت و معتبر وارد کنید.')).toBeVisible();
+    expect(result).not.toHaveTextContent('ریال');
+    fireEvent.change(screen.getByLabelText('نرخ هر دلار (ریال)'), { target: { value: '0' } });
+    expect(result).not.toHaveTextContent('۷۵٬۰۰۰٬۰۰۰ ریال');
+  } finally {
+    scenario.unavailable = false;
+  }
+});
+
 vi.mock('@/shared/hooks/useMarketData', () => ({
   useMarketData: () => ({
     loading: false,

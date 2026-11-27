@@ -6,6 +6,7 @@ import Card from '@/shared/ui/Card';
 import LoadingSpinner from '@/shared/ui/LoadingSpinner';
 import InvestmentSimulator, { type InvestmentInputs } from './InvestmentSimulator';
 import AssetComparison from './AssetComparison';
+import DollarConversion from './DollarConversion';
 import PresetScenarios from './PresetScenarios';
 
 const referenceRateFormatter = new Intl.NumberFormat('fa-IR', {
@@ -161,6 +162,7 @@ export default function MarketDashboard() {
     <div className="container mx-auto px-4 py-8 space-y-8">
       <h1 className="text-3xl font-bold text-(--text-primary)">داشبورد بازار</h1>
       <MarketQuotes />
+      <DollarConversion />
 
       {/* Investment Simulator */}
       <section
