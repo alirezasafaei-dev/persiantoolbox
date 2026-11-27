@@ -20,6 +20,25 @@ if (check && process.env.NEXT_PUBLIC_WORD_PDF_PREVIEW !== '1') {
 }
 const source = check ? target : argument;
 
+function verifyHash(file, bytes, expected) {
+  if (createHash('sha256').update(bytes).digest('hex') !== expected) {
+    throw new Error(`OpenDoc preview asset ${file} failed verification`);
+  }
+}
+
+if (check) {
+  // These tracked assets are served outside the generated runtime directory.
+  const fallbackAssets = {
+    'public/fonts/Vazirmatn-Regular.ttf':
+      'b69fd4c680b8f3f225feabcc655a2c585d97627b8f5f5c0f9985e894069f3a56',
+    'public/fonts/OFL-Vazirmatn.txt':
+      'e6f4ce7b6c830d5a25a4f8ac777c267cd7d3c180bc2a7150ca57cbb9b280c4b7',
+  };
+  for (const [file, expected] of Object.entries(fallbackAssets)) {
+    verifyHash(file, await readFile(file), expected);
+  }
+}
+
 // OpenDoc 91775489, Rust 1.96.0, wasm-bindgen 0.2.129, bounded RTL build.
 const assets = {
   'src/index.js': '8c5af9ad8138648daaf914f91ea72eb2ff5dcaac7ca15c0ffda37b0e66f1af18',
@@ -40,9 +59,7 @@ const verified = await Promise.all(
       }
       throw error;
     });
-    if (createHash('sha256').update(bytes).digest('hex') !== expected) {
-      throw new Error(`OpenDoc preview asset failed verification: ${file}`);
-    }
+    verifyHash(file, bytes, expected);
     return { file, bytes };
   }),
 );

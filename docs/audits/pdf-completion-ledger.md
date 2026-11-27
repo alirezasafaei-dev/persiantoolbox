@@ -279,11 +279,13 @@ with Rust 1.96.0, its `wasm32-unknown-unknown` target, a host linker and
 wasm-bindgen CLI 0.2.129. The command extracts the pinned revision into
 a temporary directory and applies the [preview patch](fixtures/opendoc-word-preview.patch).
 The staging command above checks the resulting runtime files by SHA-256.
+The preview build also verifies the tracked Vazirmatn fallback font and
+its OFL notice by SHA-256. Standalone smoke verifies both over HTTP.
 A fresh WSL Ubuntu 24.04 build matched the staged engine and upstream
 notice hashes from the separate build. Build also needs Node.js to gather
 license texts from the locked WASM Cargo dependency graph, embedded
 fonts and ECMA-376 data. It copies the Rust standard library copyright
-file from the pinned toolchain. The standalone smoke checks all nine
+file from the pinned toolchain. The standalone smoke checks all ten
 preview assets when the flag is on. The collector records license
 expressions and verbatim notices. It does not decide license choices or
 authorize public distribution. Broader compatibility remains open.

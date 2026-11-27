@@ -55,6 +55,7 @@ const PDF_ASSETS = [
         { path: '/word-pdf/v1/runtime/THIRD_PARTY_LICENSES.txt', contentType: 'text/plain' },
         { path: '/word-pdf/v1/runtime/RUST_STD_COPYRIGHT.html', contentType: 'text/html' },
         { path: '/fonts/Vazirmatn-Regular.ttf', contentType: 'font/ttf' },
+        { path: '/fonts/OFL-Vazirmatn.txt', contentType: 'text/plain' },
       ]
     : []),
 ];
