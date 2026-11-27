@@ -18,53 +18,70 @@ export default function EncryptPdfPage() {
   const workerRef = useRef<PdfWorkerClient | null>(null);
   const outputUrlRef = useRef<string | null>(null);
 
+  const releaseWorker = useCallback(() => {
+    const worker = workerRef.current;
+    workerRef.current = null;
+    worker?.terminate();
+  }, []);
+
   useEffect(
     () => () => {
-      workerRef.current?.terminate();
-      workerRef.current = null;
+      releaseWorker();
       if (outputUrlRef.current) {
         URL.revokeObjectURL(outputUrlRef.current);
       }
     },
-    [],
+    [releaseWorker],
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    if (file.type !== 'application/pdf') {
-      setError('فقط فایل PDF مجاز است.');
-      setState('error');
-      return;
-    }
-
-    if (!file.size || file.size > 50 * 1024 * 1024) {
-      setError('یک فایل PDF غیرخالی با حجم حداکثر ۵۰ مگابایت انتخاب کنید.');
-      setState('error');
-      return;
-    }
-    setState('loading');
-    setError('');
-
-    try {
-      const worker = (workerRef.current ??= createPdfWorkerClient({ preserveDocument: true }));
-      const count = await worker.countPages({ file: await file.arrayBuffer() });
-      if (workerRef.current !== worker) {
+  const handleFileSelect = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) {
         return;
       }
-      fileRef.current = file;
-      setFileName(file.name);
-      setPageCount(count);
-      setState('ready');
-    } catch {
-      setError('فایل PDF سالم و بدون رمز انتخاب کنید.');
-      setState('error');
-    }
-  }, []);
+
+      if (file.type !== 'application/pdf') {
+        setError('فقط فایل PDF مجاز است.');
+        setState('error');
+        return;
+      }
+
+      if (!file.size || file.size > 50 * 1024 * 1024) {
+        setError('یک فایل PDF غیرخالی با حجم حداکثر ۵۰ مگابایت انتخاب کنید.');
+        setState('error');
+        return;
+      }
+      setState('loading');
+      setError('');
+
+      let worker: PdfWorkerClient | null = null;
+      try {
+        worker = workerRef.current ??= createPdfWorkerClient({ preserveDocument: true });
+        const bytes = await file.arrayBuffer();
+        if (workerRef.current !== worker) {
+          return;
+        }
+        const count = await worker.countPages({ file: bytes });
+        if (workerRef.current !== worker) {
+          return;
+        }
+        fileRef.current = file;
+        setFileName(file.name);
+        setPageCount(count);
+        setState('ready');
+      } catch {
+        if (workerRef.current !== worker) {
+          return;
+        }
+        releaseWorker();
+        setError('فایل PDF سالم و بدون رمز انتخاب کنید.');
+        setState('error');
+      }
+    },
+    [releaseWorker],
+  );
 
   const handleEncrypt = useCallback(async () => {
     if (!fileRef.current || !password) {
@@ -84,8 +101,9 @@ export default function EncryptPdfPage() {
     setState('processing');
     setError('');
 
+    let worker: PdfWorkerClient | null = null;
     try {
-      const worker = (workerRef.current ??= createPdfWorkerClient({ preserveDocument: true }));
+      worker = workerRef.current ??= createPdfWorkerClient({ preserveDocument: true });
       const owner =
         ownerPassword ||
         Array.from(crypto.getRandomValues(new Uint8Array(24)), (byte) =>
@@ -123,12 +141,25 @@ export default function EncryptPdfPage() {
       setOwnerPassword('');
       setState('done');
     } catch (error) {
+      if (workerRef.current !== worker) {
+        return;
+      }
       setError(error instanceof Error ? error.message : 'خطا در پردازش فایل.');
       setState('ready');
+    } finally {
+      if (worker && workerRef.current === worker) {
+        releaseWorker();
+      }
     }
-  }, [fileName, password, ownerPassword]);
+  }, [fileName, password, ownerPassword, releaseWorker]);
+
+  const handleCancel = useCallback(() => {
+    releaseWorker();
+    setState('ready');
+  }, [releaseWorker]);
 
   const handleReset = useCallback(() => {
+    releaseWorker();
     setState('idle');
     setFileName('');
     setError('');
@@ -143,7 +174,7 @@ export default function EncryptPdfPage() {
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-  }, []);
+  }, [releaseWorker]);
 
   return (
     <div className="space-y-6">
@@ -271,8 +302,11 @@ export default function EncryptPdfPage() {
                   return 'پردازش و دانلود';
                 })()}
               </Button>
-              <Button variant="secondary" onClick={handleReset} disabled={state === 'processing'}>
-                فایل جدید
+              <Button
+                variant="secondary"
+                onClick={state === 'processing' ? handleCancel : handleReset}
+              >
+                {state === 'processing' ? 'لغو پردازش' : 'فایل جدید'}
               </Button>
             </div>
           </div>

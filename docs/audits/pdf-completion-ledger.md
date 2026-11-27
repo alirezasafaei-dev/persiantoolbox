@@ -426,6 +426,26 @@ build and all eight decryption cases in Chromium and Firefox passed.
 WebKit also passed the cancellation and retry case. Each retry proved
 that the downloaded PDF opened without a password.
 
+## Encryption cancellation
+
+The Chromium baseline held the second file read and confirmed that the
+processing UI had no cancel control. Cancel now detaches and terminates the
+worker and allows a retry while the previous read settles. Completion,
+failure, reset and unmount also release the worker that the tool owns.
+
+The Node 20 build passed. On isolated standalone HTTPS, the three existing
+signature-refusal and three malformed-input/AES-256 cases passed. The new
+regression passed in Chromium, Firefox and WebKit after correcting the
+synthetic text placement and supplying the verifier's standard fonts.
+The retry download opened with the supplied password, retained its page
+dimensions and text, and was the sole download. Releasing the earlier read
+did not display its late error. Physical-device and peak-memory coverage
+remain open.
+
+Read-only Production checks returned HTTP 200 for both version and health.
+The version endpoint reported `771366adb58ac1290c6cfa192ecd803d849a426f`,
+the merge for PR #302. This is a separate live checkpoint from PR #301.
+
 ## Tagged PDF output follow-up
 
 The Chromium baseline downloaded a PDF from each operation, and both
