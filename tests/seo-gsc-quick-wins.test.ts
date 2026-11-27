@@ -37,8 +37,14 @@ const targets: MetadataExpectation[] = [
   },
   {
     path: '/career-tools/work-certificate',
-    title: 'ساخت گواهی اشتغال به کار PDF | گواهی سابقه کار آنلاین',
-    descriptionTerms: ['PDF', 'گواهی اشتغال به کار', 'گواهی سابقه کار', 'آنلاین'],
+    title: 'گواهی اشتغال به کار | نمونه متن و ساخت PDF و Word',
+    descriptionTerms: [
+      'PDF و Word',
+      'گواهی اشتغال به کار',
+      'گواهی سابقه کار',
+      'نمونه متن',
+      'پیش‌نمایش',
+    ],
     keywordTerms: ['گواهی اشتغال به کار pdf', 'گواهی سابقه کار'],
   },
   {
