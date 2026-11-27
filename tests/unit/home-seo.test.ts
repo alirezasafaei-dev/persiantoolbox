@@ -37,7 +37,6 @@ describe('homepage SEO helpers', () => {
   it('dates SEO-updated routes for the next sitemap crawl', () => {
     const changedRoutes = [
       '/tools/check-penalty',
-      '/tools/invoice-generator',
       '/pdf-tools/split/split-pdf',
       '/validation-tools/national-id',
       '/pdf-tools/edit/add-page-numbers',
@@ -46,6 +45,7 @@ describe('homepage SEO helpers', () => {
     for (const route of changedRoutes) {
       expect(getToolByPathOrThrow(route).lastModified).toBe('2026-09-13');
     }
+    expect(getToolByPathOrThrow('/tools/invoice-generator').lastModified).toBe('2026-11-21');
     expect(
       sitemap().find((entry) => entry.url === 'https://persiantoolbox.ir/')?.lastModified,
     ).toBe('2026-09-13');
