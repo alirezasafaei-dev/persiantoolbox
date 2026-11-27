@@ -55,6 +55,12 @@ remaining per-tool acceptance criteria.
 
 The Add Page Numbers regression preserved the attachment filename and all five synthetic bytes in the actual download. Chromium and Firefox passed on isolated standalone HTTP. WebKit passed over isolated HTTPS after the HTTP run failed to load application assets. The tested application code is unchanged from `822fa2d6`.
 
+Word preview multi-page table coverage is PASS at application SHA
+`04439365` on desktop Chromium, Firefox and WebKit and on Pixel 7 and
+iPhone 13 emulations. All 84 rows remained in order across table pages,
+the final page retained the explicit break and image, and PDF text
+confirmed the numbered Persian footer on every page.
+
 The opt-in Word converter has an additional keyboard regression in
 `tests/e2e/pdf-word-preview.spec.ts`: cancelling a pending file read with
 Enter restores focus to Convert, and pressing Enter again produces the

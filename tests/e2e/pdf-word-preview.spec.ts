@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import {
   Document,
   Footer,
@@ -120,11 +120,19 @@ test('Word preview recovers from invalid input and cancellation and downloads a 
 test('Word preview preserves the mixed-script table, image, headers and numbered footers', async ({
   page,
 }) => {
+  await checkWordLayout(page, 42);
+});
+
+test('Word preview preserves a table that continues across pages', async ({ page }) => {
+  await checkWordLayout(page, 84);
+});
+
+async function checkWordLayout(page: Page, rowCount: number) {
   test.skip(
     process.env['NEXT_PUBLIC_WORD_PDF_PREVIEW'] !== '1',
     'Requires the staged OpenDoc preview',
   );
-  const values = Array.from({ length: 42 }, (_, index) => (index + 1) * 125_000);
+  const values = Array.from({ length: rowCount }, (_, index) => (index + 1) * 125_000);
   const image = Buffer.from(
     'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAE0lEQVR4nGP4z8DwHwwZGP6DAQBJyAn3FGMynQAAAABJRU5ErkJggg==',
     'base64',
@@ -185,8 +193,13 @@ test('Word preview preserves the mixed-script table, image, headers and numbered
   });
   try {
     const pdf = await task.promise;
-    expect(pdf.numPages).toBe(2);
-    for (const number of [1, 2]) {
+    if (rowCount === 42) {
+      expect(pdf.numPages).toBe(2);
+    } else {
+      expect(pdf.numPages).toBeGreaterThanOrEqual(3);
+    }
+    const observedRows: number[] = [];
+    for (let number = 1; number <= pdf.numPages; number += 1) {
       const pdfPage = await pdf.getPage(number);
       const content = await pdfPage.getTextContent();
       const runs = content.items.flatMap((item) => ('str' in item ? [item.str] : []));
@@ -199,9 +212,13 @@ test('Word preview preserves the mixed-script table, image, headers and numbered
       expect(footer.transform[4] + footer.width).toBeLessThanOrEqual(pdfPage.view[2]);
       const footerText = text.slice(text.lastIndexOf('PT FOOTER'));
       expect(footerText).toMatch(new RegExp(`^PT FOOTER\\s+صفحه\\s+${number}\\s*$`, 'u'));
-      if (number === 1) {
-        expect(runs.filter((run) => /^\d{6,}$/.test(run)).map(Number)).toEqual(values);
+      const rows = runs.filter((run) => /^\d{6,}$/.test(run)).map(Number);
+      if (number < pdf.numPages) {
+        expect(rows.length).toBeGreaterThan(0);
+        expect(text).not.toContain('PT AFTER PAGE BREAK');
+        observedRows.push(...rows);
       } else {
+        expect(rows).toEqual([]);
         expect(text).toContain('PT AFTER PAGE BREAK');
         const operators = await pdfPage.getOperatorList();
         expect(
@@ -211,7 +228,8 @@ test('Word preview preserves the mixed-script table, image, headers and numbered
         ).toBe(true);
       }
     }
+    expect(observedRows).toEqual(values);
   } finally {
     await task.destroy();
   }
-});
+}
