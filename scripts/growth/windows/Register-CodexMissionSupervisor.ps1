@@ -17,7 +17,7 @@ if (-not $WhatIfPreference -and -not $OwnerApproved) { throw 'Explicit owner app
 if ($Action -eq 'Restore') {
   if (!(Test-Path -LiteralPath $backup -PathType Leaf)) { throw 'Scheduled task backup is unavailable.' }
   if ($PSCmdlet.ShouldProcess($taskName, 'Restore prior registration')) {
-    Register-ScheduledTask -TaskName $taskName -Xml (Get-Content -LiteralPath $backup -Raw) -Force -Confirm:$false | Out-Null
+    Register-ScheduledTask -TaskName $taskName -Xml (Get-Content -LiteralPath $backup -Raw) -Force | Out-Null
   }
   return
 }
@@ -49,5 +49,5 @@ $taskAction = New-ScheduledTaskAction -Execute $pwsh -Argument $arguments
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Days 365)
 $settings = New-ScheduledTaskSettingsSet -Disable -MultipleInstances IgnoreNew -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 2)
 $principal = New-ScheduledTaskPrincipal -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited
-Register-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $trigger -Settings $settings -Principal $principal -Force -Confirm:$false | Out-Null
+Register-ScheduledTask -TaskName $taskName -Action $taskAction -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
 Write-Output 'Registered disabled. Enabling requires a separate acceptance decision.'
