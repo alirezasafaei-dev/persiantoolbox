@@ -20,6 +20,7 @@ import { runOnce, runPolling } from './orchestrator.js';
 import { syncNotionToGitHub } from './notion-transport.js';
 import type { OrchestratorOptions } from './types.js';
 import { DEFAULT_OPTIONS } from './types.js';
+import { runPortfolioCommand } from './portfolio-cli.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '..', '..', '..');
@@ -81,6 +82,7 @@ Usage:
   index.ts status         Show current state
   index.ts discover       List pending missions
   index.ts sync-notion    Sync from Notion inbox
+  index.ts portfolio <action> <portfolio-dir> <local-runtime-dir>
   index.ts --help         Show this help
 
 Options:
@@ -90,6 +92,14 @@ Options:
   }
 
   const command = args[0];
+
+  if (command === 'portfolio') {
+    void runPortfolioCommand(args.slice(1)).catch(() => {
+      console.error('[PORTFOLIO] Command rejected or input/state unavailable.');
+      process.exitCode = 1;
+    });
+    return;
+  }
 
   if (command === 'status') {
     showStatus();

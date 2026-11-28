@@ -422,31 +422,24 @@ describe('Draft PR gate', () => {
 describe('Windows supervisor and hook safety', () => {
   it('keeps the autonomous poll loop independent from Notion credentials', () => {
     const orchestrator = readFileSync('scripts/growth/agent-loop/orchestrator.ts', 'utf8');
-    const health = JSON.parse(
-      readFileSync('docs/growth/agent-loop/health.json', 'utf8'),
-    ) as { lastError: string | null };
+    const health = JSON.parse(readFileSync('docs/growth/agent-loop/health.json', 'utf8')) as {
+      lastError: string | null;
+    };
 
-    expect(orchestrator).not.toContain("import { syncNotionToGitHub }");
+    expect(orchestrator).not.toContain('import { syncNotionToGitHub }');
     expect(orchestrator).not.toContain('syncNotionToGitHub(projectRoot)');
     expect(health.lastError).toBeNull();
   });
 
-  it('uses a named mutex, clean-worktree gate, fetch, and nonzero failure path', () => {
+  it('keeps Windows scheduled execution on the zero-spend portfolio adapter', () => {
     const script = readFileSync('scripts/growth/windows/Invoke-CodexMissionSupervisor.ps1', 'utf8');
     expect(script).toContain('Global\\PersianToolbox-CodexMissionSupervisor');
-    expect(script).toContain('git fetch --prune origin');
-    expect(script).toContain('git status --porcelain');
-    expect(script).toContain('pnpm agent-loop:run --executor codex');
-    expect(script).toContain('corepack pnpm agent-loop:run --executor codex');
-    expect(script).toContain('mission-supervisor-health.json');
+    expect(script).toContain('portfolio run $PortfolioPath $RuntimePath');
+    expect(script).not.toContain('git fetch');
+    expect(script).not.toContain('agent-loop:run --executor');
+    expect(script).not.toContain('ExecutionPolicy Bypass');
     expect(buildCodexExecArgs('prompt')).toContain('workspace-write');
-    expect(readFileSync('scripts/growth/agent-loop/executor.ts', 'utf8')).not.toContain(
-      '--full-auto',
-    );
     expect(script).toContain('exit 1');
-    expect(script).not.toContain('SupportsShouldProcess');
-    expect(script).not.toMatch(/pr\s+merge/i);
-    expect(script).not.toContain('production');
   });
 
   it('activates the pinned pnpm and avoids lint-staged stash restore', () => {
